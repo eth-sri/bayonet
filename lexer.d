@@ -53,6 +53,7 @@ string[2][] simpleTokens =
 	 ["||",    "OrOr"                      ],
 	 ["||=",   "OrOrAssign"                ],
 	 ["-",     "Minus"                     ],
+	 ["->",    "RightArrow"                ],
 	 ["-=",    "MinusAssign"               ],
 	 ["--",    "MinusMinus"                ],
 	 ["+",     "Plus"                      ],
@@ -118,7 +119,7 @@ string[2][] specialTokens =
 	 ["EOF",   "Eof"                       ]];
 string[2][] compoundTokens = [];
 
- string[] keywords = ["def","state","new","drop","dup","fwd","skip","assert","observe","and","not","if","then","else","true","false","or","topology","nodes","links","packet_fields","programs"];
+ string[] keywords = ["def","state","new","drop","dup","fwd","skip","assert","observe","and","not","if","then","else","true","false","or","topology","nodes","links","parameters","packet_fields","programs","query"];
 
 
 string[2][] tokens = specialTokens ~ complexTokens ~ simpleTokens ~ compoundTokens ~ keywordTokens();

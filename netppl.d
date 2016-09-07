@@ -1,6 +1,7 @@
 import std.stdio, std.path, std.array, std.string, std.algorithm;
 import file=std.file;
 import lexer, parser, expression, declaration, error, util;
+// import scope_, semantic;
 
 string getActualPath(string path){
 	// TODO: search path
@@ -37,6 +38,7 @@ int run(string path){
 	auto src=new Source(path, code);
 	auto err=new FormattingErrorHandler();
 	auto program=parseFile(src,err);
+	//program=semantic(program,new TopScope(err));
 	writeln(program);
 	return !!err.nerrors;
 }

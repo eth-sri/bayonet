@@ -2,22 +2,22 @@
 topology{
   nodes {H0,H1,S0,S1,S2}
   links{
-    link1: H0, pt1 <-> S0, pt3
-    link2: S0, pt1 <-> S1, pt1
-    link3: S0, pt2 <-> S2, pt1
-    link4: S1, pt3 <-> H1, pt1
-    link5: S2, pt2 <-> S1, pt2
+      link1: (H0, pt1) <-> (S0, pt3),
+      link2: (S0, pt1) <-> (S1, pt1),
+      link3: (S0, pt2) <-> (S2, pt1),
+      link4: (S1, pt3) <-> (H1, pt1),
+      link5: (S2, pt2) <-> (S1, pt2)
   }
 }
 
-parameters{ COST_01 = 1, COST_02 = 2, COST_21 = 3 }
+parameters{ COST_01(1), COST_02(2), COST_21(3) }
 
 packet_fields{ dst, bwidth}
 
 programs{ H0->h0, H1->h1, S1->s1, S2->s2, S3 -> s3 }
 
 def h0(pkt,port) state pkt_count(0){ // who calls this?
-    if pkt_count <2 {
+    if pkt_count < 2 {
 	new;
 	pkt.dst := 1;
 	pkt.bwidth := UniformInt(1,4);
@@ -55,14 +55,14 @@ state bwidth01(4), bwidth02(4), bwidth21(4){
 
 	ecmp := UniformInt(1, nshortest);
 	if shortest1 = 1 {
-	    if (nshortest = 1 or (nshortest > 1 and ecmp = 1)){
+	    if nshortest = 1 or (nshortest > 1 and ecmp = 1){
 		bwidth01 := bwidth01 - pkt.bwidth;
 		assert(bwidth01 >= 0);
 		fwd(1);
 	    }
 	}
 	if shortest2 = 1{
-	    if (nshortest = 1 or (nshortest > 1 and ecmp = 2)){
+	    if nshortest = 1 or (nshortest > 1 and ecmp = 2){
 		bwidth02 := bwidth02 - pkt.bwidth;
 		assert(bwidth02 >= 0);
 		bwidth21 := bwidth21 - pkt.bwidth;

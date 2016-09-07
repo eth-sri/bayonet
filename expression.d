@@ -239,3 +239,11 @@ class CObserveExp: Expression{
 	}
 	override string toString(){ return "cobserve("~var.toString()~","~val.toString()~")"; }
 }
+
+class BuiltInExp: Expression{
+	TokenType which;
+	this(TokenType which)in{assert(util.among(which,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop"));}body{
+		this.which=which;
+	}
+	override string toString(){ return TokenTypeToString(which); }
+}

@@ -15,7 +15,7 @@ enum binaryOps=mixin({string r="[";
 bool isRelationalOp(TokenType op){
 	switch(op){
 		// relational operators
-		case Tok!"==",Tok!"!=",Tok!">",Tok!"<":
+		case Tok!"=",Tok!"!=",Tok!">",Tok!"<":
 		case Tok!">=",Tok!"<=",Tok!"!>",Tok!"!<":
 		case Tok!"!>=",Tok!"!<=",Tok!"<>",Tok!"!<>":
 		case Tok!"<>=", Tok!"!<>=":
@@ -38,18 +38,18 @@ int getLbp(TokenType type) pure{ // operator precedence
 	// assignment operators
 	case Tok!":": // type annotation
 		return 20;
-	case Tok!"/=",Tok!"&=",Tok!"|=",Tok!"-=":
+	/+case Tok!"/=",Tok!"&=",Tok!"|=",Tok!"-=":
 	case Tok!"+=",Tok!"<<=",Tok!">>=", Tok!">>>=":
 	case Tok!"=",Tok!"*=",Tok!"%=",Tok!"^=":
-	case Tok!"&&=", Tok!"||=", Tok!"~=":
+	case Tok!"&&=", Tok!"||=", Tok!"~=":+/
 	case Tok!":=":
 		return 30;
 	// logical operators
 	case Tok!"?":  return 40; // conditional operator
-	case Tok!"||": return 50; // logical OR
-	case Tok!"&&": return 60; // logical AND
+	case Tok!"||", Tok!"or": return 50; // logical OR
+	case Tok!"&&", Tok!"and": return 60; // logical AND
 	// relational operators
-	case Tok!"==",Tok!"!=",Tok!">",Tok!"<":
+	case Tok!"=",Tok!"!=",Tok!">",Tok!"<":
 	case Tok!">=",Tok!"<=",Tok!"!>",Tok!"!<":
 	case Tok!"!>=",Tok!"!<=",Tok!"<>",Tok!"!<>":
 	case Tok!"<>=", Tok!"!<>=":
@@ -76,6 +76,7 @@ int getLbp(TokenType type) pure{ // operator precedence
 	case Tok!"=>": return 165; // goesto
 	case Tok!"!":  return 170;
 	//case Tok!"i": return 45; //infix
+	case Tok!"@": return 180;
 	default: return -1;
 	}
 }
@@ -335,11 +336,19 @@ struct Parser{
 		return e.data;
 	}
 
+	BuiltInExp parseBuiltInExp()in{assert(util.among(ttype,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop"));}body{
+		mixin(SetLoc!BuiltInExp);
+		auto which=ttype;
+		nextToken();
+		return res=New!BuiltInExp(which);
+	}
+	
 	// Operator precedence expression parser
 	// null denotation
 	Expression nud(){
 		mixin(SetLoc!Expression);
 		switch(ttype){
+			case Tok!"new", Tok!"fwd", Tok!"dup", Tok!"drop": return parseBuiltInExp();
 			case Tok!"i": return parseIdentifier();
 			case Tok!"?": nextToken(); return res=New!PlaceholderExp(parseIdentifier());
 			case Tok!"``", Tok!"``c", Tok!"``w", Tok!"``d": // adjacent string tokens get concatenated
@@ -458,6 +467,11 @@ struct Parser{
 	}
 	Expression parseExpression(int rbp = 0){
 		switch(ttype){
+			case Tok!"topology": return parseTopologyDecl();
+			case Tok!"parameters": return parseParametersDecl();
+			case Tok!"packet_fields": return parsePacketFieldsDecl();
+			case Tok!"programs": return parseProgramsDecl();
+			case Tok!"query": return parseQueryDecl();
 			case Tok!"def": return parseFunctionDef();
 			case Tok!"if": return parseIte();
 			case Tok!"assert": return parseAssert();
@@ -472,7 +486,7 @@ struct Parser{
 	Expression parseExpression2(Expression left, int rbp = 0){ // left is already known
 		while(rbp < arrLbp[ttype])
 		loop: try left = led(left); catch(PEE err){error(err.msg);}
-		if(arrLbp[ttype] == -2 && rbp<lbp!(Tok!"==")){
+		if(arrLbp[ttype] == -2 && rbp<lbp!(Tok!"=")){
 			try left = led(left); catch(PEE err){error(err.msg);}
 			if(rbp<arrLbp[ttype]) goto loop;
 		}
@@ -497,6 +511,152 @@ struct Parser{
 		expect(Tok!"}");
 		return res=New!T(s.data);
 	}
+
+	TopologyDecl parseTopologyDecl(){
+		mixin(SetLoc!TopologyDecl);
+		expect(Tok!"topology");
+		expect(Tok!"{");
+		expect(Tok!"nodes");
+		expect(Tok!"{");
+		auto n=appender!(NodeDecl[])();
+		while(ttype != Tok!"}"){
+			n.put(parseNodeDecl());
+			if(ttype == Tok!",") nextToken();
+			else break;
+		}
+		expect(Tok!"}");
+		expect(Tok!"links");
+		expect(Tok!"{");
+		auto l=appender!(LinkDecl[])();
+		while(ttype != Tok!"}"){
+			l.put(parseLinkDecl());
+			if(ttype == Tok!",") nextToken();
+			else break;
+		}
+		expect(Tok!"}");
+		expect(Tok!"}");
+		return res=New!TopologyDecl(n.data,l.data);
+	}
+
+	NodeDecl parseNodeDecl(){
+		mixin(SetLoc!NodeDecl);
+		return res=New!NodeDecl(parseIdentifier());
+	}
+	
+	LinkDecl parseLinkDecl(){
+		mixin(SetLoc!LinkDecl);
+		Identifier name=null;
+		if(ttype==Tok!"i"&&peek().type==Tok!":"){ name=parseIdentifier(); expect(Tok!":"); }
+		auto a = parseInterfaceDecl();
+		expect(Tok!"<->");
+		auto b = parseInterfaceDecl();
+		return res=New!LinkDecl(name,a,b);
+	}
+
+	InterfaceDecl parseInterfaceDecl(){
+		mixin(SetLoc!InterfaceDecl);
+		expect(Tok!"(");
+		auto node=parseIdentifier();
+		expect(Tok!",");
+		auto pt=parseIdentifier();
+		int port=0;
+		if(!pt.name.startsWith("pt")){ error("expected port",pt.loc); return null; }
+		try{ port = to!int(pt.name[2..$]); } catch { error("expected port",pt.loc); return null; }
+		expect(Tok!")");
+		return res=New!InterfaceDecl(node,port);
+	}
+
+	ParametersDecl parseParametersDecl(){
+		mixin(SetLoc!ParametersDecl);
+		expect(Tok!"parameters");
+		expect(Tok!"{");
+		auto p=appender!(ParameterDecl[])();
+		while(ttype != Tok!"}"){
+			p.put(parseParameterDecl());
+			if(ttype == Tok!",") nextToken();
+			else break;
+		}
+		expect(Tok!"}");
+		return res=New!ParametersDecl(p.data);
+	}
+
+	ParameterDecl parseParameterDecl(){
+		mixin(SetLoc!ParameterDecl);
+		auto name=parseIdentifier();
+		Expression initializer = null;
+		if(ttype==Tok!"("){
+			nextToken();
+			initializer = parseExpression();
+			expect(Tok!")");
+		}
+		return res=New!ParameterDecl(name,initializer);
+	}
+
+	PacketFieldsDecl parsePacketFieldsDecl(){
+		mixin(SetLoc!PacketFieldsDecl);
+		expect(Tok!"packet_fields");
+		expect(Tok!"{");
+		auto i=appender!(Identifier[])();
+		while(ttype != Tok!"}"){
+			i.put(parseIdentifier());
+			if(ttype == Tok!",") nextToken();
+			else break;
+		}
+		expect(Tok!"}");
+		return res=New!PacketFieldsDecl(i.data);
+	}
+
+	ProgramsDecl parseProgramsDecl(){
+		mixin(SetLoc!ProgramsDecl);
+		expect(Tok!"programs");
+		expect(Tok!"{");
+		auto m = appender!(ProgramMappingDecl[])();
+		while(ttype != Tok!"}"){
+			m.put(parseProgramMappingDecl());
+			if(ttype == Tok!",") nextToken();
+			else break;
+		}
+		expect(Tok!"}");
+		return res=New!ProgramsDecl(m.data);
+	}
+
+	QueryDecl parseQueryDecl(){
+		mixin(SetLoc!QueryDecl);
+		expect(Tok!"query");
+		auto e=parseExpression();
+		return res=New!QueryDecl(e);
+	}
+
+	ProgramMappingDecl parseProgramMappingDecl(){
+		mixin(SetLoc!ProgramMappingDecl);
+		auto node = parseIdentifier();
+		expect(Tok!"->");
+		auto prg = parseIdentifier();
+		return res=New!ProgramMappingDecl(node,prg);
+	}
+
+	StateDecl parseStateDecl(){
+		mixin(SetLoc!StateDecl);
+		expect(Tok!"state");
+		auto s=appender!(StateVarDecl[])();
+		while(ttype != Tok!"{"){
+			s.put(parseStateVarDecl);
+			if(ttype==Tok!",") nextToken();
+			else break;
+		}
+		return res=New!StateDecl(s.data);
+	}
+	
+	StateVarDecl parseStateVarDecl(){
+		mixin(SetLoc!StateVarDecl);
+		auto name=parseIdentifier();
+		expect(Tok!"(");
+		auto init_=parseExpression();
+		expect(Tok!")");
+		return res=New!StateVarDecl(name,init_);
+	}
+
+	
 	FunctionDef parseFunctionDef(bool lambda=false)(){
 		mixin(SetLoc!FunctionDef);
 		static if(!lambda){
@@ -506,6 +666,8 @@ struct Parser{
 		expect(Tok!"(");
 		auto args=cast(Identifier[])parseArgumentList!(")",false,Identifier)();
 		expect(Tok!")");
+		StateDecl state=null;
+		if(ttype == Tok!"state") state=parseStateDecl(); 
 		Expression ret=null;
 		CompoundExp body_;
 		if(ttype == Tok!"=>"){
