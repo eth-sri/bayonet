@@ -190,6 +190,7 @@ class Source{
 		assert(0);
 	}
 	private static Source[] sources;
+	Location lineZero(){ return Location(code[0..0],0); }
 }
 
 struct Location{
