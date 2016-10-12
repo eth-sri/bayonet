@@ -1,6 +1,7 @@
 
 import std.stdio;
 import std.string, std.range, std.array, std.uni;
+import std.conv: text;
 
 import lexer, util;
 
@@ -27,7 +28,7 @@ abstract class ErrorHandler{
 }
 class SimpleErrorHandler: ErrorHandler{
 	override void error(lazy string err, Location loc){
-		if(loc.line == 0){ // just here for robustness
+		if(loc.line == 0 && !loc.rep.ptr){ // just here for robustness
 			stderr.writeln("(location missing): "~err);
 			return;
 		}
@@ -47,7 +48,7 @@ class VerboseErrorHandler: ErrorHandler{
 		impl(err, loc, true);
 	}
 	private void impl(lazy string err, Location loc, bool isNote){
-		if(loc.line == 0||!loc.rep.length){ // just here for robustness
+		if(loc.line == 0&&!loc.rep.ptr){ // just here for robustness
 			stderr.writeln("(location missing): "~err);
 			return;
 		}
@@ -57,19 +58,20 @@ class VerboseErrorHandler: ErrorHandler{
 		if(loc.rep.ptr<line.ptr) loc.rep=loc.rep[line.ptr-loc.rep.ptr..$];
 		auto column=getColumn(loc,tabsize);
 		write(source, loc.line, column, err, isNote);
-		if(line.length&&line[0]){
+		if(line.length&&line[0]&&loc.rep.length){
 			display(line);
 			highlight(column, loc.rep);
 		}		
 	}
 protected:
 	void write(string source, int line, int column, string error, bool isNote = false){
-		stderr.writeln(source,':',line,":",column,isNote?": note: ":": error: ",error);
+		stderr.writeln(source,':',line?text(line,":",column,":"):"",isNote?" note: ":" error: ",error);
 	}
 	void display(string line){
 		stderr.writeln(line);
 	}
 	void highlight(int column, string rep){
+		if(!rep.length) return;
 		foreach(i;0..column-1) stderr.write(" ");
 		stderr.write("^");
 		rep.popFront();

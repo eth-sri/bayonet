@@ -1,4 +1,6 @@
 import std.format;
+import std.typecons: Tuple, tuple;
+import std.conv: text;
 import lexer, expression, declaration, error;
 
 abstract class Scope{
@@ -51,6 +53,45 @@ class TopScope: Scope{
 	override @property ErrorHandler handler(){ return handler_; }
 	this(ErrorHandler handler){
 		this.handler_=handler;
+	}
+	private TopologyDecl topology;
+
+	private NodeDecl[const(char)*] nodes;
+	private Tuple!(NodeDecl,int,Location)[Tuple!(NodeDecl,int)] graph;
+	NodeDecl lookupNode(Identifier name){
+		if(name.name.ptr in nodes) return nodes[name.name.ptr];
+		error("undefined node '"~name.name~"'",name.loc);
+		return null;
+	}
+	final bool setTopology(TopologyDecl topology)in{assert(!this.topology);}body{
+		this.topology=topology;
+		bool err=false;
+		foreach(n;topology.nodes){
+			if(n.name.name.ptr in nodes){
+				error(text("redeclaration of node ",n.name),n.loc);
+				note("previous declaration was here",nodes[n.name.name.ptr].loc);
+				err=true;
+			}
+			nodes[n.name.name.ptr]=n;
+		}
+		foreach(l;topology.links){
+			auto a=lookupNode(l.a.node),b=lookupNode(l.b.node);
+			if(a&&b){
+				void addDirected(InterfaceDecl a,InterfaceDecl b){
+					auto tpa=tuple(lookupNode(a.node),a.port);
+					auto tpb=tuple(lookupNode(b.node),b.port,a.loc);
+					if(tpa in graph){
+						error(text("multiple links connected to interface ",a),a.loc);
+						note("previous connection was declared here",graph[tpa][2]);
+						err=true;
+					}
+					graph[tpa]=tpb;
+				}
+				addDirected(l.a,l.b);
+				addDirected(l.b,l.a);
+			}else err=true;
+		}
+		return !err;
 	}
 	override FunctionDef getFunction(){ return null; }
 }

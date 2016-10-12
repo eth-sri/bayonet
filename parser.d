@@ -632,12 +632,19 @@ struct Parser{
 		auto node = parseIdentifier();
 		expect(Tok!"->");
 		auto prg = parseIdentifier();
-		return res=New!ProgramMappingDecl(node,prg);
+		auto inits = StateDecl.init;
+		if(ttype==Tok!"with"){
+			nextToken();
+			expect(Tok!"{");
+			inits=parseStateDecl(true);
+			expect(Tok!"}");
+		}
+		return res=New!ProgramMappingDecl(node,prg,inits);
 	}
 
-	StateDecl parseStateDecl(){
+	StateDecl parseStateDecl(bool isWith=false){
 		mixin(SetLoc!StateDecl);
-		expect(Tok!"state");
+		if(!isWith) expect(Tok!"state");
 		auto s=appender!(StateVarDecl[])();
 		while(ttype != Tok!"{"){
 			s.put(parseStateVarDecl);
@@ -650,9 +657,12 @@ struct Parser{
 	StateVarDecl parseStateVarDecl(){
 		mixin(SetLoc!StateVarDecl);
 		auto name=parseIdentifier();
-		expect(Tok!"(");
-		auto init_=parseExpression();
-		expect(Tok!")");
+		auto init_=Expression.init;
+		if(ttype==Tok!"("){
+			nextToken();
+			init_=parseExpression();
+			expect(Tok!")");
+		}
 		return res=New!StateVarDecl(name,init_);
 	}
 

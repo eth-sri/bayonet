@@ -18,7 +18,7 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	}
 	// TODO: provide help with syntax for missing declarations
 	if(all!TopologyDecl.length!=1) sc.error("there should be exactly one topology declaration",secondLoc(typeid(TopologyDecl)));
-	if(all!ParametersDecl.length>1) sc.error("there can be at most one parameters declaration",byTid[typeid(ParametersDecl)][1].loc);
+	if(all!ParametersDecl.length>1) sc.error("there can be at most one parameters declaration",all!ParametersDecl[1].loc);
 	if(all!PacketFieldsDecl.length!=1) sc.error("there should be exactly one declaration of packet fields",secondLoc(typeid(PacketFieldsDecl)));
 	if(all!ProgramsDecl.length!=1) sc.error("there should be exactly one declaration of programs to run on the nodes",secondLoc(typeid(ProgramsDecl)));
 
@@ -37,5 +37,11 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 }	
 
 Expression semantic(Expression expr,Scope sc){
+	if(auto tpl=cast(TopologyDecl)expr){
+		if(auto tsc=cast(TopScope)sc)
+			if(!tsc.setTopology(tpl))
+				tpl.sstate=SemState.error;
+		return tpl;
+	}
 	return expr;
 }

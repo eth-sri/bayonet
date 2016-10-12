@@ -69,9 +69,10 @@ class ProgramsDecl: Declaration{
 class ProgramMappingDecl: Declaration{
 	Identifier node;
 	Identifier prg;
-	this(Identifier node,Identifier prg){ super(null); this.node=node; this.prg=prg; }
+	StateDecl inits;
+	this(Identifier node,Identifier prg,StateDecl inits){ super(null); this.node=node; this.prg=prg; this.inits=inits;}
 	override @property string kind(){ return "program mapping"; }
-	override string toString(){ return node.toString()~" -> "~prg.toString(); }
+	override string toString(){ return node.toString()~" -> "~prg.toString()~(inits?"with { "~inits.bodyToString()~" }":""); }
 }
 
 class QueryDecl: Declaration{
@@ -96,14 +97,17 @@ class StateVarDecl: Declaration{
 	Expression init_;
 	this(Identifier name,Expression init_){ super(name); this.init_=init_; }
 	override @property string kind(){ return "state variable"; }
-	override string toString(){ return name.toString()~"("~init_.toString()~")"; }
+	override string toString(){ return name.toString()~(init_?"("~init_.toString()~")":""); }
 }
 
 class StateDecl: Declaration{
 	StateVarDecl[] vars;
 	this(StateVarDecl[] vars){ super(null); this.vars=vars; }
 	override @property string kind(){ return "state declaration"; }
-	override string toString(){ return "state "~vars.map!(to!string).join(", "); }
+	final string bodyToString(){
+		return vars.map!(to!string).join(", ");
+	}
+	override string toString(){ return "state "~bodyToString(); }
 }
 
 class FunctionDef: Declaration{
