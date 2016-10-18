@@ -1,0 +1,50 @@
+topology{
+    nodes{H0,H1,S0}
+    links{
+        link1: (H0,pt1) <-> (S0,pt1),
+        link2: (S0,pt2) <-> (H1,pt1),
+    }
+}
+
+packet_fields{ dst }
+
+programs{ H0->h0, H1->h1, S0->s0 }
+
+def h0(pkt,port) state pkt_count(0){
+    new;
+    pkt_count = pkt_count+1;
+    pkt.dst = 1;
+    fwd(1);
+    new;
+    pkt_count = pkt_count+1;
+    pkt.dst = 1;
+    fwd(1);
+    new;
+    pkt_count = pkt_count+1;
+    pkt.dst = 1;
+    fwd(1);
+}
+
+def s0(pkt,port){
+    if port == 1 {
+	fwd(2);
+    }else{
+	fwd(1);
+    }
+}
+
+def h1(pkt,port) state pkt_count(0){
+    pkt_count = pkt_count+1;
+}
+
+def scheduler(){
+    which := UniformInt(1,3);
+    what := if Bernoulli(1/2) { FwdQ; } else { RunSw; };
+    if which == 1 {
+        return (H0,what);
+    } else if which == 2{
+        return (S0,what);
+    } else if which == 3{
+        return (H1,what);
+    }
+}

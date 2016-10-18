@@ -33,15 +33,224 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	doSemantic!ParametersDecl;
 	doSemantic!PacketFieldsDecl;
 	doSemantic!FunctionDef;
+	doSemantic!ProgramsDecl;
 	return exprs;
 }	
 
 Expression semantic(Expression expr,Scope sc){
+	static void propErr(Expression e1,Expression e2){
+		if(e1.sstate==SemState.error)
+			e2.sstate=SemState.error;
+	}
+	static Expression finish(Expression e){
+		if(e.sstate!=SemState.error)
+			e.sstate=SemState.completed;
+		return e;
+	}
 	if(auto tpl=cast(TopologyDecl)expr){
 		if(auto tsc=cast(TopScope)sc)
 			if(!tsc.setTopology(tpl))
 				tpl.sstate=SemState.error;
-		return tpl;
+		return finish(tpl);
 	}
+	if(auto prm=cast(ParametersDecl)expr){
+		foreach(ref param;prm.params){
+			param=cast(ParameterDecl)semantic(param,sc);
+			assert(!!param);
+			propErr(param,prm);
+		}
+		return finish(prm);
+	}
+	if(auto prm=cast(ParameterDecl)expr){
+		if(!sc.insert(prm))
+			prm.sstate=SemState.error;
+		return finish(prm);
+	}
+	if(auto pfld=cast(PacketFieldsDecl)expr){
+		foreach(ref field;pfld.fields){
+			field=cast(VarDecl)semantic(field,sc.packetFieldScope());
+			assert(!!field);
+			propErr(field,pfld);
+		}
+		return finish(pfld);
+	}
+	if(auto pd=cast(ProgramsDecl)expr){
+		foreach(mp;pd.mappings){
+			if(auto decl=sc.lookup(mp.node)){
+				if(auto node=cast(NodeDecl)decl){
+					if(auto decl2=sc.lookup(mp.prg)){
+						if(auto prg=cast(FunctionDef)decl2){
+							if(node.prg){
+								sc.error("program for node '"~node.name.name~"' already declared",mp.loc);
+							}else node.prg=prg;
+						}else{
+							sc.error("not a program",mp.node.loc);
+							sc.note("declared here",decl.loc);
+							pd.sstate=SemState.error;
+						}
+					}else{
+						sc.error("undefined identifier",mp.prg.loc);
+						pd.sstate=SemState.error;
+					}
+				}else{
+					sc.error("not a node in the network",mp.node.loc);
+					sc.note("declared here",decl.loc);
+					pd.sstate=SemState.error;
+				}
+			}else{
+				sc.error("undefined identifier",mp.node.loc);
+				pd.sstate=SemState.error;
+			}
+		}
+		// TODO: ensure each node has a program
+		// TODO: allow a wildcard specifier
+		return finish(pd);
+	}
+	if(auto vd=cast(VarDecl)expr){
+		if(!sc.insert(vd))
+			vd.sstate=SemState.error;
+		return finish(vd);
+	}
+	if(auto fd=cast(FunctionDef)expr){
+		if(!sc.insert(fd)) fd.sstate=SemState.error;
+		if(!fd.fscope_) fd.fscope_=new FunctionScope(sc,fd);
+		if(fd.params.length){
+			if(fd.params[0].name!="pkt"||fd.params[1].name!="port"){
+				sc.error("function parameters must be () or (pkt,port)",fd.loc);
+				fd.sstate=SemState.error;
+			}
+		}
+		if(fd.state) foreach(ref vd;fd.state.vars)
+			vd=cast(StateVarDecl)semantic(vd,fd.fscope_);
+		foreach(ref statement;fd.body_.s){
+			statement=semantic(statement,fd.fscope_);
+			propErr(statement,fd);
+		}
+		return finish(fd);
+	}
+	if(auto be=cast(BuiltInExp)expr){
+		return finish(be);
+	}
+	if(auto ae=cast(BinaryExp!(Tok!"="))expr){
+		ae.e1=semantic(ae.e1,sc);
+		ae.e2=semantic(ae.e2,sc);
+		propErr(ae.e1,ae);
+		propErr(ae.e2,ae);
+		auto id=cast(Identifier)ae.e1;
+		if(!id&&!cast(FieldExp)ae.e1){
+			sc.error("can only assign variables or packet fields",ae.loc);
+			ae.sstate=SemState.error;
+		}
+		if(id && (id.name=="pkt"||id.name=="port")){
+			sc.error("cannot reassign parameters",ae.loc);
+			ae.sstate=SemState.error;
+		}
+		return finish(ae);
+	}
+	if(auto de=cast(BinaryExp!(Tok!":="))expr){
+		de.e2=semantic(de.e2,sc);
+		propErr(de.e2,de);
+		auto id=cast(Identifier)de.e1;
+		if(!id){
+			sc.error("left hand side of definition must be identifier",de.loc);
+			de.sstate=SemState.error;
+			return de;
+		}
+		auto vd=new VarDecl(id);
+		if(!sc.insert(vd))
+			de.sstate=SemState.error;
+		return finish(de);
+	}
+	if(auto be=cast(ABinaryExp)expr){
+		be.e1=semantic(be.e1,sc);
+		be.e2=semantic(be.e2,sc);
+		propErr(be.e1,be);
+		propErr(be.e2,be);
+		return finish(be);
+	}
+	if(auto fld=cast(FieldExp)expr){
+		fld.e=semantic(fld.e,sc);
+		propErr(fld.e,fld);
+		auto id=cast(Identifier)fld.e;
+		auto fd=sc.getFunction();
+		if((!id||id.name!="pkt")&&(!fd||!fd.params.length)){
+			sc.error("can only access fields of 'pkt'",fld.loc);
+			fld.sstate=SemState.error;
+			return fld;
+		}
+		if(!sc.packetFieldScope().lookup(fld.f)){
+			fld.sstate=SemState.error;
+		}
+		return finish(fld);
+	}
+	if(auto id=cast(Identifier)expr){
+		if(!sc.lookup(id)){
+			if(auto fd=sc.getFunction()){
+				if(fd.params.length==2 && id.name=="port" || id.name=="pkt")
+					return finish(id);
+			}
+			sc.error("undefined identifier",id.loc);
+			id.sstate=SemState.error;
+		}
+		return finish(id);
+	}
+	if(auto lit=cast(LiteralExp)expr)
+		return finish(lit);
+	if(auto ce=cast(CallExp)expr){
+		//ce.e=semantic(ce.e,sc);
+		//propErr(ce.e,ce);
+		foreach(ref arg;ce.args){
+			arg=semantic(arg,sc);
+			propErr(arg,ce);
+		}
+		if(ce.sstate==SemState.error) return ce;
+		auto be=cast(BuiltInExp)ce.e;
+		if((!be||be.which!=Tok!"fwd")&&!isBuiltInDistribution(cast(Identifier)ce.e)){
+			sc.error("can only call 'fwd' or sampling expression",ce.loc);
+			ce.sstate=SemState.error;
+			return ce;
+		}
+		if(be&&be.which==Tok!"fwd"&&ce.args.length!=1){
+			sc.error("expected a single argument to 'fwd'",ce.loc);
+			ce.sstate=SemState.error;
+			return ce;
+		}
+		return finish(ce);
+	}
+	if(auto ite=cast(IteExp)expr){
+		ite.cond=semantic(ite.cond,sc);
+		ite.then=cast(CompoundExp)semantic(ite.then,sc);
+		assert(!!ite.then);
+		if(ite.othw){
+			ite.othw=cast(CompoundExp)semantic(ite.othw,sc);
+			assert(ite.othw);
+		}
+		propErr(ite.cond,ite);
+		propErr(ite.then,ite);
+		if(ite.othw) propErr(ite.othw,ite);
+		return finish(ite);
+	}
+	if(auto cmp=cast(CompoundExp)expr){
+		foreach(ref s;cmp.s){
+			s=semantic(s,sc);
+		}
+		return cmp;
+	}
+	Expression handleBinary(ref Expression e1,ref Expression e2,Expression e){
+		e1=semantic(e1,sc);
+		e2=semantic(e2,sc);
+		propErr(e1,e), propErr(e2,e);
+		return finish(e);
+	}
+	if(auto be=cast(BinaryExp!(Tok!"=="))expr){
+		return handleBinary(be.e1,be.e2,be);
+	}
+	sc.error("unsupported",expr.loc);
+	expr.sstate=SemState.error;
 	return expr;
+}
+
+bool isBuiltInDistribution(Identifier id){
+	if(!id) return false;
+	return true; // TODO
 }

@@ -42,14 +42,14 @@ int getLbp(TokenType type) pure{ // operator precedence
 	case Tok!"+=",Tok!"<<=",Tok!">>=", Tok!">>>=":
 	case Tok!"=",Tok!"*=",Tok!"%=",Tok!"^=":
 	case Tok!"&&=", Tok!"||=", Tok!"~=":+/
-	case Tok!":=":
+	case Tok!":=",Tok!"=":
 		return 30;
 	// logical operators
 	case Tok!"?":  return 40; // conditional operator
 	case Tok!"||", Tok!"or": return 50; // logical OR
 	case Tok!"&&", Tok!"and": return 60; // logical AND
 	// relational operators
-	case Tok!"=",Tok!"!=",Tok!">",Tok!"<":
+	case Tok!"==",Tok!"!=",Tok!">",Tok!"<":
 	case Tok!">=",Tok!"<=",Tok!"!>",Tok!"!<":
 	case Tok!"!>=",Tok!"!<=",Tok!"<>",Tok!"!<>":
 	case Tok!"<>=", Tok!"!<>=":
@@ -336,7 +336,7 @@ struct Parser{
 		return e.data;
 	}
 
-	BuiltInExp parseBuiltInExp()in{assert(util.among(ttype,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop"));}body{
+	BuiltInExp parseBuiltInExp()in{assert(util.among(ttype,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop",Tok!"FwdQ",Tok!"RunSw"));}body{
 		mixin(SetLoc!BuiltInExp);
 		auto which=ttype;
 		nextToken();
@@ -348,7 +348,7 @@ struct Parser{
 	Expression nud(){
 		mixin(SetLoc!Expression);
 		switch(ttype){
-			case Tok!"new", Tok!"fwd", Tok!"dup", Tok!"drop": return parseBuiltInExp();
+			case Tok!"new", Tok!"fwd", Tok!"dup", Tok!"drop", Tok!"FwdQ", Tok!"RunSw": return parseBuiltInExp();
 			case Tok!"i": return parseIdentifier();
 			case Tok!"?": nextToken(); return res=New!PlaceholderExp(parseIdentifier());
 			case Tok!"``", Tok!"``c", Tok!"``w", Tok!"``d": // adjacent string tokens get concatenated
@@ -596,9 +596,12 @@ struct Parser{
 		mixin(SetLoc!PacketFieldsDecl);
 		expect(Tok!"packet_fields");
 		expect(Tok!"{");
-		auto i=appender!(Identifier[])();
+		auto i=appender!(VarDecl[])();
 		while(ttype != Tok!"}"){
-			i.put(parseIdentifier());
+			auto id=parseIdentifier();
+			auto decl=New!VarDecl(id);
+			decl.loc=id.loc;
+			i.put(decl);
 			if(ttype == Tok!",") nextToken();
 			else break;
 		}
@@ -689,7 +692,7 @@ struct Parser{
 			body_.loc=e.loc;
 			static if(!lambda) expect(Tok!";");			
 		}else body_=parseCompoundExp();
-		return res=New!FunctionDef(name,args,ret,body_);
+		return res=New!FunctionDef(name,args,state,ret,body_);
 	}
 	IteExp parseIte(){
 		mixin(SetLoc!IteExp);

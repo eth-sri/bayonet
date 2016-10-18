@@ -6,7 +6,7 @@ topology{
       link2: (S0, pt1) <-> (S1, pt1),
       link3: (S0, pt2) <-> (S2, pt1),
       link4: (S1, pt3) <-> (H1, pt1),
-      link5: (S2, pt2) <-> (S1, pt2)
+      link5: (S2, pt2) <-> (S1, pt2),
   }
 }
 
@@ -14,36 +14,36 @@ parameters{ COST_01(1), COST_02(2), COST_21(3) }
 
 packet_fields{ dst, bwidth}
 
-programs{ H0->h0, H1->h1, S1->s1, S2->s2, S3 -> s3 }
+programs{ H0->h0, H1->h1, S0->s1, S1->s2, S2 -> s3 }
 
 def h0(pkt,port) state pkt_count(0){ // who calls this?
     if pkt_count < 2 {
 	new;
-	pkt.dst := 1;
-	pkt.bwidth := UniformInt(1,4);
+	pkt.dst = 1;
+	pkt.bwidth = UniformInt(1,4);
 	fwd(1);
-	pkt_count := pkt_count+1;
+	pkt_count = pkt_count+1;
     }
 }
 
 def h1(pkt,port) { drop; }
 
 def s1(pkt,port){
-    if port = 1 { fwd(3); }
+    if port == 1 { fwd(3); }
     else { /+...+/ } // TODO
 }
 
 def s2(pkt,port){
-    if port = 1 { fwd(2); }
+    if port == 1 { fwd(2); }
     else { /+...+/ } // TODO
 }
 
 def s0(pkt,port)
 state bwidth01(4), bwidth02(4), bwidth21(4){
-    if port = 3{
-	if pkt.dst = 1 {
-	    route1 := COST_01;
-	    route2 := COST_02 + COST_21;
+    if port == 3{
+	if pkt.dst == 1 {
+	    route1 = COST_01;
+	    route2 = COST_02 + COST_21;
 	}
 	shortest1 := 1;
 	shortest2 := 1;
@@ -54,15 +54,15 @@ state bwidth01(4), bwidth02(4), bwidth21(4){
 	nshortest := shortest1 + shortest2;
 
 	ecmp := UniformInt(1, nshortest);
-	if shortest1 = 1 {
-	    if nshortest = 1 or (nshortest > 1 and ecmp = 1){
+	if shortest1 == 1 {
+	    if nshortest == 1 or (nshortest > 1 and ecmp == 1){
 		bwidth01 := bwidth01 - pkt.bwidth;
 		assert(bwidth01 >= 0);
 		fwd(1);
 	    }
 	}
-	if shortest2 = 1{
-	    if nshortest = 1 or (nshortest > 1 and ecmp = 2){
+	if shortest2 == 1{
+	    if nshortest =- 1 or (nshortest > 1 and ecmp == 2){
 		bwidth02 := bwidth02 - pkt.bwidth;
 		assert(bwidth02 >= 0);
 		bwidth21 := bwidth21 - pkt.bwidth;

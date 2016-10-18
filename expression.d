@@ -243,7 +243,7 @@ class CObserveExp: Expression{
 
 class BuiltInExp: Expression{
 	TokenType which;
-	this(TokenType which)in{assert(util.among(which,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop"));}body{
+	this(TokenType which)in{assert(util.among(which,Tok!"new",Tok!"fwd",Tok!"dup",Tok!"drop",Tok!"FwdQ",Tok!"RunSw"));}body{
 		this.which=which;
 	}
 	override string toString(){ return TokenTypeToString(which); }

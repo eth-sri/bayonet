@@ -12,6 +12,8 @@ class Declaration: Expression{
 class NodeDecl: Declaration{
 	this(Identifier name){ super(name); }
 	override @property string kind(){ return "node"; }
+	// semantic information
+	FunctionDef prg;
 }
 class InterfaceDecl: Declaration{
 	Identifier node;
@@ -53,10 +55,10 @@ class ParametersDecl: Declaration{
 }
 
 class PacketFieldsDecl: Declaration{
-	Identifier[] fields;
-	this(Identifier[] fields){ super(null); this.fields=fields; }
+	VarDecl[] fields;
+	this(VarDecl[] fields){ super(null); this.fields=fields; }
 	override @property string kind(){ return "packet fields"; }
-	override string toString(){ return "packet_fields { "~fields.map!(to!string).join(", ")~" }"; }
+	override string toString(){ return "packet_fields { "~fields.map!(x=>x.name.to!string).join(", ")~" }"; }
 }
 
 class ProgramsDecl: Declaration{
@@ -93,7 +95,7 @@ class CompoundDecl: Expression{
 	AggregateScope ascope_;
 }
 
-class StateVarDecl: Declaration{
+class StateVarDecl: VarDecl{
 	Expression init_;
 	this(Identifier name,Expression init_){ super(name); this.init_=init_; }
 	override @property string kind(){ return "state variable"; }
@@ -112,10 +114,11 @@ class StateDecl: Declaration{
 
 class FunctionDef: Declaration{
 	Identifier[] params;
+	StateDecl state;
 	Expression rret;
 	CompoundExp body_;
-	this(Identifier name, Identifier[] params, Expression rret, CompoundExp body_){
-		super(name); this.params=params; this.rret=rret; this.body_=body_;
+	this(Identifier name,Identifier[] params, StateDecl state, Expression rret, CompoundExp body_){
+		super(name); this.state=state; this.params=params; this.rret=rret; this.body_=body_;
 	}
 	override string toString(){ return "def "~(name?name.toString():"")~"("~join(map!(to!string)(params),", ")~")"~body_.toString(); }
 
@@ -125,3 +128,8 @@ class FunctionDef: Declaration{
 	FunctionScope fscope_;
 }
 
+class VarDecl: Declaration{
+	this(Identifier name){
+		super(name);
+	}
+}

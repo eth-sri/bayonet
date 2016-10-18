@@ -5,6 +5,7 @@ import lexer, expression, declaration, error;
 
 abstract class Scope{
 	abstract @property ErrorHandler handler();
+	abstract @property PacketFieldScope packetFieldScope();
 	bool insert(Declaration decl)in{assert(!decl.scope_);}body{
 		auto d=symtabLookup(decl.name);
 		if(d){
@@ -32,9 +33,6 @@ abstract class Scope{
 	}
 	final Declaration lookupHere(Identifier ident){
 		auto r = symtabLookup(ident);
-		if(!r){
-			
-		}
 		return r;
 	}
 	
@@ -51,8 +49,13 @@ private:
 class TopScope: Scope{
 	private ErrorHandler handler_;
 	override @property ErrorHandler handler(){ return handler_; }
+	PacketFieldScope pkt;
+	override @property PacketFieldScope packetFieldScope(){
+		return pkt;
+	}
 	this(ErrorHandler handler){
 		this.handler_=handler;
+		this.pkt=new PacketFieldScope(this);
 	}
 	private TopologyDecl topology;
 
@@ -73,6 +76,7 @@ class TopScope: Scope{
 				err=true;
 			}
 			nodes[n.name.name.ptr]=n;
+			insert(n);
 		}
 		foreach(l;topology.links){
 			auto a=lookupNode(l.a.node),b=lookupNode(l.b.node);
@@ -96,9 +100,20 @@ class TopScope: Scope{
 	override FunctionDef getFunction(){ return null; }
 }
 
+class PacketFieldScope: Scope{
+	TopScope top;
+	override @property ErrorHandler handler(){ return top.handler; }
+	override @property PacketFieldScope packetFieldScope(){ return this; }
+	override FunctionDef getFunction(){ return null; }
+	this(TopScope top){
+		this.top=top;
+	}
+}
+
 class NestedScope: Scope{
 	Scope parent;
 	override @property ErrorHandler handler(){ return parent.handler; }
+	override @property PacketFieldScope packetFieldScope(){ return parent.packetFieldScope; }
 	this(Scope parent){ this.parent=parent; }
 	override Declaration lookup(Identifier ident){
 		if(auto decl=lookupHere(ident)) return decl;
