@@ -37,14 +37,10 @@ def h1(pkt,port) state pkt_count(0){
     pkt_count = pkt_count+1;
 }
 
-def scheduler(){
+def scheduler() state node, action{
     which := UniformInt(1,3);
-    what := if Bernoulli(1/2) { FwdQ; } else { RunSw; };
-    if which == 1 {
-        return (H0,what);
-    } else if which == 2{
-        return (S0,what);
-    } else if which == 3{
-        return (H1,what);
-    }
+    node = if which == 1 { H0 }
+    else if which == 2 { S0 }
+    else { S0 };
+    action = if Bernoulli(1/2) { FwdQ } else { RunSw };
 }

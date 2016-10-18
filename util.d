@@ -81,6 +81,7 @@ string indent(string code){
 	auto sl=splitLines(code);if(!sl.length) return "";
 	string r="    "~sl[0];
 	foreach(x;sl[1..$]) r~="\n    "~x;
+	if(code.endsWith("\n")) r~="\n";
 	return r;
 }
 

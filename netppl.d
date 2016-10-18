@@ -39,7 +39,11 @@ int run(string path){
 	auto err=new FormattingErrorHandler();
 	auto program=parseFile(src,err);
 	program=semantic(src,program,new TopScope(err));
-	writeln(program);
+	//writeln(program);
+	if(!err.nerrors){
+		import translate_;
+		writeln(translate(program,new Builder()));
+	}
 	return !!err.nerrors;
 }
 

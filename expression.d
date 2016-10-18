@@ -126,6 +126,7 @@ class CallExp: Expression{
 abstract class ABinaryExp: Expression{
 	Expression e1,e2;
 	this(Expression left, Expression right){e1=left; e2=right;}
+	abstract @property string operator();
 }
 
 class BinaryExp(TokenType op): ABinaryExp{
@@ -135,6 +136,9 @@ class BinaryExp(TokenType op): ABinaryExp{
 		return _brk(e1.toString() ~ " "~TokChars!op~" "~e2.toString());
 	}
 	//override string toString(){return e1.toString() ~ " "~ e2.toString~TokChars!op;} // RPN
+	override @property string operator(){
+		return TokChars!op;
+	}
 }
 
 class FieldExp: Expression{

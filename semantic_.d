@@ -1,5 +1,6 @@
 import std.algorithm;
 import scope_,lexer,expression,declaration;
+import util;
 
 Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	auto lineZero=src.lineZero;
