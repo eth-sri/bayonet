@@ -421,8 +421,8 @@ private:
 			invCharSeq_l=p; p++;
 		}
 		// text macros:
-		enum skipUnicode = q{if(*p<0x80){p++;break;} len=0; try utf.decode(p[0..4],len), p+=len; catch{invCharSeq();}};
-		enum skipUnicodeCont = q{if(*p<0x80){p++;continue;} len=0; try utf.decode(p[0..4],len), p+=len; catch{invCharSeq();}}; // don't break, continue
+		enum skipUnicode = q{if(*p<0x80){p++;break;} len=0; try utf.decode(p[0..4],len), p+=len; catch(Exception){invCharSeq();}};
+		enum skipUnicodeCont = q{if(*p<0x80){p++;continue;} len=0; try utf.decode(p[0..4],len), p+=len; catch(Exception){invCharSeq();}}; // don't break, continue
 		enum caseNl = q{case '\r':  if(p[1]=='\n') p++; goto case; case '\n': line++; p++; continue;};
 		loop: while(res.length) { // breaks on EOF or buffer full
 			auto begin=p; // start of a token's representation
@@ -524,7 +524,7 @@ private:
 							len=0;
 							res[0].int64 = utf.decode(p[0..4],len);
 							p+=len;
-						}catch{invCharSeq();}
+						}catch(Exception){invCharSeq();}
 					}
 					if(*p!='\''){
 						//while((*p!='\''||(p++,0)) && *p && *p!=0x1A) mixin(skipUnicodeCont);
@@ -597,7 +597,7 @@ private:
 										try{auto ch=utf.decode(p[0..4],len);
 											if(isAlphaEx(ch)){p+=len; continue;}
 											break;
-										}catch{invCharSeq(); break;}
+										}catch(Exception){invCharSeq(); break;}
 									default: break;
 								}
 								break;
@@ -621,7 +621,7 @@ private:
 													p+=len; ip+=len; continue;
 												}
 												break;
-											}catch{invCharSeq(); break;}
+											}catch(Exception){invCharSeq(); break;}
 										default: 
 											if(*p!=*ip) break;
 											p++; ip++; continue;
@@ -654,7 +654,8 @@ private:
 									try{
 										ddel=utf.decode(p[0..4],len);
 										s=p+=len;
-									}catch{invCharSeq();}
+									}catch(Exception){invCharSeq();}
+									break;
 								default: p++; break;
 							}
 							if(ddel){
@@ -669,7 +670,7 @@ private:
 											p+=len; break;
 										}
 										p+=len;
-									}catch{invCharSeq();}								
+									}catch(Exception){invCharSeq();}								
 								}
 							}else{
 								for(int nest=1;(nest!=0) & (*p!=0) & (*p!=0x1A);){
@@ -681,7 +682,7 @@ private:
 										try{
 											utf.decode(p[0..4],len);
 											p+=len;
-										}catch{invCharSeq();}
+										}catch(Exception){invCharSeq();}
 									}else p++;
 								}
 								res[0].str = s[0..p-s-1]; // reference to code
@@ -722,7 +723,7 @@ private:
 										auto chr = utf.decode(p[0..4],len);
 										p+=len-1;
 										if(isWhite(chr)) break; //TODO: newlines
-									}catch{invCharSeq();}
+									}catch(Exception){invCharSeq();}
 									errors~=tokError(format("found '%s' when expecting hex digit",s[0..len]),s[0..len]);
 								}
 								break;
@@ -780,7 +781,7 @@ private:
 								len=0;
 								try if(isAlphaEx(utf.decode(p[0..4],len))) p+=len;
 									else break readident;
-								catch{break readident;} // will be caught in the next iteration
+								catch(Exception){break readident;} // will be caught in the next iteration
 								break;
 							default: break readident;
 						}
@@ -797,7 +798,7 @@ private:
 						if(!isWhite(ch)) errors~=tokError(format("unsupported character '%s'",ch),s[0..len]);
 						// else if(isNewLine(ch)) line++; // TODO: implement this everywhere
 						continue;
-					}catch{} goto default;
+					}catch(Exception){} goto default;
 				default:
 					p--; invCharSeq(); p++;
 					continue;
@@ -833,14 +834,14 @@ private dchar readEscapeSeq(ref immutable(char)* _p) in{assert(*(_p-1)=='\\');}b
 	auto p=_p;
 	switch(*p){
 		case '\'','\?','"','\\':
-		return _p=p+1, *p;
-		case 'a': return _p=p+1, '\a';
-		case 'b': return _p=p+1, '\b';
-		case 'f': return _p=p+1, '\f';
-		case 'n': return _p=p+1, '\n';
-		case 'r': return _p=p+1, '\r';
-		case 't': return _p=p+1, '\t';
-		case 'v': return _p=p+1, '\v';
+			_p=p+1; return *p;
+		case 'a': _p=p+1; return '\a';
+		case 'b': _p=p+1; return '\b';
+		case 'f': _p=p+1; return '\f';
+		case 'n': _p=p+1; return '\n';
+		case 'r': _p=p+1; return '\r';
+		case 't': _p=p+1; return '\t';
+		case 'v': _p=p+1; return '\v';
 		case '0': .. case '7': // BUG: Actually works for all extended ASCII characters
 			auto s=p;
 			for(int r=*p++-'0', i=0;;i++, r=(r<<3)+*p++-'0')
@@ -850,7 +851,9 @@ private dchar readEscapeSeq(ref immutable(char)* _p) in{assert(*(_p-1)=='\\');}b
 				}
 		case 'x', 'u', 'U':
 			auto s=p;
-			int numh=*p=='x'?p++,2:*p++=='u'?4:8;
+			int numh;
+			if(*p=='x'){p++;numh=2;}
+			else numh=*p++=='u'?4:8;
 			int r;
 			foreach(i,x;p[0..numh]){
 				switch(x){
@@ -875,7 +878,7 @@ private dchar readEscapeSeq(ref immutable(char)* _p) in{assert(*(_p-1)=='\\');}b
 				try{
 					utf.decode(p[0..4],len);
 					p+=len;
-				}catch{throw new EscapeSeqException(null,p[0..1]);}
+				}catch(Exception){throw new EscapeSeqException(null,p[0..1]);}
 				_p=p; throw new EscapeSeqException(format("unrecognized escape sequence '\\%s'",s[0..len]),s[0..len]);
 			}
 	}

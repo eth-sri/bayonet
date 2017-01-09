@@ -347,12 +347,13 @@ struct Parser{
 	// null denotation
 	Expression nud(){
 		mixin(SetLoc!Expression);
+		Token t;
 		switch(ttype){
 			case Tok!"new", Tok!"fwd", Tok!"dup", Tok!"drop", Tok!"FwdQ", Tok!"RunSw": return parseBuiltInExp();
 			case Tok!"i": return parseIdentifier();
 			case Tok!"?": nextToken(); return res=New!PlaceholderExp(parseIdentifier());
 			case Tok!"``", Tok!"``c", Tok!"``w", Tok!"``d": // adjacent string tokens get concatenated
-				Token t=tok;
+				t=tok;
 				for(nextToken();;nextToken()){
 					if(ttype==t.type||ttype==Tok!"``"){}
 					else if(t.type==Tok!"``" && Tok!"``c"<=ttype && ttype<=Tok!"``d") t.type=ttype; // EXTENSION
@@ -418,6 +419,7 @@ struct Parser{
 		//scope(success) if(res) res.loc=loc;
 		Location loc=left.loc;
 		scope(success) if(res) res.loc=loc.to(ptok.loc);
+		Expression r;
 		switch(ttype){
 			//case Tok!"i": return New!CallExp(New!BinaryExp!(Tok!".")(left,New!Identifier(self.name)),parseExpression(45));// infix
 			//case Tok!"?": mixin(rule!(TernaryExp,"_",Existing,"left",Expression,":",OrOrExp));
@@ -434,7 +436,7 @@ struct Parser{
 				loc=loc.to(tok.loc); expect(Tok!")");
 				mixin(rule!(CallExp,Existing,"left,a"));
 			case Tok!".":
-				auto r=left;
+				r=left;
 				while(ttype==Tok!"."){
 					nextToken();
 					auto f=parseIdentifier();
@@ -561,7 +563,7 @@ struct Parser{
 		auto pt=parseIdentifier();
 		int port=0;
 		if(!pt.name.startsWith("pt")){ error("expected port",pt.loc); return null; }
-		try{ port = to!int(pt.name[2..$]); } catch { error("expected port",pt.loc); return null; }
+		try{ port = to!int(pt.name[2..$]); } catch(Exception){ error("expected port",pt.loc); return null; }
 		expect(Tok!")");
 		return res=New!InterfaceDecl(node,port);
 	}
