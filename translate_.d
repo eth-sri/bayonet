@@ -212,11 +212,6 @@ class Builder{
 		programs~=r;
 		return r;
 	}
-	string toPSI(){
-		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
-		auto packetdef="dat Packet{\n"~indent(pfields~";\ndef Packet("~pfields~"){\n"~indent(packetFields.map!(a=>"this."~a.name~"="~a.name~";").join("\n"))~"\n}")~"\n}\n";
-		return queuedef~packetdef~programs.map!(a=>a.toPSI()).join("\n")~"\n";
-	}
 	void addPacketField(string name){
 		packetFields~=new Variable(name,"ℝ");
 	}
@@ -224,15 +219,25 @@ class Builder{
 		nodes[name]=-1;
 	}
 	void addProgram(string node,string name)in{assert(nodes.get(node,0)==-1);}body{
-		foreach(i,p;programs) if(p.name!=name){ // TODO: replace linear lookup
+		foreach(i,p;programs) if(p.name==name){ // TODO: replace linear lookup
 			nodes[node]=cast(int)i;
-			break;
+			return;
 		}
+		assert(0);
 	}
 	void addLink(InterfaceDecl a,InterfaceDecl b){
 		auto x=q(a.node.name,a.port), y=q(b.node.name,b.port);
 		links[x]=y;
 		links[y]=x;
+	}
+	string toPSI(){
+		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
+		auto packetdef="dat Packet{\n"~indent(pfields~";\ndef Packet("~pfields~"){\n"~indent(packetFields.map!(a=>"this."~a.name~"="~a.name~";").join("\n"))~"\n}")~"\n}\n";
+		return queuedef~packetdef~programs.map!(a=>a.toPSI()).join("\n")~"\n"~
+			"def main(){\n"~
+			indent(nodes.keys.sort().map!(k=>k~": __"~programs[nodes[k]].name~"_ty").join(", ")~";")~
+			"\n}\n";
+;
 	}
 private:
 	Variable[] packetFields;
@@ -349,8 +354,6 @@ string translate(Expression[] exprs, Builder bld){
 		translateStatement(fdef.body_,init,init);
 	}
 	foreach(fdef;all!FunctionDef) translateFun(fdef);
-	return bld.toPSI()~
-		"def main(){\n"~
-		indent(pdcl.mappings.map!(a=>a.node.name~": __"~a.prg.name~"_ty").join(", ")~";")~
-		"\n}\n";
+	foreach(m;pdcl.mappings) bld.addProgram(m.node.name,m.prg.name);
+	return bld.toPSI();
 }
