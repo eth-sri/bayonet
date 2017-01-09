@@ -103,7 +103,11 @@ Expression semantic(Expression expr,Scope sc){
 				pd.sstate=SemState.error;
 			}
 		}
-		// TODO: ensure each node has a program
+		// TODO: ensure each node has a program:
+		/+if(pd.mappings.length!=tpl.nodes.length){
+			sc.error("there should be one program declaration for each node",pd.loc);
+			pd.sstate=SemState.error;
+		}+/
 		// TODO: allow a wildcard specifier
 		return finish(pd);
 	}
@@ -116,7 +120,7 @@ Expression semantic(Expression expr,Scope sc){
 		if(!sc.insert(fd)) fd.sstate=SemState.error;
 		if(!fd.fscope_) fd.fscope_=new FunctionScope(sc,fd);
 		if(fd.params.length){
-			if(fd.params[0].name!="pkt"||fd.params[1].name!="port"){
+			if(fd.params.length!=2||fd.params[0].name!="pkt"||fd.params[1].name!="port"){
 				sc.error("function parameters must be () or (pkt,port)",fd.loc);
 				fd.sstate=SemState.error;
 			}
