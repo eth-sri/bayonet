@@ -1,14 +1,47 @@
 import std.conv, std.algorithm, std.array;
 import lexer, expression, declaration, util;
 
+import std.typecons: Q=Tuple,q=tuple;
+
+enum queuedef=q"QUEUE
+dat Queue{
+    data: (ℝ × ℝ)[];
+    def pushFront(x: ℝ × ℝ)){
+        data=[x]~data;
+    }
+    def pushBack(x: ℝ × ℝ){
+        data=data~[x];
+    }
+    def takeFront(){
+        r:=data[0];
+        data=data.slice(1,data.length);
+    }
+    def takeBack(){
+        r:=data[data.length-1];
+        data=data.slice(0,data.length-1);
+    }
+}
+QUEUE";
+
 class Builder{
+	class Variable{
+		string name;
+		string type;
+		this(string name,string type){
+			this.name=name;
+			this.type=type;
+		}
+		string toPSI(){
+			return name~": "~type;
+		}
+	}
 	class Program{
 		string name;
 		this(string name){
 			this.name=name;
 		}
 		void addState(string name){
-			state~=name;
+			state~=new Variable(name,name=="pkt"?"Packet":"ℝ");
 		}
 		class Label{
 			int id=-1;
@@ -82,7 +115,7 @@ class Builder{
 					this.args=args;
 				}
 				override string toPSI(){
-					return text(f,"(",args.map!(a=>a.toPSI()).join(","),")");
+					return text(f.toPSI(),"(",args.map!(a=>a.toPSI()).join(","),")");
 				}
 			}
 			return new Call(f,args);
@@ -134,7 +167,7 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("this.__outQ.pushBack((this.__inQ.takeFront(),",port.toPSI(),");\n");
+					return text("this.__outQ.pushBack((this.__inQ.takeFront(),",port.toPSI(),"));\n");
 				}
 			}
 			return new FwdStm(port);
@@ -161,16 +194,17 @@ class Builder{
 			}
 		}
 		string toPSI(){
-			string r="{\n    "; // TODO: fix this
+			string r="def "~name~"(){\n    ";
 			foreach(i,s;stms){
 				if(!s){ r~=text("// missing: ",i); continue; }
 				r~=text(i==0?"":"else ","if this.__state==",i,"{\n",indent(indent(s.toPSI))~"    }");
 			}
 			r~="\n}";
+			r="dat __"~name~"_ty{\n"~indent("__inQ: Queue, __outQ: Queue;\n"~state.map!(a=>a.toPSI()).join(", ")~";\n"~(r))~"\n}";
 			return r;
 		}
 	private:
-		string[] state;
+		Variable[] state;
 		Statement[] stms;
 	}
 	Program addProgram(string name){
@@ -179,10 +213,32 @@ class Builder{
 		return r;
 	}
 	string toPSI(){
-		return programs.map!(a=>a.toPSI()).join("\n");
+		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
+		auto packetdef="dat Packet{\n"~indent(pfields~";\ndef Packet("~pfields~"){\n"~indent(packetFields.map!(a=>"this."~a.name~"="~a.name~";").join("\n"))~"\n}")~"\n}\n";
+		return queuedef~packetdef~programs.map!(a=>a.toPSI()).join("\n")~"\n";
+	}
+	void addPacketField(string name){
+		packetFields~=new Variable(name,"ℝ");
+	}
+	void addNode(string name)in{assert(name !in nodes);}body{
+		nodes[name]=-1;
+	}
+	void addProgram(string node,string name)in{assert(nodes.get(node,0)==-1);}body{
+		foreach(i,p;programs) if(p.name!=name){ // TODO: replace linear lookup
+			nodes[node]=cast(int)i;
+			break;
+		}
+	}
+	void addLink(InterfaceDecl a,InterfaceDecl b){
+		auto x=q(a.node.name,a.port), y=q(b.node.name,b.port);
+		links[x]=y;
+		links[y]=x;
 	}
 private:
+	Variable[] packetFields;
 	Program[] programs;
+	int[string] nodes;
+	Q!(string,int)[Q!(string,int)] links;
 }
 
 string translate(Expression[] exprs, Builder bld){
@@ -193,8 +249,11 @@ string translate(Expression[] exprs, Builder bld){
 	}
 	auto all(T)(){ return cast(T[])byTid.get(typeid(T),[]); }
 	auto topology=all!TopologyDecl[0];
+	foreach(n;topology.nodes) bld.addNode(n.name.name);
+	foreach(l;topology.links) bld.addLink(l.a,l.b);
 	auto params=all!ParametersDecl.length?all!ParametersDecl[0]:null;
 	auto pfld=all!PacketFieldsDecl[0];
+	foreach(f;pfld.fields) bld.addPacketField(f.name.name);
 	auto pdcl=all!ProgramsDecl[0];
 	void translateFun(FunctionDef fdef){
 		auto prg=bld.addProgram(fdef.name.name);
@@ -290,5 +349,8 @@ string translate(Expression[] exprs, Builder bld){
 		translateStatement(fdef.body_,init,init);
 	}
 	foreach(fdef;all!FunctionDef) translateFun(fdef);
-	return bld.toPSI();
+	return bld.toPSI()~
+		"def main(){\n"~
+		indent(pdcl.mappings.map!(a=>a.node.name~": __"~a.prg.name~"_ty").join(", ")~";")~
+		"\n}\n";
 }
