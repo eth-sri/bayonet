@@ -160,7 +160,7 @@ class Builder{
 		Statement new_(){
 			static class NewStm: Statement{
 				override string toPSI(){
-					return "__inQ.pushFront((Packet(),0));\n"~super.toPSI();
+					return "Q_in.pushFront((Packet(),0));\n"~super.toPSI();
 				}
 			}
 			return new NewStm();
@@ -168,7 +168,7 @@ class Builder{
 		Statement dup(){
 			static class DupStm: Statement{
 				override string toPSI(){
-					return "__inQ.dupFront();\n"~super.toPSI();
+					return "Q_in.dupFront();\n"~super.toPSI();
 				}
 			}
 			return new DupStm();
@@ -176,7 +176,7 @@ class Builder{
 		Statement drop(){
 			static class DropStm: Statement{
 				override string toPSI(){
-					return "__inQ.popFront();"~super.toPSI();
+					return "Q_in.popFront();"~super.toPSI();
 				}
 			}
 			return new DropStm();
@@ -186,7 +186,7 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("__outQ.pushBack((__inQ.takeFront()[0],",port.toPSI(),"));\n"~super.toPSI());
+					return text("Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),"));\n"~super.toPSI());
 				}
 			}
 			return new FwdStm(port);
@@ -220,12 +220,12 @@ class Builder{
 			}
 			r~="\n}";
 			r="dat __"~name~"_ty{\n"~indent(
-				"__state: ℝ, __inQ: Queue, __outQ: Queue;\n"~
+				"__state: ℝ, Q_in: Queue, Q_out: Queue;\n"~
 				state.map!(a=>a.toPSI()).join(", ")~";\n"~
 				"def __"~name~"_ty(){\n"~indent(
 					"__state = 0;\n"~
-					"__inQ = Queue();\n"~
-					"__outQ = Queue();\n"~
+					"Q_in = Queue();\n"~
+					"Q_out = Queue();\n"~
 					state.filter!(a=>!!a.init_).map!(a=>a.toPSIInit()~"\n").join
 				)~"}\n"~
 				r~"\n"
@@ -266,7 +266,7 @@ class Builder{
 	private static string formatScheduler(FunctionDef scheduler){
 		string r="dat __Scheduler{\n"~indent(
 			(scheduler.state?
-			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~"\n"
+			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~";\n"
 			 :"")~
 			"def __Scheduler(){\n"~indent(
 				(scheduler.state?
@@ -296,20 +296,20 @@ class Builder{
 				"if action {\n"~indent(// FwdQ
 					iota(nodes.length)
 					.map!(k=>
-					      "if node == "~text(k)~" && __"~nodes[k]~".__outQ.size() {\n"~indent((){
-							      string r="(pkt,port) := __"~nodes[k]~".__outQ.takeFront();\n";
+					      "if node == "~text(k)~" && __"~nodes[k]~".Q_out.size() {\n"~indent((){
+							      string r="(pkt,port) := __"~nodes[k]~".Q_out.takeFront();\n";
 							      foreach(p;links[nodes[k]].keys.sort()){
 								      auto nnode=links[nodes[k]][p];
 								      r~="if port == "~text(p)~" {\n"~indent(
-									      "__"~nnode[0]~".__inQ.pushBack((pkt, "~text(nnode[1])~"));\n"
+									      "__"~nnode[0]~".Q_in.pushBack((pkt, "~text(nnode[1])~"));\n"
 								      )~"}\n";
 							      }
 							      return r;
 						      }())~"}\n").join
 				)~"} else {\n"~indent(//RunSw
 					iota(nodes.length).map!(k=>
-					                        "if node == "~text(k)~" && __"~nodes[k]~".__inQ.size() {\n"~indent(
-						                        "(__"~nodes[k]~".pkt,__"~nodes[k]~".port) = __"~nodes[k]~".__inQ.front();\n"~
+					                        "if node == "~text(k)~" && __"~nodes[k]~".Q_in.size() {\n"~indent(
+						                        "(__"~nodes[k]~".pkt,__"~nodes[k]~".port) = __"~nodes[k]~".Q_in.front();\n"~
 						                        "__"~nodes[k]~".__run();\n"
 					                        )~"}\n").join
 				)~"}\n"
