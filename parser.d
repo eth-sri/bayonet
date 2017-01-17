@@ -42,6 +42,7 @@ int getLbp(TokenType type) pure{ // operator precedence
 	case Tok!"+=",Tok!"<<=",Tok!">>=", Tok!">>>=":
 	case Tok!"=",Tok!"*=",Tok!"%=",Tok!"^=":
 	case Tok!"&&=", Tok!"||=", Tok!"~=":+/
+	case Tok!"~=":
 	case Tok!":=",Tok!"=":
 		return 30;
 	// logical operators
@@ -444,9 +445,18 @@ struct Parser{
 					r.loc=loc.to(tok.loc);
 				}
 				return r;
+			case Tok!"@":
+				if(auto name=cast(Identifier)left){
+					nextToken();
+					auto right=parseExpression(rbp!(Tok!"@"));
+					return res=New!(BinaryExp!(Tok!"@"))(left,right);
+				}else{
+					error("expected identifier to the left of '@'",left.loc);
+					return new ErrorExp();
+				}
 			mixin({string r;
 				foreach(x;binaryOps)
-					if(x!="=>" && x!="." && x!="!" && x!="?" && x!=":")
+					if(x!="=>" && x!="." && x!="!" && x!="?" && x!=":" && x != "@")
 						r~=mixin(X!q{case Tok!"@(x)":
 							nextToken();
 							auto right=parseExpression(rbp!(Tok!"@(x)"));
@@ -475,7 +485,9 @@ struct Parser{
 			case Tok!"programs": return parseProgramsDecl();
 			case Tok!"query": return parseQueryDecl();
 			case Tok!"def": return parseFunctionDef();
+			case Tok!"return": return parseReturn();
 			case Tok!"if": return parseIte();
+			case Tok!"for": return parseFor();
 			case Tok!"assert": return parseAssert();
 			case Tok!"observe": return parseObserve();
 			default: break;
@@ -696,6 +708,14 @@ struct Parser{
 		}else body_=parseCompoundExp();
 		return res=New!FunctionDef(name,args,state,ret,body_);
 	}
+	ReturnExp parseReturn(){
+		mixin(SetLoc!ReturnExp);
+		expect(Tok!"return");
+		Expression exp;
+		if(ttype!=Tok!";") exp=parseExpression();
+		else exp=New!TupleExp(Expression[].init);
+		return res=New!ReturnExp(exp);
+	}
 	IteExp parseIte(){
 		mixin(SetLoc!IteExp);
 		expect(Tok!"if");
@@ -711,6 +731,22 @@ struct Parser{
 			}else othw=parseCompoundExp();
 		}
 		return res=New!IteExp(cond,then,othw);
+	}
+	ForExp parseFor(){
+		mixin(SetLoc!ForExp);
+		expect(Tok!"for");
+		auto var=parseIdentifier();
+		expect(Tok!"in");
+		bool leftExclusive=false,rightExclusive=false;
+		if(tok.type==Tok!"("){ leftExclusive=true; nextToken(); }
+		else expect(Tok!"[");
+		auto left=parseExpression();
+		expect(Tok!"..");
+		auto right=parseExpression();
+		if(tok.type==Tok!")"){ rightExclusive=true; nextToken(); }
+		else expect(Tok!"]");
+		auto bdy=parseCompoundExp();
+		return res=New!ForExp(var,leftExclusive,left,rightExclusive,right,bdy);
 	}
 	AssertExp parseAssert(){
 		mixin(SetLoc!AssertExp);

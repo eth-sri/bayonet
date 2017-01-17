@@ -157,7 +157,7 @@ class IteExp: Expression{
 	this(Expression cond, CompoundExp then, CompoundExp othw){
 		this.cond=cond; this.then=then; this.othw=othw;
 	}
-	override string toString(){return _brk("if "~cond.toString() ~ " " ~ then.toString() ~ (othw?" else " ~ othw.toString():""));}
+	override string toString(){return _brk("if "~cond.toString() ~ " " ~ then.toString() ~ (othw?" else " ~ (othw.s.length==1&&cast(IteExp)othw.s[0]?othw.s[0].toString():othw.toString()):""));}
 
 	override bool isCompound(){ return true; }
 }
@@ -220,6 +220,26 @@ class ReturnExp: Expression{
 	string expected;
 }
 
+class ForExp: Expression{
+	Identifier var;
+	bool leftExclusive;
+	Expression left;
+	bool rightExclusive;
+	Expression right;
+	CompoundExp bdy;
+	this(Identifier var,bool leftExclusive,Expression left,bool rightExclusive,Expression right,CompoundExp bdy){
+		this.var=var;
+		this.leftExclusive=leftExclusive; this.left=left;
+		this.rightExclusive=rightExclusive; this.right=right;
+		this.bdy=bdy;
+	}
+	override string toString(){ return _brk("for "~var.toString()~" in "~
+											(leftExclusive?"(":"[")~left.toString()~".."~right.toString()~
+											(rightExclusive?")":"]")~bdy.toString()); }
+	override @property string kind(){ return "for loop"; }
+	override bool isCompound(){ return true; }
+}
+
 class AssertExp: Expression{
 	Expression e;
 	this(Expression e){
@@ -251,4 +271,14 @@ class BuiltInExp: Expression{
 		this.which=which;
 	}
 	override string toString(){ return TokenTypeToString(which); }
+}
+
+class AtExp: Expression{
+	Identifier name;
+	Expression node;
+	this(Identifier name, Expression node){
+		this.name=name;
+		this.node=node;
+	}
+	override string toString(){ return _brk(name.toString()~"@"~node.toString()); }
 }
