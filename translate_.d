@@ -16,14 +16,23 @@ dat Queue{
         data=data~[x];
     }
     def takeFront(){
-        r:=data[0];
-        data=data[1..data.length];
+        r:=front();
+        popFront();
         return r;
     }
     def takeBack(){
-        r:=data[data.length-1];
-        data=data[0..data.length-1];
+        r:=data[size()-1];
+        data=data[0..size()-1];
         return r;
+    }
+    def size(){
+        return data.length;
+    }
+    def front(){
+        return data[0];
+    }
+    def popFront(){
+        data=data[1..size()];
     }
 }
 QUEUE";
@@ -151,7 +160,7 @@ class Builder{
 		Statement new_(){
 			static class NewStm: Statement{
 				override string toPSI(){
-					return "__inQ.pushFront((Packet(),0));\n";
+					return "__inQ.pushFront((Packet(),0));\n"~super.toPSI();
 				}
 			}
 			return new NewStm();
@@ -159,7 +168,7 @@ class Builder{
 		Statement dup(){
 			static class DupStm: Statement{
 				override string toPSI(){
-					return "__inQ.dupFront();\n";
+					return "__inQ.dupFront();\n"~super.toPSI();
 				}
 			}
 			return new DupStm();
@@ -167,7 +176,7 @@ class Builder{
 		Statement drop(){
 			static class DropStm: Statement{
 				override string toPSI(){
-					return "__inQ.popFront();";
+					return "__inQ.popFront();"~super.toPSI();
 				}
 			}
 			return new DropStm();
@@ -177,7 +186,7 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("__outQ.pushBack((__inQ.takeFront()[0],",port.toPSI(),"));\n");
+					return text("__outQ.pushBack((__inQ.takeFront()[0],",port.toPSI(),"));\n"~super.toPSI());
 				}
 			}
 			return new FwdStm(port);
@@ -251,6 +260,24 @@ class Builder{
 		links[x[0]][x[1]]=y;
 		links[y[0]][y[1]]=x;
 	}
+	void addScheduler(FunctionDef scheduler){
+		this.scheduler=scheduler;
+	}
+	private static string formatScheduler(FunctionDef scheduler){
+		string r="dat __Scheduler{\n"~indent(
+			(scheduler.state?
+			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~"\n"
+			 :"")~
+			"def __Scheduler(){\n"~indent(
+				(scheduler.state?
+				 scheduler.state.vars.map!(v=>text(v.name," = ",v.init?v.init.toString():"0",";\n")).join
+			 :"")
+			)~"}\n"~
+			"def __run()"~scheduler.body_.toString()~"\n"
+		)~"}\n";
+		r~="__scheduler := __Scheduler();\n";
+		return r;
+	}
 	string toPSI(){
 		auto nodedef=iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~";\n";
 		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
@@ -262,29 +289,33 @@ class Builder{
 			)~"}\n"
 		)~"}\n";
 		auto mainfun="def main(){\n"~indent(
-			iota(nodes.length).map!(k=>nodes[k]~" := __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~";\n"~
-			"scheduler := __scheduler_ty();\n"~
+			iota(nodes.length).map!(k=>"__"~nodes[k]~" := __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~";\n"~
+			formatScheduler(scheduler)~"\n"~
 			"for i in [0..num_iter){\n"~indent(
-				"scheduler.__run(); node := scheduler.node, action := scheduler.action;\n"~
+				"(node,action) := __scheduler.__run();\n"~
 				"if action {\n"~indent(// FwdQ
 					iota(nodes.length)
 					.map!(k=>
-					      "if node == "~text(k)~" && "~nodes[k]~".__outQ.data.length {\n"~indent((){
-							      string r="(pkt,port) := "~nodes[k]~".__outQ.takeFront();\n";
+					      "if node == "~text(k)~" && __"~nodes[k]~".__outQ.size() {\n"~indent((){
+							      string r="(pkt,port) := __"~nodes[k]~".__outQ.takeFront();\n";
 							      foreach(p;links[nodes[k]].keys.sort()){
 								      auto nnode=links[nodes[k]][p];
 								      r~="if port == "~text(p)~" {\n"~indent(
-									      nnode[0]~".__inQ.pushBack((pkt, "~text(nnode[1])~"));\n"
+									      "__"~nnode[0]~".__inQ.pushBack((pkt, "~text(nnode[1])~"));\n"
 								      )~"}\n";
 							      }
 							      return r;
 						      }())~"}\n").join
 				)~"} else {\n"~indent(//RunSw
-					iota(nodes.length).map!(k=>"if node == "~text(k)~" {\n"~indent(nodes[k]~".__run();\n")~"}\n").join
+					iota(nodes.length).map!(k=>
+					                        "if node == "~text(k)~" && __"~nodes[k]~".__inQ.size() {\n"~indent(
+						                        "(__"~nodes[k]~".pkt,__"~nodes[k]~".port) = __"~nodes[k]~".__inQ.front();\n"~
+						                        "__"~nodes[k]~".__run();\n"
+					                        )~"}\n").join
 				)~"}\n"
 			)~"}\n"
 		)~"}\n";
-		return queuedef~nodedef~packetdef~programs.map!(a=>a.toPSI()).join("\n")~"\n"~mainfun;
+		return "num_iter := 10;\n"~queuedef~nodedef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
 ;
 	}
 private:
@@ -294,6 +325,7 @@ private:
 	int[string] nodeId;
 	int[int] nodeProg;
 	Q!(string,int)[int][string] links;
+	FunctionDef scheduler;
 }
 
 string translate(Expression[] exprs, Builder bld){
@@ -403,7 +435,10 @@ string translate(Expression[] exprs, Builder bld){
 		init.here();
 		translateStatement(fdef.body_,init,init);
 	}
-	foreach(fdef;all!FunctionDef) translateFun(fdef);
+	foreach(fdef;all!FunctionDef){
+		if(fdef.name.name=="scheduler") bld.addScheduler(fdef);
+		else translateFun(fdef);
+	}
 	foreach(m;pdcl.mappings) bld.addProgram(m.node.name,m.prg.name);
 	return bld.toPSI();
 }
