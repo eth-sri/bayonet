@@ -117,6 +117,7 @@ Expression semantic(Expression expr,Scope sc){
 		return finish(vd);
 	}
 	if(auto fd=cast(FunctionDef)expr){
+		if(fd.name.name=="scheduler") return finish(fd);
 		if(!sc.insert(fd)) fd.sstate=SemState.error;
 		if(!fd.fscope_) fd.fscope_=new FunctionScope(sc,fd);
 		if(fd.params.length){
