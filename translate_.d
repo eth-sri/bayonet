@@ -263,24 +263,25 @@ class Builder{
 	void addScheduler(FunctionDef scheduler){
 		this.scheduler=scheduler;
 	}
-	private static string formatScheduler(FunctionDef scheduler){
-		string r="dat __Scheduler{\n"~indent(
+	private string formatData(){
+		string r="dat __D{\n"~indent(
+			iota(nodes.length).map!(k=>"__"~nodes[k]~" : __"~programs[nodeProg[cast(int)k]].name~"_ty").join(", ")~";\n"~
 			(scheduler.state?
 			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~";\n"
 			 :"")~
-			"def __Scheduler(){\n"~indent(
+			"def __D(){\n"~indent(
+				iota(nodes.length).map!(k=>"__"~nodes[k]~" = __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~";\n"~
 				(scheduler.state?
 				 scheduler.state.vars.map!(v=>text(v.name," = ",v.init?v.init.toString():"0",";\n")).join
 			 :"")
 			)~"}\n"~
-			"def __run()"~scheduler.body_.toString()~"\n"
+			"def scheduler()"~scheduler.body_.toString()~"\n"
 		)~"}\n";
-		r~="__scheduler := __Scheduler();\n";
 		return r;
 	}
 	string toPSI(){
-		auto nodedef=iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~";\n";
 		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
+		auto nodedef=iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~";\n";
 		auto packetdef="dat Packet{\n"~indent(
 			pfields~";\n"~
 			"def Packet("~/+pfields~+/"){\n"~indent(
@@ -288,29 +289,30 @@ class Builder{
 				packetFields.map!(a=>a.name~" = 0;\n").join()
 			)~"}\n"
 		)~"}\n";
-		auto mainfun="def main(){\n"~indent(
-			iota(nodes.length).map!(k=>"__"~nodes[k]~" := __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~";\n"~
-			formatScheduler(scheduler)~"\n"~
+		auto mainfun=
+			formatData()~
+			"def main(){\n"~indent(
+			"__d := __D();\n"~
 			"for i in [0..num_iter){\n"~indent(
-				"(node,action) := __scheduler.__run();\n"~
+				"(node,action) := __d.scheduler();\n"~
 				"if action {\n"~indent(// FwdQ
 					iota(nodes.length)
 					.map!(k=>
-					      "if node == "~text(k)~" && __"~nodes[k]~".Q_out.size() {\n"~indent((){
-							      string r="(pkt,port) := __"~nodes[k]~".Q_out.takeFront();\n";
+					      "if node == "~text(k)~" && __d.__"~nodes[k]~".Q_out.size() {\n"~indent((){
+							      string r="(pkt,port) := __d.__"~nodes[k]~".Q_out.takeFront();\n";
 							      foreach(p;links[nodes[k]].keys.sort()){
 								      auto nnode=links[nodes[k]][p];
 								      r~="if port == "~text(p)~" {\n"~indent(
-									      "__"~nnode[0]~".Q_in.pushBack((pkt, "~text(nnode[1])~"));\n"
+									      "__d.__"~nnode[0]~".Q_in.pushBack((pkt, "~text(nnode[1])~"));\n"
 								      )~"}\n";
 							      }
 							      return r;
 						      }())~"}\n").join
 				)~"} else {\n"~indent(//RunSw
 					iota(nodes.length).map!(k=>
-					                        "if node == "~text(k)~" && __"~nodes[k]~".Q_in.size() {\n"~indent(
-						                        "(__"~nodes[k]~".pkt,__"~nodes[k]~".port) = __"~nodes[k]~".Q_in.front();\n"~
-						                        "__"~nodes[k]~".__run();\n"
+					                        "if node == "~text(k)~" && __d.__"~nodes[k]~".Q_in.size() {\n"~indent(
+						                        "(__d.__"~nodes[k]~".pkt,__d.__"~nodes[k]~".port) = __d.__"~nodes[k]~".Q_in.front();\n"~
+						                        "__d.__"~nodes[k]~".__run();\n"
 					                        )~"}\n").join
 				)~"}\n"
 			)~"}\n"

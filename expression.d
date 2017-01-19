@@ -141,6 +141,20 @@ class BinaryExp(TokenType op): ABinaryExp{
 	}
 }
 
+class IDBinaryExp: ABinaryExp{
+	Identifier op;
+	this(Expression left, Identifier op,Expression right){super(left,right); this.op=op;}
+
+	override string toString(){
+		return _brk(e1.toString() ~ " "~op.toString()~" "~e2.toString());
+	}
+	//override string toString(){return e1.toString() ~ " "~ e2.toString~TokChars!op;} // RPN
+	override @property string operator(){
+		return op.toString();
+	}
+}
+
+
 class FieldExp: Expression{
 	Expression e;
 	Identifier f;

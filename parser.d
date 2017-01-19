@@ -38,12 +38,11 @@ int getLbp(TokenType type) pure{ // operator precedence
 	// assignment operators
 	case Tok!":": // type annotation
 		return 20;
-	/+case Tok!"/=",Tok!"&=",Tok!"|=",Tok!"-=":
+	case Tok!"/=",Tok!"&=",Tok!"|=",Tok!"-=":
 	case Tok!"+=",Tok!"<<=",Tok!">>=", Tok!">>>=":
 	case Tok!"=",Tok!"*=",Tok!"%=",Tok!"^=":
-	case Tok!"&&=", Tok!"||=", Tok!"~=":+/
-	case Tok!"~=":
-	case Tok!":=",Tok!"=":
+	case Tok!"&&=", Tok!"||=", Tok!"~=":
+	case Tok!":=":
 		return 30;
 	// logical operators
 	case Tok!"?":  return 40; // conditional operator
@@ -62,6 +61,7 @@ int getLbp(TokenType type) pure{ // operator precedence
 	case Tok!"+",Tok!"-",Tok!"~":
 		return 120;
 	// multiplicative operators
+	case Tok!"×": // product type
 	case Tok!"*",Tok!"/",Tok!"%":
 		return 130;
 	/*/ prefix operators
@@ -420,7 +420,7 @@ struct Parser{
 		//scope(success) if(res) res.loc=loc;
 		Location loc=left.loc;
 		scope(success) if(res) res.loc=loc.to(ptok.loc);
-		Expression r;
+		Expression r,t;
 		switch(ttype){
 			//case Tok!"i": return New!CallExp(New!BinaryExp!(Tok!".")(left,New!Identifier(self.name)),parseExpression(45));// infix
 			//case Tok!"?": mixin(rule!(TernaryExp,"_",Existing,"left",Expression,":",OrOrExp));
@@ -454,7 +454,16 @@ struct Parser{
 					error("expected identifier to the left of '@'",left.loc);
 					return new ErrorExp();
 				}
-			mixin({string r;
+			case Tok!":":
+				nextToken();
+				t=parseExpression(rbp!(Tok!","));
+				res=New!TypeAnnotationExp(left,t);
+				return res;
+			case Tok!"i":{
+				auto id=parseIdentifier();
+				auto right=parseExpression(rbp!(Tok!"×"));
+				return res=New!IDBinaryExp(left,id,right);
+			}mixin({string r;
 				foreach(x;binaryOps)
 					if(x!="=>" && x!="." && x!="!" && x!="?" && x!=":" && x != "@")
 						r~=mixin(X!q{case Tok!"@(x)":
@@ -498,9 +507,16 @@ struct Parser{
 	}
 
 	Expression parseExpression2(Expression left, int rbp = 0){ // left is already known
-		while(rbp < arrLbp[ttype])
+		int clbp(){
+			if(ttype==Tok!"i"){
+				if(tok.str=="x")
+					return arrLbp[Tok!"×"];
+			}
+			return arrLbp[ttype];
+		}
+		while(rbp < clbp())
 		loop: try left = led(left); catch(PEE err){error(err.msg);}
-		if(arrLbp[ttype] == -2 && rbp<lbp!(Tok!"=")){
+		if(clbp() == -2 && rbp<lbp!(Tok!"==")){
 			try left = led(left); catch(PEE err){error(err.msg);}
 			if(rbp<arrLbp[ttype]) goto loop;
 		}
