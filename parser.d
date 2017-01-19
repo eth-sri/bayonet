@@ -492,6 +492,7 @@ struct Parser{
 			case Tok!"parameters": return parseParametersDecl();
 			case Tok!"packet_fields": return parsePacketFieldsDecl();
 			case Tok!"programs": return parseProgramsDecl();
+			case Tok!"num_steps": return parseNumStepsDecl();
 			case Tok!"query": return parseQueryDecl();
 			case Tok!"def": return parseFunctionDef();
 			case Tok!"return": return parseReturn();
@@ -653,10 +654,19 @@ struct Parser{
 		return res=New!ProgramsDecl(m.data);
 	}
 
+	NumStepsDecl parseNumStepsDecl(){
+		mixin(SetLoc!NumStepsDecl);
+		expect(Tok!"num_steps");
+		auto e=parseExpression();
+		expect(Tok!";");
+		return res=New!NumStepsDecl(e);
+	}
+
 	QueryDecl parseQueryDecl(){
 		mixin(SetLoc!QueryDecl);
 		expect(Tok!"query");
 		auto e=parseExpression();
+		expect(Tok!";");
 		return res=New!QueryDecl(e);
 	}
 

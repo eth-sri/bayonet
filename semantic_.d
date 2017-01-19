@@ -22,7 +22,9 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	if(all!ParametersDecl.length>1) sc.error("there can be at most one parameters declaration",all!ParametersDecl[1].loc);
 	if(all!PacketFieldsDecl.length!=1) sc.error("there should be exactly one declaration of packet fields",secondLoc(typeid(PacketFieldsDecl)));
 	if(all!ProgramsDecl.length!=1) sc.error("there should be exactly one declaration of programs to run on the nodes",secondLoc(typeid(ProgramsDecl)));
-
+	if(all!NumStepsDecl.length!=1) sc.error("there should be exactly one declaration of the number of steps to run",secondLoc(typeid(NumStepsDecl)));
+	if(all!QueryDecl.length<1) sc.error("there should be at least one query declaration",lineZero);
+	
 	void doSemantic(T)(){
 		foreach(ref expr;exprs){
 			auto t=cast(T)expr;
@@ -35,6 +37,8 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	doSemantic!PacketFieldsDecl;
 	doSemantic!FunctionDef;
 	doSemantic!ProgramsDecl;
+	doSemantic!NumStepsDecl;
+	doSemantic!QueryDecl;
 	return exprs;
 }	
 
@@ -110,6 +114,23 @@ Expression semantic(Expression expr,Scope sc){
 		}+/
 		// TODO: allow a wildcard specifier
 		return finish(pd);
+	}
+	if(auto nsd=cast(NumStepsDecl)expr){
+		if(auto lit=cast(LiteralExp)nsd.num_steps){
+			if(lit.lit.type==Tok!"0"){
+				try{
+					import std.conv:to;
+					auto ns=to!int(lit.lit.str);
+					if(ns>=0) return finish(nsd);
+				}catch(Exception){}
+			}
+		}
+		sc.error("number of steps should be non-negativeinteger literal",nsd.num_steps.loc);
+		nsd.sstate=SemState.error;
+		return nsd;
+	}
+	if(auto qd=cast(QueryDecl)expr){
+		return finish(qd);
 	}
 	if(auto vd=cast(VarDecl)expr){
 		if(!sc.insert(vd))

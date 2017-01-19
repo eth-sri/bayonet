@@ -132,7 +132,9 @@ abstract class ABinaryExp: Expression{
 class BinaryExp(TokenType op): ABinaryExp{
 	this(Expression left, Expression right){super(left,right);}
 
+	static if(op==Tok!"@") static string delegate(Expression,Expression) toStringImpl;
 	override string toString(){
+		static if(op==Tok!"@") if(toStringImpl) return toStringImpl(e1,e2);
 		return _brk(e1.toString() ~ " "~TokChars!op~" "~e2.toString());
 	}
 	//override string toString(){return e1.toString() ~ " "~ e2.toString~TokChars!op;} // RPN

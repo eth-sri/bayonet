@@ -84,6 +84,13 @@ class QueryDecl: Declaration{
 	override string toString(){ return "query "~query.toString(); }
 }
 
+class NumStepsDecl: Declaration{
+	Expression num_steps;
+	this(Expression num_steps){ super(null); this.num_steps=num_steps; }
+	override @property string kind(){ return "num_steps declaration"; }
+	override string toString(){ return "num_steps "~num_steps.toString(); }
+}
+
 class CompoundDecl: Expression{
 	Expression[] s;
 	this(Expression[] ss){s=ss;}

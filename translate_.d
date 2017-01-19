@@ -61,6 +61,7 @@ class Builder{
 		}
 		void addState(string name,Program.Expression init_=null){
 			state~=new Variable(name,name=="pkt"?"Packet":"ℝ",init_);
+			stateSet[name]=[];
 		}
 		class Label{
 			int id=-1;
@@ -234,6 +235,7 @@ class Builder{
 		}
 	private:
 		Variable[] state;
+		void[0][string] stateSet;
 		Statement[] stms;
 	}
 	Program addProgram(string name){
@@ -263,7 +265,15 @@ class Builder{
 	void addScheduler(FunctionDef scheduler){
 		this.scheduler=scheduler;
 	}
+	void addNumSteps(NumStepsDecl numSteps){
+		this.num_steps = numSteps.num_steps;
+	}
+	void addQuery(QueryDecl query){
+		queries~=query.query;
+	}
 	private string formatData(){
+		BinaryExp!(Tok!"@").toStringImpl=(Expression e1,Expression e2)=>
+			text("(",iota(nodes.length).map!(k=>text(k+1==nodes.length?"":text("if ",e2," == ",k)," { __",nodes[k],".",e1," }")).join(" else "),")");
 		string r="dat __D{\n"~indent(
 			iota(nodes.length).map!(k=>"__"~nodes[k]~" : __"~programs[nodeProg[cast(int)k]].name~"_ty").join(", ")~";\n"~
 			(scheduler.state?
@@ -279,9 +289,27 @@ class Builder{
 		)~"}\n";
 		return r;
 	}
-	string toPSI(){
+	private bool nodeHasVar(int node,Expression var){
+		auto id=cast(Identifier)var;
+		assert(!!id);
+		auto prg=programs[nodeProg[cast(int)node]];
+		return !!(id.name in prg.stateSet);
+	}
+	private string formatQueries(){
 		BinaryExp!(Tok!"@").toStringImpl=(Expression e1,Expression e2)=>
-			text("(",iota(nodes.length).map!(k=>text(k+1==nodes.length?"":text("if ",e2," == ",k)," { __",nodes[k],".",e1," }")).join(" else "),")");
+			text("(",iota(nodes.length).filter!(k=>nodeHasVar(cast(int)k,e1)).map!(k=>text("if ",e2," == ",k," { __d.__",nodes[k],".",e1," }")).join(" else ")," else { assert(0) })");
+		string formatQuery(Expression q){
+			if(auto ce=cast(CallExp)q){
+				if(auto id=cast(Identifier)ce.e){
+					if(id.name=="expectation") return text("Expectation(",ce.args.map!(x=>x.toString).join(", "),")");
+					if(id.name=="probability") return text("Expectation((",ce.args.map!(x=>x.toString).join(", "),") !=0)");
+				}
+			}
+			return q.toString();
+		}
+		return iota(queries.length).map!(i=>text("q",lowNum(i+1)," := ",formatQuery(queries[i]),";\n")).join~"return ("~iota(queries.length).map!(i=>"q"~lowNum(i+1)).join(", ")~");\n";
+	}
+	string toPSI(){
 		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
 		auto nodedef="k := "~text(nodes.length)~", "~iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~";\n";
 		auto packetdef="dat Packet{\n"~indent(
@@ -295,7 +323,8 @@ class Builder{
 			formatData()~
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
-			"for i in [0..num_iter) {\n"~indent(
+			"__d.__H0.__run();\n"~
+			"for i in [0..num_steps) {\n"~indent(
 				"if "~nodes.map!(n=>text("__d.__",n,".Q_in.size()")).join(" || ")~" {\n"~indent(
 					"(node,action) := __d.scheduler();\n"~
 					"if action {\n"~indent(// FwdQ
@@ -319,9 +348,10 @@ class Builder{
 						                        )~"}\n").join
 					)~"}\n"
 				)~"}\n"
-			)~"}\n"
+			)~"}\n"~
+			formatQueries()
 		)~"}\n";
-		return "num_iter := 10;\n"~queuedef~nodedef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
+		return "num_steps := "~num_steps.toString()~";\n"~queuedef~nodedef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
 ;
 	}
 private:
@@ -332,6 +362,8 @@ private:
 	int[int] nodeProg;
 	Q!(string,int)[int][string] links;
 	FunctionDef scheduler;
+	Expression[] queries;
+	Expression num_steps;
 }
 
 string translate(Expression[] exprs, Builder bld){
@@ -348,6 +380,8 @@ string translate(Expression[] exprs, Builder bld){
 	auto pfld=all!PacketFieldsDecl[0];
 	foreach(f;pfld.fields) bld.addPacketField(f.name.name);
 	auto pdcl=all!ProgramsDecl[0];
+	bld.addNumSteps(all!NumStepsDecl[0]);
+	foreach(q;all!QueryDecl) bld.addQuery(q);
 	void translateFun(FunctionDef fdef){
 		auto prg=bld.addProgram(fdef.name.name);
 		foreach(prm;fdef.params)
