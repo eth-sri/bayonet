@@ -3,40 +3,6 @@ import lexer, expression, declaration, util;
 
 import std.typecons: Q=Tuple,q=tuple;
 
-enum queuedef=q"QUEUE
-dat Queue{
-    data: (Packet × ℝ)[];
-    def Queue(){
-        data = ([]:(Packet × ℝ)[]);
-    }
-    def pushFront(x: Packet × ℝ){
-        data=[x]~data;
-    }
-    def pushBack(x: Packet × ℝ){
-        data=data~[x];
-    }
-    def takeFront(){
-        r:=front();
-        popFront();
-        return r;
-    }
-    def takeBack(){
-        r:=data[size()-1];
-        data=data[0..size()-1];
-        return r;
-    }
-    def size(){
-        return data.length;
-    }
-    def front(){
-        return data[0];
-    }
-    def popFront(){
-        data=data[1..size()];
-    }
-}
-QUEUE";
-
 class Builder{
 	class Variable{
 		string name;
@@ -86,14 +52,14 @@ class Builder{
 		static abstract class Expression{
 			abstract string toPSI();
 		}
-		Statement assign(string name, Expression rhs){
+		Statement assign(Expression name, Expression rhs){
 			static class AssignStm: Statement{
 				bool pkt=false;
-				string var;
+				Expression var;
 				Expression rhs;
-				this(string var,Expression rhs){ this.var=var; this.rhs=rhs; }
+				this(Expression var,Expression rhs){ this.var=var; this.rhs=rhs; }
 				override string toPSI(){
-					return var~"="~rhs.toPSI()~";\n"~super.toPSI();
+					return var.toPSI()~" = "~rhs.toPSI()~";\n"~super.toPSI();
 				}
 			}
 			return new AssignStm(name,rhs);
@@ -102,7 +68,11 @@ class Builder{
 			static class Read: Expression{
 				string name;
 				this(string name){ this.name=name; }
-				override string toPSI(){ return name; }
+				override string toPSI(){
+					if(name == "pkt") return "Q_in.data[0][0]";
+					if(name == "port") return "Q_in.data[0][1]";
+					return name;
+				}
 			}
 			return new Read(name);
 		}
@@ -117,14 +87,28 @@ class Builder{
 		Expression binary(Expression e1,Expression e2,string op){
 			class BinaryExp: Expression{
 				Expression e1,e2;
+				string op;
 				this(Expression e1,Expression e2, string op){
-					this.e1=e1; this.e2=e2;
+					this.e1=e1; this.e2=e2; this.op=op;
+					if(op=="or") this.op="||";
+					if(op=="and") this.op="&&";
 				}
 				override string toPSI(){
 					return e1.toPSI()~op~e2.toPSI();
 				}
 			}
 			return new BinaryExp(e1,e2,op);
+		}
+		Expression field(Expression e,string f){
+			class FieldExp: Expression{
+				Expression e;
+				string f;
+				this(Expression e,string f){ this.e=e; this.f=f; }
+				override string toPSI(){
+					return e.toPSI()~"."~f;
+				}
+			}
+			return new FieldExp(e,f);
 		}
 		Expression call(Expression f,Expression[] args){
 			static class Call: Expression{
@@ -222,7 +206,7 @@ class Builder{
 			r~="\n}";
 			r="dat __"~name~"_ty{\n"~indent(
 				"__state: ℝ, Q_in: Queue, Q_out: Queue;\n"~
-				state.map!(a=>a.toPSI()).join(", ")~";\n"~
+				state.map!(a=>a.toPSI()).join(", ")~(state.length?";\n":"")~
 				"def __"~name~"_ty(){\n"~indent(
 					"__state = 0;\n"~
 					"Q_in = Queue();\n"~
@@ -262,25 +246,32 @@ class Builder{
 		links[x[0]][x[1]]=y;
 		links[y[0]][y[1]]=x;
 	}
+	void addParam(ParameterDecl p){
+		params~=p;
+	}
 	void addScheduler(FunctionDef scheduler){
 		this.scheduler=scheduler;
 	}
 	void addNumSteps(NumStepsDecl numSteps){
 		this.num_steps = numSteps.num_steps;
 	}
+	void addQueueCapacity(QueueCapacityDecl capacity){
+		this.capacity = capacity.capacity;
+	}
 	void addQuery(QueryDecl query){
 		queries~=query.query;
 	}
 	private string formatData(){
+		assert(!!scheduler,"scheduler missing"); // TODO: catch in semantic
 		BinaryExp!(Tok!"@").toStringImpl=(Expression e1,Expression e2)=>
 			text("(",iota(nodes.length).map!(k=>text(k+1==nodes.length?"":text("if ",e2," == ",k)," { __",nodes[k],".",e1," }")).join(" else "),")");
 		string r="dat __D{\n"~indent(
-			iota(nodes.length).map!(k=>"__"~nodes[k]~" : __"~programs[nodeProg[cast(int)k]].name~"_ty").join(", ")~";\n"~
+			iota(nodes.length).map!(k=>"__"~nodes[k]~" : __"~programs[nodeProg[cast(int)k]].name~"_ty").join(", ")~(nodes.length?";\n":"")~
 			(scheduler.state?
-			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~";\n"
+			 scheduler.state.vars.map!(v=>text(v.name,": ℝ")).join(", ")~(scheduler.state.vars.length?";\n":"")
 			 :"")~
 			"def __D(){\n"~indent(
-				iota(nodes.length).map!(k=>"__"~nodes[k]~" = __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~";\n"~
+				iota(nodes.length).map!(k=>"__"~nodes[k]~" = __"~programs[nodeProg[cast(int)k]].name~"_ty()").join(", ")~(nodes.length?";\n":"")~
 				(scheduler.state?
 				 scheduler.state.vars.map!(v=>text(v.name," = ",v.init?v.init.toString():"0",";\n")).join
 			 :"")
@@ -311,7 +302,8 @@ class Builder{
 	}
 	string toPSI(){
 		auto pfields=packetFields.map!(a=>a.toPSI()).join(", ");
-		auto nodedef="k := "~text(nodes.length)~", "~iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~";\n";
+		auto nodedef="k := "~text(nodes.length)~", "~iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~(nodes.length?";\n":"");
+		auto paramdef=params.map!(p=>p.name.toString()~" := "~(p.init_?p.init_.toString():"?"~p.name.toString())).join(", ")~(params.length?";\n":"");
 		auto packetdef="dat Packet{\n"~indent(
 			pfields~";\n"~
 			"def Packet("~/+pfields~+/"){\n"~indent(
@@ -319,14 +311,15 @@ class Builder{
 				packetFields.map!(a=>a.name~" = 0;\n").join()
 			)~"}\n"
 		)~"}\n";
+		auto nonterminal = nodes.map!(n=>text("__d.__",n,".Q_in.size() || __d.__",n,".Q_out.size()")).join(" || ");
 		auto mainfun=
 			formatData()~
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
 			"__d.__H0.__run();\n"~
 			"for i in [0..num_steps) {\n"~indent(
-				"if "~nodes.map!(n=>text("__d.__",n,".Q_in.size()")).join(" || ")~" {\n"~indent(
-					"(node,action) := __d.scheduler();\n"~
+				"if "~nonterminal~" {\n"~indent(
+					"(action,node) := __d.scheduler();\n"~
 					"if action {\n"~indent(// FwdQ
 						iota(nodes.length)
 						.map!(k=>
@@ -343,33 +336,67 @@ class Builder{
 					)~"} else {\n"~indent(//RunSw
 						iota(nodes.length).map!(k=>
 						                        "if node == "~text(k)~" && __d.__"~nodes[k]~".Q_in.size() {\n"~indent(
-							                        "(__d.__"~nodes[k]~".pkt,__d.__"~nodes[k]~".port) = __d.__"~nodes[k]~".Q_in.front();\n"~
 							                        "__d.__"~nodes[k]~".__run();\n"
 						                        )~"}\n").join
 					)~"}\n"
 				)~"}\n"
 			)~"}\n"~
+			"assert(!("~nonterminal~"));\n"~
 			formatQueries()
+			)~"}\n";
+		auto queuedef="dat Queue{\n"~indent(
+			"data: (Packet × ℝ)[];\n"~
+			"def Queue(){\n"~indent(
+				"data = ([]:(Packet × ℝ)[]);\n"
+			)~"}\n"~
+			"def pushFront(x: Packet × ℝ){\n"~indent(
+				"data=[x]~data;\n"
+			)~"}\n"~
+			"def pushBack(x: Packet × ℝ){\n"~indent(
+				(capacity?"if size() >= "~capacity.toString()~" { return; }\n":"")~
+				"data=data~[x];\n"
+			)~"}\n"~
+			"def takeFront(){\n"~indent(
+				"r:=front();\n"~
+				"popFront();\n"~
+				"return r;\n"
+			)~"}\n"~
+			"def takeBack(){\n"~indent(
+				"r:=data[size()-1];\n"~
+				"data=data[0..size()-1];\n"~
+				"return r;\n"
+			)~"}\n"~
+			"def size(){\n"~indent(
+				"return data.length;\n"
+			)~"}\n"~
+			"def front(){\n"~indent(
+				"return data[0];\n"
+			)~"}\n"~
+			"def popFront(){\n"~indent(
+				"data=data[1..size()];\n"
+			)~"}\n"
 		)~"}\n";
-		return "num_steps := "~num_steps.toString()~";\n"~queuedef~nodedef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
+		return "num_steps := "~num_steps.toString()~";\n"~queuedef~nodedef~paramdef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
 ;
 	}
 private:
 	Variable[] packetFields;
 	Program[] programs;
 	string[] nodes;
+	ParameterDecl[] params;
 	int[string] nodeId;
 	int[int] nodeProg;
 	Q!(string,int)[int][string] links;
 	FunctionDef scheduler;
 	Expression[] queries;
 	Expression num_steps;
+	Expression capacity;
 }
 
 string translate(Expression[] exprs, Builder bld){
 	Expression[][typeof(typeid(Object))] byTid;
 	foreach(expr;exprs){
-		assert(cast(Declaration)expr && expr.sstate==SemState.completed);
+		assert(cast(Declaration)expr && expr.sstate==SemState.completed,text(expr));
 		byTid[typeid(expr)]~=expr;
 	}
 	auto all(T)(){ return cast(T[])byTid.get(typeid(T),[]); }
@@ -377,15 +404,17 @@ string translate(Expression[] exprs, Builder bld){
 	foreach(n;topology.nodes) bld.addNode(n.name.name);
 	foreach(l;topology.links) bld.addLink(l.a,l.b);
 	auto params=all!ParametersDecl.length?all!ParametersDecl[0]:null;
+	if(params) foreach(prm;params.params) bld.addParam(prm);
 	auto pfld=all!PacketFieldsDecl[0];
 	foreach(f;pfld.fields) bld.addPacketField(f.name.name);
 	auto pdcl=all!ProgramsDecl[0];
 	bld.addNumSteps(all!NumStepsDecl[0]);
+	if(all!QueueCapacityDecl.length) bld.addQueueCapacity(all!QueueCapacityDecl[0]);
 	foreach(q;all!QueryDecl) bld.addQuery(q);
 	void translateFun(FunctionDef fdef){
 		auto prg=bld.addProgram(fdef.name.name);
-		foreach(prm;fdef.params)
-			prg.addState(prm.name);
+		/+foreach(prm;fdef.params)
+			prg.addState(prm.name);+/
 		Builder.Program.Expression translateExpression(Expression exp){
 			if(auto be=cast(ABinaryExp)exp){
 				auto e1=translateExpression(be.e1);
@@ -409,6 +438,8 @@ string translate(Expression[] exprs, Builder bld){
 			}else if(auto be=cast(BuiltInExp)exp){
 				if(be.which==Tok!"FwdQ") return prg.literal(0);
 				if(be.which==Tok!"RunSw") return prg.literal(1);
+			}else if(auto fe=cast(FieldExp)exp){
+				return prg.field(translateExpression(fe.e),fe.f.name);
 			}
 			assert(0,text("TODO: ",exp));
 		}
@@ -421,11 +452,7 @@ string translate(Expression[] exprs, Builder bld){
 			if(auto be=cast(ABinaryExp)stm){
 				if(cast(BinaryExp!(Tok!"="))be||cast(BinaryExp!(Tok!":="))be){
 					auto e=translateExpression(be.e2);
-					if(auto id=cast(Identifier)be.e1){
-						tstm=prg.assign((cast(Identifier)be.e1).name,e);
-					}else{
-						tstm=prg.skip(); // TODO!
-					}
+					tstm=prg.assign(translateExpression(be.e1),e);
 				}else assert(0,text(stm));
 			}else if(auto ite=cast(IteExp)stm){
 				auto cnd=translateExpression(ite.cond);

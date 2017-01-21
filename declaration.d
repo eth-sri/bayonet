@@ -91,6 +91,13 @@ class NumStepsDecl: Declaration{
 	override string toString(){ return "num_steps "~num_steps.toString(); }
 }
 
+class QueueCapacityDecl: Declaration{
+	Expression capacity; // TODO: allow setting capacity on per node.
+	this(Expression capacity){ super(null); this.capacity=capacity; }
+	override @property string kind(){ return "queue_capacity declaration"; }
+	override string toString(){ return "queue_capacity "~capacity.toString(); }
+}
+
 class CompoundDecl: Expression{
 	Expression[] s;
 	this(Expression[] ss){s=ss;}

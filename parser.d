@@ -57,6 +57,8 @@ int getLbp(TokenType type) pure{ // operator precedence
 	// shift operators
 	case Tok!">>", Tok!"<<":
 	case Tok!">>>": return 110;
+	case Tok!"->",Tok!"→": // exponential type
+	case Tok!"⇒",Tok!"↦",Tok!"=>": return 115; // goesto
 	// additive operators
 	case Tok!"+",Tok!"-",Tok!"~":
 		return 120;
@@ -74,7 +76,6 @@ int getLbp(TokenType type) pure{ // operator precedence
 	case Tok!"(", Tok!"[": // function call and indexing
 		return 160;
 	// template instantiation
-	case Tok!"=>": return 165; // goesto
 	case Tok!"!":  return 170;
 	//case Tok!"i": return 45; //infix
 	case Tok!"@": return 180;
@@ -344,9 +345,35 @@ struct Parser{
 		return res=New!BuiltInExp(which);
 	}
 	
+	Expression parseParenthesized()in{assert(ttype==Tok!"(");}body{
+		mixin(SetLoc!Expression);
+		nextToken();
+		if(ttype==Tok!")"){
+			nextToken();
+			res=New!TupleExp(Expression[].init);
+		}else{
+			res=parseExpression(rbp!(Tok!","));
+			if(ttype==Tok!","){
+				auto tpl=[res];
+				while(ttype==Tok!","){
+					nextToken();
+					if(ttype==Tok!")") break;
+					tpl~=parseExpression(rbp!(Tok!","));
+				}
+				expect(Tok!")");
+				res=New!TupleExp(tpl);
+			}else{
+				expect(Tok!")");
+				res.brackets++;
+			}
+		}
+		return res;
+	}
+
+
 	// Operator precedence expression parser
 	// null denotation
-	Expression nud(){
+	Expression nud(bool allowLambda){
 		mixin(SetLoc!Expression);
 		Token t;
 		switch(ttype){
@@ -373,28 +400,31 @@ struct Parser{
 				auto tok=Token(Tok!"0");
 				tok.str="0";
 				return res=New!LiteralExp(tok);
-			case Tok!"(":
-				nextToken();
-				res=parseExpression(rbp!(Tok!","));
-				if(ttype==Tok!","){
-					auto tpl=[res];
-					while(ttype==Tok!","){
+			case Tok!"(",Tok!"[":
+				if(allowLambda){
+					auto state=saveState();
+					while(util.among(ttype,Tok!"(",Tok!"[")){
 						nextToken();
-						if(ttype==Tok!")") break;
-						tpl~=parseExpression(rbp!(Tok!","));
+						skipToUnmatched();
+						nextToken();
 					}
-					expect(Tok!")");
-					res=New!TupleExp(tpl);
-				}else{
-					expect(Tok!")");
-					res.brackets++;
+					switch(ttype){
+						case Tok!"{",Tok!"⇒",Tok!"↦",Tok!"=>":
+							restoreState(state);
+							return parseLambdaExp();
+						default: break;
+					}
+					restoreState(state);
 				}
-				return res;
-			case Tok!"[":
-				nextToken();
-				res=New!ArrayExp(parseArgumentList!"]"());
-				expect(Tok!"]");
-				return res;
+				if(ttype==Tok!"("){
+					return res=parseParenthesized();
+				}else{
+					assert(ttype==Tok!"[");
+					nextToken();
+					res=New!ArrayExp(parseArgumentList!("]"));
+					expect(Tok!"]");
+					return res;
+				}
 			case Tok!"-":
 				nextToken();
 				return res=New!(UnaryExp!(Tok!"-"))(parseExpression(nbp));
@@ -486,13 +516,14 @@ struct Parser{
 				throw new PEE(str);
 		}
 	}
-	Expression parseExpression(int rbp = 0){
+	Expression parseExpression(int rbp = 0,bool allowLambda=true){
 		switch(ttype){
 			case Tok!"topology": return parseTopologyDecl();
 			case Tok!"parameters": return parseParametersDecl();
 			case Tok!"packet_fields": return parsePacketFieldsDecl();
 			case Tok!"programs": return parseProgramsDecl();
 			case Tok!"num_steps": return parseNumStepsDecl();
+			case Tok!"queue_capacity": return parseQueueCapacityDecl();
 			case Tok!"query": return parseQueryDecl();
 			case Tok!"def": return parseFunctionDef();
 			case Tok!"return": return parseReturn();
@@ -503,7 +534,7 @@ struct Parser{
 			default: break;
 		}
 		Expression left;
-		try left = nud();catch(PEE err){error("found '"~tok.toString()~"' when expecting expression");nextToken();return new ErrorExp();}
+		try left = nud(allowLambda);catch(PEE err){error("found '"~tok.toString()~"' when expecting expression");nextToken();return new ErrorExp();}
 		return parseExpression2(left, rbp);
 	}
 
@@ -662,6 +693,14 @@ struct Parser{
 		return res=New!NumStepsDecl(e);
 	}
 
+	QueueCapacityDecl parseQueueCapacityDecl(){
+		mixin(SetLoc!QueueCapacityDecl);
+		expect(Tok!"queue_capacity");
+		auto e=parseExpression();
+		expect(Tok!";");
+		return res=New!QueueCapacityDecl(e);
+	}
+	
 	QueryDecl parseQueryDecl(){
 		mixin(SetLoc!QueryDecl);
 		expect(Tok!"query");
@@ -742,10 +781,34 @@ struct Parser{
 		else exp=New!TupleExp(Expression[].init);
 		return res=New!ReturnExp(exp);
 	}
+
+	Expression parseCondition(){
+		mixin(SetLoc!Expression);
+		if(ttype==Tok!"("||ttype==Tok!"]"){
+			auto state=saveState();
+			while(ttype==Tok!"("||ttype==Tok!"["){
+				nextToken();
+				skipToUnmatched();
+				nextToken();
+			}
+			if(ttype==Tok!"{"){
+				nextToken();
+				skipToUnmatched();
+				nextToken();
+				if(ttype!=Tok!"("&&ttype!=Tok!"["){
+					restoreState(state);
+					return parseExpression(0,false);
+				}
+			}
+			restoreState(state);
+		}
+		return parseExpression();
+	}
+	
 	IteExp parseIte(){
 		mixin(SetLoc!IteExp);
 		expect(Tok!"if");
-		auto cond=parseExpression();
+		auto cond=parseCondition();
 		auto then=parseCompoundExp();
 		CompoundExp othw=null;
 		if(ttype == Tok!"else"){

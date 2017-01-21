@@ -94,7 +94,7 @@ string[2][] simpleTokens =
 	 [":=",    "ColonAssign"               ],
 	 ["$",     "Dollar"                    ],
 	 ["=",     "Assign"                    ],
-	 ["=>",    "GoesTo"                    ],
+	 ["=>",    "UglyGoesTo"                ],
 	 ["==",    "Equal"                     ],
 	 ["*",     "Star"                      ],
 	 ["*=",    "MultiplyAssign"            ],
@@ -107,7 +107,10 @@ string[2][] simpleTokens =
 	 ["~",     "Concat"                    ],
 	 ["~=",    "ConcatAssign"              ],
 	 ["@",     "At"                        ],
-	 ["×",     "Times"                     ]];
+	 ["×",     "Times"                     ],
+	 ["→",     "To"                        ],
+	 ["⇒",     "GoesTo"                    ],
+	 ["↦",     "MapsTo"                    ]];
 string[2][] specialTokens = 
 	[["",      "None",                     ],
 	 [" ",     "Whitespace",               ],
@@ -119,7 +122,7 @@ string[2][] specialTokens =
 	 ["EOF",   "Eof"                       ]];
 string[2][] compoundTokens = [];
 
- string[] keywords = ["def","state","new","drop","dup","fwd","skip","assert","observe","and","not","if","then","else","true","false","or","topology","nodes","links","parameters","packet_fields","programs","with","query","num_steps","FwdQ","RunSw"]~["for","in","return"];
+ string[] keywords = ["def","state","new","drop","dup","fwd","skip","assert","observe","and","not","if","then","else","true","false","or","topology","nodes","links","parameters","packet_fields","programs","with","query","num_steps","queue_capacity","FwdQ","RunSw"]~["for","in","return"];
 
 
 string[2][] tokens = specialTokens ~ complexTokens ~ simpleTokens ~ compoundTokens ~ keywordTokens();

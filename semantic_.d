@@ -24,6 +24,7 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	if(all!ProgramsDecl.length!=1) sc.error("there should be exactly one declaration of programs to run on the nodes",secondLoc(typeid(ProgramsDecl)));
 	if(all!NumStepsDecl.length!=1) sc.error("there should be exactly one declaration of the number of steps to run",secondLoc(typeid(NumStepsDecl)));
 	if(all!QueryDecl.length<1) sc.error("there should be at least one query declaration",lineZero);
+	if(all!QueueCapacityDecl.length>1) sc.error("there should be at most one queue capacity declaration",lineZero);
 	
 	void doSemantic(T)(){
 		foreach(ref expr;exprs){
@@ -38,6 +39,7 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	doSemantic!FunctionDef;
 	doSemantic!ProgramsDecl;
 	doSemantic!NumStepsDecl;
+	doSemantic!QueueCapacityDecl;
 	doSemantic!QueryDecl;
 	return exprs;
 }	
@@ -125,9 +127,23 @@ Expression semantic(Expression expr,Scope sc){
 				}catch(Exception){}
 			}
 		}
-		sc.error("number of steps should be non-negativeinteger literal",nsd.num_steps.loc);
+		sc.error("number of steps should be non-negative integer literal",nsd.num_steps.loc);
 		nsd.sstate=SemState.error;
 		return nsd;
+	}
+	if(auto qcd=cast(QueueCapacityDecl)expr){
+		if(auto lit=cast(LiteralExp)qcd.capacity){
+			if(lit.lit.type==Tok!"0"){
+				try{
+					import std.conv:to;
+					auto qc=to!int(lit.lit.str);
+					if(qc>=0) return finish(qcd);
+				}catch(Exception){}
+			}
+		}
+		sc.error("queue capacity should be non-negative integer literal",qcd.capacity.loc);
+		qcd.sstate=SemState.error;
+		return qcd;
 	}
 	if(auto qd=cast(QueryDecl)expr){
 		return finish(qd);
