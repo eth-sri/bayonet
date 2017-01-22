@@ -265,6 +265,7 @@ class Builder{
 		assert(!!scheduler,"scheduler missing"); // TODO: catch in semantic
 		BinaryExp!(Tok!"@").toStringImpl=(Expression e1,Expression e2)=>
 			text("(",iota(nodes.length).map!(k=>text(k+1==nodes.length?"":text("if ",e2," == ",k)," { __",nodes[k],".",e1," }")).join(" else "),")");
+		auto nonterminal = nodes.map!(n=>text("__",n,".Q_in.size() || __",n,".Q_out.size()")).join(" || ");
 		string r="dat __D{\n"~indent(
 			iota(nodes.length).map!(k=>"__"~nodes[k]~" : __"~programs[nodeProg[cast(int)k]].name~"_ty").join(", ")~(nodes.length?";\n":"")~
 			(scheduler.state?
@@ -276,7 +277,31 @@ class Builder{
 				 scheduler.state.vars.map!(v=>text(v.name," = ",v.init?v.init.toString():"0",";\n")).join
 			 :"")
 			)~"}\n"~
-			"def scheduler()"~scheduler.body_.toString()~"\n"
+			"def scheduler()"~scheduler.body_.toString()~"\n"~
+			"def __step(){\n"~indent(
+				"if "~nonterminal~" {\n"~indent(
+					"(action,node) := scheduler();\n"~
+					"if action {\n"~indent(// FwdQ
+						iota(nodes.length)
+						.map!(k=>
+						      "if node == "~text(k)~" && __"~nodes[k]~".Q_out.size() {\n"~indent((){
+								      string r="(pkt,port) := __"~nodes[k]~".Q_out.takeFront();\n";
+								      foreach(p;links[nodes[k]].keys.sort()){
+									      auto nnode=links[nodes[k]][p];
+									      r~="if port == "~text(p)~" {\n"~indent(
+										      "__"~nnode[0]~".Q_in.pushBack((pkt, "~text(nnode[1])~"));\n"
+									      )~"}\n";
+								      }
+								      return r;
+							      }())~"}\n").join
+					)~"} else {\n"~indent(//RunSw
+						iota(nodes.length).map!(k=>
+						                        "if node == "~text(k)~" && __"~nodes[k]~".Q_in.size() {\n"~indent(
+							                        "__"~nodes[k]~".__run();\n"
+						                        )~"}\n").join
+					)~"}\n"
+				)~"}\n"
+			)~"}\n"
 		)~"}\n";
 		return r;
 	}
@@ -317,29 +342,8 @@ class Builder{
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
 			"__d.__H0.__run();\n"~
-			"for i in [0..num_steps) {\n"~indent(
-				"if "~nonterminal~" {\n"~indent(
-					"(action,node) := __d.scheduler();\n"~
-					"if action {\n"~indent(// FwdQ
-						iota(nodes.length)
-						.map!(k=>
-						      "if node == "~text(k)~" && __d.__"~nodes[k]~".Q_out.size() {\n"~indent((){
-								      string r="(pkt,port) := __d.__"~nodes[k]~".Q_out.takeFront();\n";
-								      foreach(p;links[nodes[k]].keys.sort()){
-									      auto nnode=links[nodes[k]][p];
-									      r~="if port == "~text(p)~" {\n"~indent(
-										      "__d.__"~nnode[0]~".Q_in.pushBack((pkt, "~text(nnode[1])~"));\n"
-									      )~"}\n";
-								      }
-								      return r;
-							      }())~"}\n").join
-					)~"} else {\n"~indent(//RunSw
-						iota(nodes.length).map!(k=>
-						                        "if node == "~text(k)~" && __d.__"~nodes[k]~".Q_in.size() {\n"~indent(
-							                        "__d.__"~nodes[k]~".__run();\n"
-						                        )~"}\n").join
-					)~"}\n"
-				)~"}\n"
+			"repeat num_steps {\n"~indent(
+				"__d.__step();\n"
 			)~"}\n"~
 			"assert(!("~nonterminal~"));\n"~
 			formatQueries()
