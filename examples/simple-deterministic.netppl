@@ -1,0 +1,69 @@
+num_steps 10;
+query expectation(pkt_count@H0);
+query expectation(pkt_count@H1);
+
+parameters{ P }
+
+topology{
+    nodes{H0,H1,S0}
+    links{
+        link1: (H0,pt1) <-> (S0,pt1),
+        link2: (S0,pt2) <-> (H1,pt1),
+    }
+}
+
+packet_fields{ dst }
+
+programs{ H0->h0, H1->h1, S0->s0 }
+
+def h0(pkt,port) state pkt_count(0){
+	new;
+    pkt_count = pkt_count+1;
+    pkt.dst = 1;
+    fwd(1);
+}
+
+def s0(pkt,port){
+    if port == 1{
+		if flip(P){
+			fwd(2);
+		}else{
+			drop;
+		}
+    }else{
+        fwd(1);
+    }
+}
+
+def h1(pkt,port) state pkt_count(0){
+    pkt_count = pkt_count+1;
+	drop;
+}
+
+
+def scheduler() state phase(0), cur_node(0){ // Phase 0: Execute RunSw, Phase 1: Exectue FwdQ
+	for p in [0..2){
+		if phase == 0{
+			for i in [0..k){
+				if (Q_in@cur_node).size() > 0{
+					return (RunSw,cur_node);
+				}
+				cur_node = (cur_node + 1) % k;
+			}
+			phase = 1;
+			cur_node = 0;
+		}
+		if phase == 1{
+			for i in [0..k){
+				if (Q_out@cur_node).size() > 0{
+					return (FwdQ,cur_node);
+				}
+				cur_node = (cur_node + 1) % k;
+			}
+			phase = 0;
+			cur_node = 0;
+		}
+	}
+	assert(0);
+}
+
