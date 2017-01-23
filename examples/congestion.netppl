@@ -2,6 +2,7 @@
 
 num_steps 30;
 
+query probability(pkt_count@H0 < 2);
 query probability(pkt_count@H1 < 2);
 
 topology{
@@ -14,7 +15,7 @@ topology{
 		(S1,pt3) <-> (H1,pt1)
 	}
 }
-queue_capacity 1;
+queue_capacity 2;
 
 packet_fields{ dst }
 
@@ -26,9 +27,9 @@ def h0(pkt, port) state pkt_count(0){
 	new;
 	if pkt_count < 2 {
 		new;
+		pkt_count = pkt_count + 1;
 		pkt.dst = H1;
 		fwd(1);
-		pkt_count = pkt_count + 1;
 	} else { drop; drop; }
 }
 
