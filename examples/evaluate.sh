@@ -11,19 +11,19 @@
 
 ## deterministic scheduling
 
-./run congestion-contracted-deterministic.psi
+# ./run congestion-contracted-deterministic.psi
 
-./run congestion-synthesis-contracted-deterministic.psi
+# ./run congestion-synthesis-contracted-deterministic.psi
 
 
 
 # reliability
 
 ## random scheduling
-# TODO!
+./run reliability-contracted.psi
 
 ## deterministic scheduling
-# TODO!
+# unnecessary: result is independent of scheduling as we model only one packet at a time
 
 # Gossip
 
