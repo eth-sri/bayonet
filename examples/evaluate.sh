@@ -11,9 +11,10 @@
 
 ## deterministic scheduling
 
-# ./run congestion-contracted-deterministic.psi
+./run congestion-deterministic-contracted.psi  # always congested
+./run congestion-deterministic2-contracted.psi # prob of congestion 1/8, but scheduler is hard to explain
 
-# ./run congestion-synthesis-contracted-deterministic.psi
+# ./run congestion-synthesis-deterministic-contracted.psi # seems pointless
 
 
 
