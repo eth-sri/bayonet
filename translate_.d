@@ -341,7 +341,7 @@ class Builder{
 			formatData()~
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
-			"__d.__H0.__run();\n"~
+			(nodes.length?"__d.__"~nodes[0]~".__run();\n":"")~
 			"repeat num_steps {\n"~indent(
 				"__d.__step();\n"
 			)~"}\n"~
@@ -375,6 +375,9 @@ class Builder{
 			)~"}\n"~
 			"def front(){\n"~indent(
 				"return data[0];\n"
+			)~"}\n"~
+			"def dupFront(){\n"~indent(
+				"pushFront(front());\n"
 			)~"}\n"~
 			"def popFront(){\n"~indent(
 				"data=data[1..size()];\n"
