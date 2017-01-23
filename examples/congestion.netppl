@@ -1,4 +1,5 @@
 
+parameters{ NUM_PACKETS(3), COST_01(2), COST_02(1), COST_21(1) }
 
 num_steps 30;
 
@@ -21,7 +22,6 @@ packet_fields{ dst }
 
 programs{ H0 -> h0, H1 -> h1, S0 -> s0, S1 -> s1, S2 -> s2 }
 
-parameters{ NUM_PACKETS(3), COST_01(2), COST_02(1), COST_21(1) }
 
 def h0(pkt, port) state pkt_count(0){
 	new;

@@ -330,7 +330,7 @@ class Builder{
 		auto nodedef="k := "~text(nodes.length)~", "~iota(nodes.length).map!(k=>text(nodes[k]," := ",k)).join(", ")~(nodes.length?";\n":"");
 		auto paramdef=params.map!(p=>p.name.toString()~" := "~(p.init_?p.init_.toString():"?"~p.name.toString())).join(", ")~(params.length?";\n":"");
 		auto packetdef="dat Packet{\n"~indent(
-			pfields~";\n"~
+			(packetFields.length?pfields~";\n":"")~
 			"def Packet("~/+pfields~+/"){\n"~indent(
 				/+packetFields.map!(a=>a.name~" = "~a.name~";\n").join()+/ // TODO
 				packetFields.map!(a=>a.name~" = 0;\n").join()

@@ -1,5 +1,7 @@
-num_steps := 20;
+num_steps := 30;
 //num_steps := 40;
+n_packets := 3;
+queue_cap := 2;
 dat Queue{
     data: (Packet × ℝ)[];
     def Queue(){
@@ -9,7 +11,7 @@ dat Queue{
         data=[x]~data;
     }
     def pushBack(x: Packet × ℝ){
-        if size() >= 1 { return; }
+        if size() >= queue_cap { return; }
         data=data~[x];
     }
     def takeFront(){
@@ -50,7 +52,7 @@ dat __h0_ty{
     }
     def __run(){
         Q_in.pushFront((Packet(),0));
-        if pkt_count<2{
+        if pkt_count < n_packets{
 			Q_in.pushFront((Packet(),0));
 			pkt_count = pkt_count+1;
 			Q_in.data[0][0].dst = H1;
@@ -277,7 +279,7 @@ def main(){
         __d.__step();
     }
     assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__H1.Q_in.size() || __d.__H1.Q_out.size() || __d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size()));
-    q₁ := Expectation(((if H1 == 0 { __d.__H0.pkt_count } else if H1 == 1 { __d.__H1.pkt_count } else { assert(0) }) < 2) !=0);
+    q₁ := Expectation(((if H1 == 0 { __d.__H0.pkt_count } else if H1 == 1 { __d.__H1.pkt_count } else { assert(0) }) < n_packets) !=0);
     return (q₁);
 }
 
