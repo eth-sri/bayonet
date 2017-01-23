@@ -1,0 +1,53 @@
+
+num_steps 20;
+
+topology{
+	nodes { S0, S1, S2, S3 }
+	links{
+		(S0,pt1) <-> (S1,pt3),
+		(S0,pt2) <-> (S2,pt2),
+		(S0,pt3) <-> (S3,pt1),
+		(S1,pt1) <-> (S2,pt3),
+		(S1,pt2) <-> (S3,pt2),
+		(S2,pt1) <-> (S3,pt3)
+	}
+}
+
+packet_fields{ }
+
+programs{ S0 -> first, S1 -> node, S2 -> node, S3 -> node }
+
+query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 == 1);
+query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 == 2);
+query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 == 3);
+query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 == 4);
+
+query expectation(infected@S0 + infected@S1 + infected@S2 + infected@S3);
+
+
+def first(pkt,port) state infected(0){
+	if infected == 0 {
+		infected = 1;
+		new;
+		fwd(uniformInt(1,3));
+	}
+}
+
+
+def node(pkt,port) state infected(0){
+	if infected == 0{
+		infected = 1;
+		dup;
+		fwd(uniformInt(1,3));
+		fwd(uniformInt(1,3));
+	}
+}
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}
