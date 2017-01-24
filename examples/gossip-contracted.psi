@@ -51,6 +51,8 @@ dat __first_ty{
 			infected = 1;
 			Q_in.pushFront((Packet(),0));
 			Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
+		}else{
+			Q_in.popFront();
 		}
 	}
 }
@@ -68,7 +70,9 @@ dat __node_ty{
             Q_in.dupFront();
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
-        }
+        }else{
+			Q_in.popFront();
+		}
     }
 }
 RunSw:=0, FwdQ:=1;
