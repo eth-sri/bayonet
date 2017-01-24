@@ -1,0 +1,78 @@
+// fail, strategy 1:
+
+NUM_ARRIVED := 2;
+
+def __run(){
+	num_arrived = num_arrived + 1;
+	// random scheduling, failing link.
+	// packet sample: first, packet one arrives, then packet three
+	// packet two is dropped
+	if num_arrived == 1{
+		observe(pkt.id == 1);
+	}else if num_arrived == 2{
+		observe(pkt.id == 3);
+	}else if num_arrived == 3{
+		observe(0);
+	}
+    Q_in.popFront();
+}
+
+
+// fail, strategy 2:
+
+NUM_ARRIVED := 3;
+
+def __run(){
+	// link failing, but all packets are sent over the non-failing link.
+	num_arrived = num_arrived + 1;
+	if num_arrived == 1{
+		observe(pkt.id == 1);
+	}else if num_arrived == 2{
+		observe(pkt.id == 2);
+	}else if num_arrived == 3{
+		observe(pkt.id == 3);
+	}
+    Q_in.popFront();
+}
+
+// fail, strategy 3:
+
+NUM_ARRIVED := 0;
+
+def __run(){
+	num_arrived = num_arrived + 1;
+	// link failing, all packets sent over failing link.
+	observe(0);
+}
+
+// nofail, strategy 1:
+
+NUM_ARRIVED := 3;
+
+def __run(){
+	num_arrived = num_arrived + 1;
+	// both links are used, packets are reordered
+	if num_arrived == 1{
+		observe(pkt.id == 2);
+	}else{
+		observe(pkt.id == 1);
+	}else{
+		observe(pkt.id == 3);
+	}
+}
+
+// nofail, strategy 2/3
+
+NUM_ARRIVED := 3;
+
+def __run(){
+	num_arrived = num_arrived + 1;
+	// only one link used, packets are not reordered
+	if num_arrived == 1{
+		observe(pkt.id == 1);
+	}else{
+		observe(pkt.id == 2);
+	}else{
+		observe(pkt.id == 3);
+	}
+}
