@@ -13,6 +13,9 @@
 ./run.sh congestion-deterministic-contracted.psi  # always congested
 ./run.sh congestion-deterministic2-contracted.psi # prob of congestion 1/8, but scheduler is hard to explain
 
+./run.sh congestion-large-deterministic-contracted.psi
+./run.sh congestion-large-deterministic2-contracted.psi
+
 # ./run congestion-synthesis-deterministic-contracted.psi # seems pointless
 
 
