@@ -1,4 +1,4 @@
-num_steps := 30;
+num_steps := 40;
 
 n_packets := 3;
 queue_cap := 2;
