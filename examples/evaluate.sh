@@ -41,3 +41,11 @@
 # moved to end because large:
 ./run.sh congestion-large-contracted.psi
 ./run.sh congestion-large-synthesis-contracted.psi
+
+
+# reliability with observations
+./run.sh reliability-observe-contracted-fail-strategy1.psi
+./run.sh reliability-observe-contracted-fail-strategy2.psi
+./run.sh reliability-observe-contracted-fail-strategy3.psi
+./run.sh reliability-observe-contracted-nofail-strategy1.psi
+./run.sh reliability-observe-contracted-nofail-strategy23.psi
