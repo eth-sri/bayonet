@@ -53,11 +53,11 @@ dat __h0_ty{
 		num_arrived = num_arrived + 1;
 		// both links are used, packets are reordered
 		if num_arrived == 1{
-			observe(pkt.id == 2);
+			observe(Q_in.data[0][0].id == 2);
 		}else{
-			observe(pkt.id == 1);
+			observe(Q_in.data[0][0].id == 1);
 		}else{
-			observe(pkt.id == 3);
+			observe(Q_in.data[0][0].id == 3);
 		}
 	}
 }

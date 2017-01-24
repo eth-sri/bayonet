@@ -74,11 +74,11 @@ dat __h1_ty{
 		// link failing, but all packets are sent over the non-failing link.
 		num_arrived = num_arrived + 1;
 		if num_arrived == 1{
-			observe(pkt.id == 1);
+			observe(Q_in.data[0][0].id == 1);
 		}else if num_arrived == 2{
-			observe(pkt.id == 2);
+			observe(Q_in.data[0][0].id == 2);
 		}else if num_arrived == 3{
-			observe(pkt.id == 3);
+			observe(Q_in.data[0][0].id == 3);
 		}
 		Q_in.popFront();
 	}
