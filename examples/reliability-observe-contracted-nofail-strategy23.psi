@@ -124,6 +124,7 @@ dat __s2_ty{
     def __s2_ty(){
         Q_in = Queue();
         Q_out = Queue();
+		failing = 2;
     }
     def __run(){
         if failing==2{
