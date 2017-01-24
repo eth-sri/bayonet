@@ -16,11 +16,11 @@
 # ./run congestion-synthesis-deterministic-contracted.psi # seems pointless
 
 
-
 # reliability
 
 ## random scheduling
 ./run.sh reliability-contracted.psi
+./run.sh reliability-synthesis-contracted.psi # computes probability that packet arrives
 
 ## deterministic scheduling
 # unnecessary: result is independent of scheduling as we model only one packet at a time
