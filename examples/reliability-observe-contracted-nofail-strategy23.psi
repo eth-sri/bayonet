@@ -75,9 +75,9 @@ dat __h1_ty{
 		// only one link used, packets are not reordered
 		if num_arrived == 1{
 			observe(Q_in.data[0][0].id == 1);
-		}else{
+		}else if num_arrived == 2{
 			observe(Q_in.data[0][0].id == 2);
-		}else{
+		}else if num_arrived == 3{
 			observe(Q_in.data[0][0].id == 3);
 		}
 	}
