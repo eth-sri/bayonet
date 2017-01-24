@@ -40,4 +40,4 @@
 
 # moved to end because large:
 ./run.sh congestion-large-contracted.psi
-./run.sh congestion-large-syhnthesis-contracted.psi
+./run.sh congestion-large-synthesis-contracted.psi
