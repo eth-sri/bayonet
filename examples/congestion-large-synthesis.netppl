@@ -1,5 +1,5 @@
 
-parameters{ NUM_PACKETS(3), COST_01(1), COST_02(2), COST_03(3), COST_12(1), COST_23(1) }
+parameters{ NUM_PACKETS(3), COST_01, COST_02, COST_03, COST_12, COST_23 }
 
 num_steps 40;
 
