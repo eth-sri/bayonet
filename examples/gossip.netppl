@@ -1,5 +1,5 @@
 
-num_steps 20;
+num_steps 15;
 
 topology{
 	nodes { S0, S1, S2, S3 }
