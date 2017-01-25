@@ -1,3 +1,5 @@
+parameters{ NUM_PACKETS(3), NUM_ARRIVED(3), P_FAIL(1/1000) }
+
 num_steps 30;
 
 topology{
@@ -31,7 +33,6 @@ query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2 and failing
 
 
 packet_fields{ id }
-parameters{ NUM_PACKETS(3), NUM_ARRIVED(3) }
 
 def h0(pkt,port) state pkt_count(0){
 	new;
@@ -78,7 +79,7 @@ def s1(){
 	fwd(2);
 }
 def s2()state failing(2){
-	if failing == 2 { failing = flip(1/1000); }
+	if failing == 2 { failing = flip(P_FAIL); }
 	if failing == 1 { drop }
 	else{ fwd(2); }
 }
