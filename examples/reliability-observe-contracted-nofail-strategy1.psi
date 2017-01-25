@@ -80,6 +80,7 @@ dat __h1_ty{
 		}else if num_arrived == 3{
 			observe(Q_in.data[0][0].id == 3);
 		}
+		Q_in.popFront();
 	}
 }
 dat __s0_ty{

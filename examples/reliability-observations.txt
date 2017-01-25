@@ -1,8 +1,10 @@
 // fail, strategy 1:
 
-NUM_ARRIVED := 2;
+parameters{ ..., NUM_ARRIVED := 2, ... }
 
-def __run(){
+...
+
+def h1() state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	// random scheduling, failing link.
 	// packet sample: first, packet one arrives, then packet three
@@ -17,12 +19,16 @@ def __run(){
     Q_in.popFront();
 }
 
+...
+
 
 // fail, strategy 2:
 
-NUM_ARRIVED := 3;
+parameters{ ..., NUM_ARRIVED := 3, ... }
 
-def __run(){
+...
+
+def h1() state num_arrived(0){
 	// link failing, but all packets are sent over the non-failing link.
 	num_arrived = num_arrived + 1;
 	if num_arrived == 1{
@@ -37,9 +43,9 @@ def __run(){
 
 // fail, strategy 3:
 
-NUM_ARRIVED := 0;
+parameters{ ..., NUM_ARRIVED := 0, ... }
 
-def __run(){
+def h1() state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	// link failing, all packets sent over failing link.
 	observe(0);
@@ -47,25 +53,25 @@ def __run(){
 
 // nofail, strategy 1:
 
-NUM_ARRIVED := 3;
+parameters{ ..., NUM_ARRIVED := 3, ... }
 
-def __run(){
+def h1() state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	// both links are used, packets are reordered
-	if num_arrived == 1{
+	if num_arrived == 1 {
 		observe(pkt.id == 2);
-	}else{
+	}else if num_arrived == 2 {
 		observe(pkt.id == 1);
-	}else{
+	}else if num_arrived == 3 {
 		observe(pkt.id == 3);
 	}
 }
 
 // nofail, strategy 2/3
 
-NUM_ARRIVED := 3;
+parameters{ ..., NUM_ARRIVED := 3, ... }
 
-def __run(){
+def h1() state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	// only one link used, packets are not reordered
 	if num_arrived == 1{
