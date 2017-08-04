@@ -29,7 +29,7 @@ class Builder{
 			state~=new Variable(name,name=="pkt"?"Packet":"ℝ",init_);
 			stateSet[name]=[];
 		}
-		class Label{
+		class Label{// TODO: get rid of this?
 			int id=-1;
 			Statement stm;
 			void here()in{assert(id==-1);}body{
@@ -44,10 +44,7 @@ class Builder{
 			return new Label();
 		}
 		static abstract class Statement{
-			Label next;
-			string toPSI(){
-				return next.toPSI();
-			}
+			abstract string toPSI();
 		}
 		static abstract class Expression{
 			abstract string toPSI();
@@ -59,7 +56,7 @@ class Builder{
 				Expression rhs;
 				this(Expression var,Expression rhs){ this.var=var; this.rhs=rhs; }
 				override string toPSI(){
-					return var.toPSI()~" = "~rhs.toPSI()~";\n"~super.toPSI();
+					return var.toPSI()~" = "~rhs.toPSI()~";\n";
 				}
 			}
 			return new AssignStm(name,rhs);
@@ -138,14 +135,28 @@ class Builder{
 			}
 			return new IteExp(cond,then,othw);
 		}
+		Statement compound(Statement[] stms){
+			static class CompoundStm: Statement{
+				Statement[] stms;
+				this(Statement[] stms){
+					this.stms=stms;
+				}
+				override string toPSI(){
+					return stms.map!(s=>s.toPSI()).join();
+				}
+			}
+			return new CompoundStm(stms);
+		}
 		Statement skip(){
-			static class Skip: Statement{}
+			static class Skip: Statement{
+				override string toPSI(){ return ""; }
+			}
 			return new Skip();
 		}
 		Statement new_(){
 			static class NewStm: Statement{
 				override string toPSI(){
-					return "Q_in.pushFront((Packet(),0));\n"~super.toPSI();
+					return "Q_in.pushFront((Packet(),0));\n";
 				}
 			}
 			return new NewStm();
@@ -153,7 +164,7 @@ class Builder{
 		Statement dup(){
 			static class DupStm: Statement{
 				override string toPSI(){
-					return "Q_in.dupFront();\n"~super.toPSI();
+					return "Q_in.dupFront();\n";
 				}
 			}
 			return new DupStm();
@@ -161,7 +172,7 @@ class Builder{
 		Statement drop(){
 			static class DropStm: Statement{
 				override string toPSI(){
-					return "Q_in.popFront();"~super.toPSI();
+					return "Q_in.popFront();\n";
 				}
 			}
 			return new DropStm();
@@ -171,44 +182,42 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),"));\n"~super.toPSI());
+					return text("Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),"));\n");
 				}
 			}
 			return new FwdStm(port);
 		}
-		Statement getIf(Expression cnd,Label then,Label othw){
+		Statement getIf(Expression cnd,Statement then,Statement othw){
 			static class IteStm: Statement{
 				Expression cnd;
-				Label then,othw;
-				this(Expression cnd,Label then,Label othw){
+				Statement then,othw;
+				this(Expression cnd,Statement then,Statement othw){
 					this.cnd=cnd; this.then=then; this.othw=othw;
 				}
 				override string toPSI(){
-					return text("if ",cnd.toPSI(),"{\n",indent(then.toPSI()),"}else{\n",indent(othw.toPSI()),"}\n");
+					return text("if ",cnd.toPSI(),"{\n",
+					            indent(then.toPSI()),"}",
+					            othw?text(" else {\n",
+					                      indent(othw.toPSI()),
+					                      "}\n"):"\n");
 				}
 			}
 			return new IteStm(cnd,then,othw);
 		}
 		void addStatement(Label loc,Statement stm){
-			assert(!loc.stm);
-			loc.stm=stm;
-			if(loc.id!=-1){
-				assert(stms.length>loc.id && stms[loc.id] is null);
-				stms[loc.id]=stm;
-			}
+			stms~=stm;
 		}
 		string toPSI(){
-			string r="def __run(){\n    ";
+			string r="def __run(){\n";
 			foreach(i,s;stms){
-				if(!s){ r~=text("// missing: ",i); continue; }
-				r~=text(i==0?"":"else ","if this.__state==",i,"{\n",indent(indent(s.toPSI))~"    }");
+				if(!s){ continue; }
+				r~=indent(s.toPSI());
 			}
-			r~="\n}";
+			r~="}";
 			r="dat __"~name~"_ty{\n"~indent(
-				"__state: ℝ, Q_in: Queue, Q_out: Queue;\n"~
+				"Q_in: Queue, Q_out: Queue;\n"~
 				state.map!(a=>a.toPSI()).join(", ")~(state.length?";\n":"")~
 				"def __"~name~"_ty(){\n"~indent(
-					"__state = 0;\n"~
 					"Q_in = Queue();\n"~
 					"Q_out = Queue();\n"~
 					state.filter!(a=>!!a.init_).map!(a=>a.toPSIInit()~"\n").join
@@ -453,8 +462,9 @@ string translate(Expression[] exprs, Builder bld){
 		if(fdef.state)
 			foreach(sd;fdef.state.vars)
 				prg.addState(sd.name.name,sd.init_?translateExpression(sd.init_):null);
+		alias Statement=Builder.Program.Statement;
 		alias Label=Builder.Program.Label;
-		Label translateStatement(Expression stm,Label nloc,Label loc)in{assert(!!nloc);}body{
+		Statement translateStatement(Expression stm,Label nloc,Label loc)in{assert(!!nloc);}body{
 			Builder.Program.Statement tstm=null;
 			if(auto be=cast(ABinaryExp)stm){
 				if(cast(BinaryExp!(Tok!"="))be||cast(BinaryExp!(Tok!":="))be){
@@ -469,7 +479,7 @@ string translate(Expression[] exprs, Builder bld){
 				auto then=translateStatement(ite.then,join,tloc);
 				auto oloc=prg.getLabel();
 				oloc.here();
-				auto othw=ite.othw?translateStatement(ite.othw,join,oloc):join;
+				auto othw=ite.othw?translateStatement(ite.othw,join,oloc):null;
 				tstm=prg.getIf(cnd,then,othw);
 			}else if(auto be=cast(BuiltInExp)stm){
 				if(be.which==Tok!"new") tstm=prg.new_();
@@ -483,13 +493,14 @@ string translate(Expression[] exprs, Builder bld){
 			}else if(auto ce=cast(CompoundExp)stm){
 				auto cloc=loc;
 				if(ce.s.length){
+					Statement[] stms;
 					foreach(i,s;ce.s){
 						auto cnloc=i+1==ce.s.length?nloc:prg.getLabel();
-						translateStatement(s,cnloc,cloc);
+						stms~=translateStatement(s,cnloc,cloc);
 						if(i+1!=ce.s.length) cnloc.here();
 						cloc=cnloc;
 					}
-					return loc;
+					tstm=prg.compound(stms);
 				}else tstm=prg.skip();
 			}
 			//assert(tstm && nloc,text("TODO: ",stm));
@@ -497,17 +508,16 @@ string translate(Expression[] exprs, Builder bld){
 				Expression stm;
 				this(Expression stm){ this.stm=stm; }
 				override string toPSI(){
-					return super.toPSI()~"/+ TODO: "~stm.toString()~"+/\n";
+					return "/+ TODO: "~stm.toString()~"+/\n";
 				}
 			}
 			if(!tstm) tstm=new TODOStatement(stm);
-			tstm.next=nloc;
-			prg.addStatement(loc,tstm);
-			return loc;
+			// tstm.next=nloc;
+			return tstm;
 		}
 		auto init=prg.getLabel();
 		init.here();
-		translateStatement(fdef.body_,init,init);
+		prg.addStatement(init,translateStatement(fdef.body_,init,init));
 	}
 	foreach(fdef;all!FunctionDef){
 		if(fdef.name.name=="scheduler") bld.addScheduler(fdef);
