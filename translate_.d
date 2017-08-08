@@ -61,6 +61,17 @@ class Builder{
 			}
 			return new AssignStm(name,rhs);
 		}
+		Statement define(Expression name, Expression rhs){
+			static class DefineStm: Statement{
+				Expression var;
+				Expression rhs;
+				this(Expression var,Expression rhs){ this.var=var; this.rhs=rhs; }
+				override string toPSI(){
+					return var.toPSI()~" := "~rhs.toPSI()~";\n";
+				}
+			}
+			return new DefineStm(name,rhs);
+		}
 		Expression read(string name){
 			static class Read: Expression{
 				string name;
@@ -91,7 +102,7 @@ class Builder{
 					if(op=="and") this.op="&&";
 				}
 				override string toPSI(){
-					return "("~e1.toPSI()~op~e2.toPSI()~");
+					return "("~e1.toPSI()~op~e2.toPSI()~")";
 				}
 			}
 			return new BinaryExp(e1,e2,op);
@@ -469,9 +480,12 @@ string translate(Expression[] exprs, Builder bld){
 		Statement translateStatement(Expression stm,Label nloc,Label loc)in{assert(!!nloc);}body{
 			Builder.Program.Statement tstm=null;
 			if(auto be=cast(ABinaryExp)stm){
-				if(cast(BinaryExp!(Tok!"="))be||cast(BinaryExp!(Tok!":="))be){
+				if(cast(BinaryExp!(Tok!"="))be){
 					auto e=translateExpression(be.e2);
 					tstm=prg.assign(translateExpression(be.e1),e);
+				}else if(cast(BinaryExp!(Tok!":="))be){
+					auto e=translateExpression(be.e2);
+					tstm=prg.define(translateExpression(be.e1),e);
 				}else assert(0,text(stm));
 			}else if(auto ite=cast(IteExp)stm){
 				auto cnd=translateExpression(ite.cond);
