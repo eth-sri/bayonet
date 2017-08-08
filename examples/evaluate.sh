@@ -49,3 +49,8 @@
 ./run.sh reliability-observe-contracted-fail-strategy3.psi
 ./run.sh reliability-observe-contracted-nofail-strategy1.psi
 ./run.sh reliability-observe-contracted-nofail-strategy23.psi
+
+# monitor example
+# ../netppl monitor-large.netppl > monitor-large.psi
+./run.sh monitor-large-bad.psi
+./run.sh monitor-large-good.psi

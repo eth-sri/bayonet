@@ -1,0 +1,542 @@
+num_steps := 1000;
+dat Queue{
+    data: (Packet × ℝ)[];
+    def Queue(){
+        data = ([]:(Packet × ℝ)[]);
+    }
+    def pushFront(x: Packet × ℝ){
+        data=[x]~data;
+    }
+    def pushBack(x: Packet × ℝ){
+        data=data~[x];
+    }
+    def takeFront(){
+        r:=front();
+        popFront();
+        return r;
+    }
+    def takeBack(){
+        r:=data[size()-1];
+        data=data[0..size()-1];
+        return r;
+    }
+    def size(){
+        return data.length;
+    }
+    def front(){
+        return data[0];
+    }
+    def dupFront(){
+        pushFront(front());
+    }
+    def popFront(){
+        data=data[1..size()];
+    }
+}
+k := 10, H0 := 0, Controller := 1, Yahoo := 2, Google := 3, S1 := 4, S2 := 5, S3 := 6, S4 := 7, S5 := 8, S6 := 9;
+CTRL_PROB := 1 / 5, TRAFFIC_YAHOO := 5, TRAFFIC_GOOGLE := 10, OBSERVE_BAD := 0;
+dat Packet{
+    dst: ℝ;
+    def Packet(){
+        dst = 0;
+    }
+}
+dat __controller_ty{
+    Q_in: Queue, Q_out: Queue;
+    num_packets: ℝ, tot_packets: ℝ;
+    def __controller_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        num_packets = 0;
+        tot_packets = 1;
+    }
+    def __run(){
+        num_packets = (num_packets+1);
+        if OBSERVE_BAD{
+            tot_packets = 11;
+            if (num_packets==1){
+                observe(((Q_in.data[0][1]==1)&&(Q_in.data[0][0].dst==Yahoo)));
+            } else {
+                if (num_packets==2){
+                    observe(((Q_in.data[0][1]==2)&&(Q_in.data[0][0].dst==Yahoo)));
+                } else {
+                    if (num_packets==3){
+                        observe(((Q_in.data[0][1]==4)&&(Q_in.data[0][0].dst==Google)));
+                    } else {
+                        if (num_packets==4){
+                            observe(((Q_in.data[0][1]==8)&&(Q_in.data[0][0].dst==Yahoo)));
+                        } else {
+                            if (num_packets==5){
+                                observe(((Q_in.data[0][1]==3)&&(Q_in.data[0][0].dst==Google)));
+                            } else {
+                                if (num_packets==6){
+                                    observe(((Q_in.data[0][1]==1)&&(Q_in.data[0][0].dst==Google)));
+                                } else {
+                                    if (num_packets==7){
+                                        observe(((Q_in.data[0][1]==9)&&(Q_in.data[0][0].dst==Google)));
+                                    } else {
+                                        if (num_packets==8){
+                                            observe(((Q_in.data[0][1]==4)&&(Q_in.data[0][0].dst==Google)));
+                                        } else {
+                                            if (num_packets==9){
+                                                observe(((Q_in.data[0][1]==3)&&(Q_in.data[0][0].dst==Google)));
+                                            } else {
+                                                if (num_packets==10){
+                                                    observe(((Q_in.data[0][1]==6)&&(Q_in.data[0][0].dst==Google)));
+                                                } else {
+                                                    if (num_packets==11){
+                                                        observe(((Q_in.data[0][1]==9)&&(Q_in.data[0][0].dst==Google)));
+                                                    } else {
+                                                        observe(0);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            tot_packets = 10;
+            if (num_packets==1){
+                observe(((Q_in.data[0][1]==1)&&(Q_in.data[0][0].dst==Yahoo)));
+            } else {
+                if (num_packets==2){
+                    observe(((Q_in.data[0][1]==4)&&(Q_in.data[0][0].dst==Google)));
+                } else {
+                    if (num_packets==3){
+                        observe(((Q_in.data[0][1]==8)&&(Q_in.data[0][0].dst==Yahoo)));
+                    } else {
+                        if (num_packets==4){
+                            observe(((Q_in.data[0][1]==1)&&(Q_in.data[0][0].dst==Google)));
+                        } else {
+                            if (num_packets==5){
+                                observe(((Q_in.data[0][1]==6)&&(Q_in.data[0][0].dst==Google)));
+                            } else {
+                                if (num_packets==6){
+                                    observe(((Q_in.data[0][1]==9)&&(Q_in.data[0][0].dst==Google)));
+                                } else {
+                                    if (num_packets==7){
+                                        observe(((Q_in.data[0][1]==1)&&(Q_in.data[0][0].dst==Google)));
+                                    } else {
+                                        if (num_packets==8){
+                                            observe(((Q_in.data[0][1]==4)&&(Q_in.data[0][0].dst==Google)));
+                                        } else {
+                                            if (num_packets==9){
+                                                observe(((Q_in.data[0][1]==6)&&(Q_in.data[0][0].dst==Google)));
+                                            } else {
+                                                if (num_packets==10){
+                                                    observe(((Q_in.data[0][1]==9)&&(Q_in.data[0][0].dst==Google)));
+                                                } else {
+                                                    observe(0);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        Q_in.popFront();
+    }
+}
+dat __h0_ty{
+    Q_in: Queue, Q_out: Queue;
+    num_yahoo: ℝ, num_google: ℝ;
+    def __h0_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        num_yahoo = 0;
+        num_google = 0;
+    }
+    def __run(){
+        rem_yahoo := (TRAFFIC_YAHOO-num_yahoo);
+        rem_google := (TRAFFIC_GOOGLE-num_google);
+        if ((rem_yahoo>0)||(rem_google>0)){
+            Q_in.pushFront((Packet(),0));
+            if flip((rem_yahoo/(rem_yahoo+rem_google))){
+                num_yahoo = (num_yahoo+1);
+                Q_in.data[0][0].dst = Yahoo;
+            } else {
+                num_google = (num_google+1);
+                Q_in.data[0][0].dst = Google;
+            }
+            Q_out.pushBack((Q_in.takeFront()[0],1));
+        } else {
+            Q_in.popFront();
+        }
+    }
+}
+dat __yahoo_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __yahoo_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        if (Q_in.data[0][0].dst==Yahoo){
+            Q_in.popFront();
+        } else {
+            if (Q_in.data[0][0].dst==Google){
+                Q_out.pushBack((Q_in.takeFront()[0],3));
+            }
+        }
+    }
+}
+dat __google_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __google_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        Q_in.popFront();
+    }
+}
+dat __s1_ty{
+    Q_in: Queue, Q_out: Queue;
+    bad_hash: ℝ;
+    def __s1_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        bad_hash = 2;
+    }
+    def __run(){
+        if (bad_hash==2){
+            bad_hash = flip((1/10));
+        }
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        if (Q_in.data[0][0].dst==Yahoo){
+            if flip((1/2)){
+                Q_out.pushBack((Q_in.takeFront()[0],2));
+            } else {
+                Q_out.pushBack((Q_in.takeFront()[0],3));
+            }
+        } else {
+            if (Q_in.data[0][0].dst==Google){
+                if (((bad_hash==1)&&flip((1/3)))||((bad_hash==0)&&flip((1/2)))){
+                    Q_out.pushBack((Q_in.takeFront()[0],3));
+                } else {
+                    Q_out.pushBack((Q_in.takeFront()[0],4));
+                }
+            }
+        }
+    }
+}
+dat __s2_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __s2_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        Q_out.pushBack((Q_in.takeFront()[0],2));
+    }
+}
+dat __s3_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __s3_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        Q_out.pushBack((Q_in.takeFront()[0],2));
+    }
+}
+dat __s4_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __s4_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        if flip((1/2)){
+            Q_out.pushBack((Q_in.takeFront()[0],2));
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],3));
+        }
+    }
+}
+dat __s5_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __s5_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        Q_out.pushBack((Q_in.takeFront()[0],3));
+    }
+}
+dat __s6_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __s6_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if flip(CTRL_PROB){
+            Q_in.dupFront();
+            Q_out.pushBack((Q_in.takeFront()[0],100));
+        }
+        Q_out.pushBack((Q_in.takeFront()[0],2));
+    }
+}
+RunSw:=0, FwdQ:=1;
+dat __D{
+    __H0 : __h0_ty, __Controller : __controller_ty, __Yahoo : __yahoo_ty, __Google : __google_ty, __S1 : __s1_ty, __S2 : __s2_ty, __S3 : __s3_ty, __S4 : __s4_ty, __S5 : __s5_ty, __S6 : __s6_ty;
+    def __D(){
+        __H0 = __h0_ty(), __Controller = __controller_ty(), __Yahoo = __yahoo_ty(), __Google = __google_ty(), __S1 = __s1_ty(), __S2 = __s2_ty(), __S3 = __s3_ty(), __S4 = __s4_ty(), __S5 = __s5_ty(), __S6 = __s6_ty();
+    }
+    def scheduler(){
+        actions := ([]: (R x R)[]);
+        for i in [0..k){
+            if (if i == 0 { __H0.Q_in } else if i == 1 { __Controller.Q_in } else if i == 2 { __Yahoo.Q_in } else if i == 3 { __Google.Q_in } else if i == 4 { __S1.Q_in } else if i == 5 { __S2.Q_in } else if i == 6 { __S3.Q_in } else if i == 7 { __S4.Q_in } else if i == 8 { __S5.Q_in } else  { __S6.Q_in }).size() > 0 {
+                actions ~= [(RunSw,i)];
+            }
+            if (if i == 0 { __H0.Q_out } else if i == 1 { __Controller.Q_out } else if i == 2 { __Yahoo.Q_out } else if i == 3 { __Google.Q_out } else if i == 4 { __S1.Q_out } else if i == 5 { __S2.Q_out } else if i == 6 { __S3.Q_out } else if i == 7 { __S4.Q_out } else if i == 8 { __S5.Q_out } else  { __S6.Q_out }).size() > 0 {
+                actions ~= [(FwdQ,i)];
+            }
+        }
+        return actions[uniformInt(0,actions.length - 1)];
+    }
+    def __step(){
+        if __H0.Q_in.size() || __H0.Q_out.size() || __Controller.Q_in.size() || __Controller.Q_out.size() || __Yahoo.Q_in.size() || __Yahoo.Q_out.size() || __Google.Q_in.size() || __Google.Q_out.size() || __S1.Q_in.size() || __S1.Q_out.size() || __S2.Q_in.size() || __S2.Q_out.size() || __S3.Q_in.size() || __S3.Q_out.size() || __S4.Q_in.size() || __S4.Q_out.size() || __S5.Q_in.size() || __S5.Q_out.size() || __S6.Q_in.size() || __S6.Q_out.size() {
+            (action,node) := scheduler();
+            if action {
+                if node == 0 && __H0.Q_out.size() {
+                    (pkt,port) := __H0.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 7));
+                    }
+                }
+                if node == 1 && __Controller.Q_out.size() {
+                    (pkt,port) := __Controller.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 2 {
+                        __S2.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 3 {
+                        __S3.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 5 {
+                        __S5.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 6 {
+                        __S6.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 7 {
+                        __H0.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 8 {
+                        __Yahoo.Q_in.pushBack((pkt, 100));
+                    }
+                    if port == 9 {
+                        __Google.Q_in.pushBack((pkt, 100));
+                    }
+                }
+                if node == 2 && __Yahoo.Q_out.size() {
+                    (pkt,port) := __Yahoo.Q_out.takeFront();
+                    if port == 1 {
+                        __S2.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S3.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __Google.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 8));
+                    }
+                }
+                if node == 3 && __Google.Q_out.size() {
+                    (pkt,port) := __Google.Q_out.takeFront();
+                    if port == 1 {
+                        __Yahoo.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __S5.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 3 {
+                        __S6.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 9));
+                    }
+                }
+                if node == 4 && __S1.Q_out.size() {
+                    (pkt,port) := __S1.Q_out.takeFront();
+                    if port == 1 {
+                        __H0.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 2 {
+                        __S2.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __S3.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 5 && __S2.Q_out.size() {
+                    (pkt,port) := __S2.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __Yahoo.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 2));
+                    }
+                }
+                if node == 6 && __S3.Q_out.size() {
+                    (pkt,port) := __S3.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __Yahoo.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __S5.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 3));
+                    }
+                }
+                if node == 7 && __S4.Q_out.size() {
+                    (pkt,port) := __S4.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 4));
+                    }
+                    if port == 2 {
+                        __S5.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __S6.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 4));
+                    }
+                }
+                if node == 8 && __S5.Q_out.size() {
+                    (pkt,port) := __S5.Q_out.takeFront();
+                    if port == 1 {
+                        __S3.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __S4.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __Google.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 5));
+                    }
+                }
+                if node == 9 && __S6.Q_out.size() {
+                    (pkt,port) := __S6.Q_out.takeFront();
+                    if port == 1 {
+                        __S4.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __Google.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 100 {
+                        __Controller.Q_in.pushBack((pkt, 6));
+                    }
+                }
+            } else {
+                if node == 0 && __H0.Q_in.size() {
+                    __H0.__run();
+                }
+                if node == 1 && __Controller.Q_in.size() {
+                    __Controller.__run();
+                }
+                if node == 2 && __Yahoo.Q_in.size() {
+                    __Yahoo.__run();
+                }
+                if node == 3 && __Google.Q_in.size() {
+                    __Google.__run();
+                }
+                if node == 4 && __S1.Q_in.size() {
+                    __S1.__run();
+                }
+                if node == 5 && __S2.Q_in.size() {
+                    __S2.__run();
+                }
+                if node == 6 && __S3.Q_in.size() {
+                    __S3.__run();
+                }
+                if node == 7 && __S4.Q_in.size() {
+                    __S4.__run();
+                }
+                if node == 8 && __S5.Q_in.size() {
+                    __S5.__run();
+                }
+                if node == 9 && __S6.Q_in.size() {
+                    __S6.__run();
+                }
+            }
+        }
+    }
+}
+def main(){
+    __d := __D();
+    __d.__H0.Q_in.pushBack((Packet(),0));
+    __d.__H0.__run();
+    repeat num_steps {
+        __d.__step();
+    }
+    observe((if Controller == 1 { __d.__Controller.num_packets } else { assert(0) }) == (if Controller == 1 { __d.__Controller.tot_packets } else { assert(0) }));
+    assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__Controller.Q_in.size() || __d.__Controller.Q_out.size() || __d.__Yahoo.Q_in.size() || __d.__Yahoo.Q_out.size() || __d.__Google.Q_in.size() || __d.__Google.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size() || __d.__S4.Q_in.size() || __d.__S4.Q_out.size() || __d.__S5.Q_in.size() || __d.__S5.Q_out.size() || __d.__S6.Q_in.size() || __d.__S6.Q_out.size()));
+    q₁ := Expectation(((if S1 == 4 { __d.__S1.bad_hash } else { assert(0) })) !=0);
+    return (q₁);
+}
+
