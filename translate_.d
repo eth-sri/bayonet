@@ -350,7 +350,9 @@ class Builder{
 			formatData()~
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
-			(nodes.length?"__d.__"~nodes[0]~".__run();\n":"")~
+			(nodes.length?
+			 "__d.__"~nodes[0]~".Q_in.pushBack((Packet(),0));\n"
+			 ~"__d.__"~nodes[0]~".__run();\n":"")~
 			"repeat num_steps {\n"~indent(
 				"__d.__step();\n"
 			)~"}\n"~
