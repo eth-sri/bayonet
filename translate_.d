@@ -215,6 +215,26 @@ class Builder{
 			}
 			return new IteStm(cnd,then,othw);
 		}
+		Statement observe(Expression e){
+			static class ObserveStm: Statement{
+				Expression e;
+				this(Expression e){ this.e=e; }
+				override string toPSI(){
+					return text("observe(",e.toPSI(),");\n");
+				}
+			}
+			return new ObserveStm(e);
+		}
+		Statement assert_(Expression e){
+			static class AssertStm: Statement{
+				Expression e;
+				this(Expression e){ this.e=e; }
+				override string toPSI(){
+					return text("assert(",e.toPSI(),");\n");
+				}
+			}
+			return new AssertStm(e);
+		}
 		void addStatement(Label loc,Statement stm){
 			stms~=stm;
 		}
@@ -504,6 +524,12 @@ string translate(Expression[] exprs, Builder bld){
 				oloc.here();
 				auto othw=ite.othw?translateStatement(ite.othw,join,oloc):null;
 				tstm=prg.getIf(cnd,then,othw);
+			}else if(auto obs=cast(ObserveExp)stm){
+				auto cnd=translateExpression(obs.e);
+				tstm=prg.observe(cnd);
+			}else if(auto ass=cast(AssertExp)stm){
+				auto cnd=translateExpression(ass.e);
+				tstm=prg.assert_(cnd);
 			}else if(auto be=cast(BuiltInExp)stm){
 				if(be.which==Tok!"new") tstm=prg.new_();
 				if(be.which==Tok!"dup") tstm=prg.dup();

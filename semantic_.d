@@ -277,6 +277,16 @@ Expression semantic(Expression expr,Scope sc){
 		if(ite.othw) propErr(ite.othw,ite);
 		return finish(ite);
 	}
+	if(auto obs=cast(ObserveExp)expr){
+		obs.e=semantic(obs.e,sc);
+		propErr(obs.e,obs);
+		return finish(obs);
+	}
+	if(auto ass=cast(AssertExp)expr){
+		ass.e=semantic(ass.e,sc);
+		propErr(ass.e,ass);
+		return finish(ass);
+	}
 	if(auto cmp=cast(CompoundExp)expr){
 		foreach(ref s;cmp.s){
 			s=semantic(s,sc);
