@@ -91,7 +91,7 @@ class Builder{
 					if(op=="and") this.op="&&";
 				}
 				override string toPSI(){
-					return e1.toPSI()~op~e2.toPSI();
+					return "("~e1.toPSI()~op~e2.toPSI()~");
 				}
 			}
 			return new BinaryExp(e1,e2,op);
