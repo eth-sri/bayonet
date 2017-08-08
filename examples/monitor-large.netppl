@@ -15,7 +15,7 @@ H0---S1---S3---S5------Google
         --S4---S6---
 
 Traffic from S1 to Yahoo is split between S2 and S3.
-Traffic from S1 to Gogle is split between S3 and S4.
+Traffic from S1 to Google is split between S3 and S4.
 Traffic from S4 to Google is split between S5 and S6.
 Traffic to S3 is forwarded to Yahoo.
 */
