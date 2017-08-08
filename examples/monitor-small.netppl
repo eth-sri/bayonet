@@ -1,4 +1,4 @@
-parameters{ CTRL_PROB(1/5), TRAFFIC(10), OBSERVE_BAD(0) }
+parameters{ CTRL_PROB(1/2), TRAFFIC(6), OBSERVE_BAD(0) }
 
 num_steps 1000;
 
@@ -41,48 +41,52 @@ programs{ Controller -> controller, H0 -> h0, S1 -> s1, S2 -> s2, H1 -> h1 }
 def controller(pkt, port) state num_packets(0), tot_packets(1){
 	num_packets = num_packets + 1;
 	if OBSERVE_BAD {
-		// 7 packets
-		tot_packets = 7;
-		// [1,1,1,2,2,2,4]
+		// 8 packets
+		tot_packets = 8;
+		// [1,1,4,2,1,4,4,2]
 		if num_packets == 1 {
 			observe(port==1);
 		}else if num_packets == 2 {
 			observe(port==1);
 		}else if num_packets == 3 {
-			observe(port==1);
+			observe(port==4);
 		}else if num_packets == 4 {
 			observe(port==2);
 		}else if num_packets == 5 {
-			observe(port==2);
+			observe(port==1);
 		}else if num_packets == 6 {
-			observe(port==2);
+			observe(port==4);
 		}else if num_packets == 7 {
 			observe(port==4);
+		}else if num_packets == 8 {
+			observe(port==2);
 		}else{
 			observe(0);
 		}
 	}else{
-		// 9 packets
-		tot_packets = 9;
-		// [1,2,1,1,2,4,4,4,1]
+		// 10 packets
+		tot_packets = 10;
+		// [1,1,1,2,1,4,4,2,4,4]
 		if num_packets == 1 {
 			observe(port==1);
 		}else if num_packets == 2 {
-			observe(port==2);
+			observe(port==1);
 		}else if num_packets == 3 {
 			observe(port==1);
 		}else if num_packets == 4 {
-			observe(port==1);
-		}else if num_packets == 5 {
 			observe(port==2);
+		}else if num_packets == 5 {
+			observe(port==1);
 		}else if num_packets == 6 {
 			observe(port==4)
 		}else if num_packets == 7 {
 			observe(port==4);
 		}else if num_packets == 8 {
-			observe(port==4);
+			observe(port==2);
 		}else if num_packets == 9 {
-			observe(port==1);
+			observe(port==4);
+		}else if num_packets == 10 {
+			observe(port==4);
 		}else{
 			observe(0);
 		}

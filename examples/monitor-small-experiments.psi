@@ -1,4 +1,5 @@
-num_steps := 1000;
+num_steps := 100;
+BAD_HASH := 0;
 dat Queue{
     data: (Packet × ℝ)[];
     def Queue(){
@@ -42,93 +43,17 @@ dat Packet{
 dat __controller_ty{
     Q_in: Queue, Q_out: Queue;
     num_packets: ℝ, tot_packets: ℝ;
+	packets : ℝ[];
     def __controller_ty(){
         Q_in = Queue();
         Q_out = Queue();
         num_packets = 0;
         tot_packets = 1;
+		packets = [];
     }
     def __run(){
         num_packets = (num_packets+1);
-        if OBSERVE_BAD{
-            tot_packets = 8;
-            if (num_packets==1){
-                observe((Q_in.data[0][1]==1));
-            } else {
-                if (num_packets==2){
-                    observe((Q_in.data[0][1]==1));
-                } else {
-                    if (num_packets==3){
-                        observe((Q_in.data[0][1]==4));
-                    } else {
-                        if (num_packets==4){
-                            observe((Q_in.data[0][1]==2));
-                        } else {
-                            if (num_packets==5){
-                                observe((Q_in.data[0][1]==1));
-                            } else {
-                                if (num_packets==6){
-                                    observe((Q_in.data[0][1]==4));
-                                } else {
-                                    if (num_packets==7){
-                                        observe((Q_in.data[0][1]==4));
-                                    } else {
-                                        if (num_packets==8){
-                                            observe((Q_in.data[0][1]==2));
-                                        } else {
-                                            observe(0);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            tot_packets = 10;
-            if (num_packets==1){
-                observe((Q_in.data[0][1]==1));
-            } else {
-                if (num_packets==2){
-                    observe((Q_in.data[0][1]==1));
-                } else {
-                    if (num_packets==3){
-                        observe((Q_in.data[0][1]==1));
-                    } else {
-                        if (num_packets==4){
-                            observe((Q_in.data[0][1]==2));
-                        } else {
-                            if (num_packets==5){
-                                observe((Q_in.data[0][1]==1));
-                            } else {
-                                if (num_packets==6){
-                                    observe((Q_in.data[0][1]==4));
-                                } else {
-                                    if (num_packets==7){
-                                        observe((Q_in.data[0][1]==4));
-                                    } else {
-                                        if (num_packets==8){
-                                            observe((Q_in.data[0][1]==2));
-                                        } else {
-                                            if (num_packets==9){
-                                                observe((Q_in.data[0][1]==4));
-                                            } else {
-                                                if (num_packets==10){
-                                                    observe((Q_in.data[0][1]==4));
-                                                } else {
-                                                    observe(0);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+		packets ~= [Q_in.front()[1]];
         Q_in.popFront();
     }
 }
@@ -170,7 +95,7 @@ dat __s1_ty{
     def __s1_ty(){
         Q_in = Queue();
         Q_out = Queue();
-        bad_hash = 2;
+        bad_hash = BAD_HASH;
     }
     def __run(){
         if (bad_hash==2){
@@ -180,7 +105,7 @@ dat __s1_ty{
             Q_in.dupFront();
             Q_out.pushBack((Q_in.takeFront()[0],100));
         }
-        if (((bad_hash==1)&&flip((1/3)))||((bad_hash==0)&&flip((1/2)))){
+        if ((bad_hash==1) && flip((1/3))) || ((bad_hash==0) && flip((1/2))){
             Q_out.pushBack((Q_in.takeFront()[0],2));
         } else {
             Q_out.pushBack((Q_in.takeFront()[0],3));
@@ -313,9 +238,9 @@ def main(){
     repeat num_steps {
         __d.__step();
     }
-    observe((if Controller == 1 { __d.__Controller.num_packets } else { assert(0) }) == (if Controller == 1 { __d.__Controller.tot_packets } else { assert(0) }));
     assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__Controller.Q_in.size() || __d.__Controller.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__H1.Q_in.size() || __d.__H1.Q_out.size()));
     q₁ := Expectation(((if S1 == 2 { __d.__S1.bad_hash } else { assert(0) })) !=0);
-    return (q₁);
+    //return (q₁);
+	return __d.__Controller.packets;
 }
 
