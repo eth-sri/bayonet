@@ -41,6 +41,7 @@ Expression[] semantic(Source src,Expression[] exprs,Scope sc){
 	doSemantic!NumStepsDecl;
 	doSemantic!QueueCapacityDecl;
 	doSemantic!QueryDecl;
+	doSemantic!PostObserveDecl;
 	return exprs;
 }	
 
@@ -147,6 +148,9 @@ Expression semantic(Expression expr,Scope sc){
 	}
 	if(auto qd=cast(QueryDecl)expr){
 		return finish(qd);
+	}
+	if(auto pd=cast(PostObserveDecl)expr){
+		return finish(pd);
 	}
 	if(auto vd=cast(VarDecl)expr){
 		if(!sc.insert(vd))

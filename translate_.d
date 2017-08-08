@@ -272,6 +272,9 @@ class Builder{
 	void addScheduler(FunctionDef scheduler){
 		this.scheduler=scheduler;
 	}
+	void addPostObserve(Expression decl){
+		postObserves~=decl;
+	}
 	void addNumSteps(NumStepsDecl numSteps){
 		this.num_steps = numSteps.num_steps;
 	}
@@ -357,8 +360,10 @@ class Builder{
 			)~"}\n"
 		)~"}\n";
 		auto nonterminal = nodes.map!(n=>text("__d.__",n,".Q_in.size() || __d.__",n,".Q_out.size()")).join(" || ");
+		auto data=formatData(), queries=formatQueries();
+		auto pObserves = postObserves.map!(po=>text("observe(",po.toString(),");\n")).join;
 		auto mainfun=
-			formatData()~
+			data~
 			"def main(){\n"~indent(
 			"__d := __D();\n"~
 			(nodes.length?
@@ -367,8 +372,9 @@ class Builder{
 			"repeat num_steps {\n"~indent(
 				"__d.__step();\n"
 			)~"}\n"~
+			pObserves~
 			"assert(!("~nonterminal~"));\n"~
-			formatQueries()
+			queries
 			)~"}\n";
 		auto queuedef="dat Queue{\n"~indent(
 			"data: (Packet × ℝ)[];\n"~
@@ -420,6 +426,7 @@ private:
 	Expression[] queries;
 	Expression num_steps;
 	Expression capacity;
+	Expression[] postObserves;
 }
 
 string translate(Expression[] exprs, Builder bld){
@@ -540,5 +547,6 @@ string translate(Expression[] exprs, Builder bld){
 		else translateFun(fdef);
 	}
 	foreach(m;pdcl.mappings) bld.addProgram(m.node.name,m.prg.name);
+	foreach(p;all!PostObserveDecl) bld.addPostObserve(p.e);
 	return bld.toPSI();
 }

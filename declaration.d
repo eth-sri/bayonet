@@ -84,6 +84,13 @@ class QueryDecl: Declaration{
 	override string toString(){ return "query "~query.toString(); }
 }
 
+class PostObserveDecl: Declaration{
+	Expression e;
+	this(Expression e){ super(null); this.e=e; }
+	override @property string kind(){ return "post_observe declaration"; }
+	override string toString(){ return "post_observe "~e.toString(); }
+}
+
 class NumStepsDecl: Declaration{
 	Expression num_steps;
 	this(Expression num_steps){ super(null); this.num_steps=num_steps; }

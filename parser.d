@@ -525,6 +525,7 @@ struct Parser{
 			case Tok!"num_steps": return parseNumStepsDecl();
 			case Tok!"queue_capacity": return parseQueueCapacityDecl();
 			case Tok!"query": return parseQueryDecl();
+			case Tok!"post_observe": return parsePostObserveDecl();
 			case Tok!"def": return parseFunctionDef();
 			case Tok!"return": return parseReturn();
 			case Tok!"if": return parseIte();
@@ -707,6 +708,14 @@ struct Parser{
 		auto e=parseExpression();
 		expect(Tok!";");
 		return res=New!QueryDecl(e);
+	}
+
+	PostObserveDecl parsePostObserveDecl(){
+		mixin(SetLoc!PostObserveDecl);
+		expect(Tok!"post_observe");
+		auto e=parseExpression();
+		expect(Tok!";");
+		return res=New!PostObserveDecl(e);
 	}
 
 	ProgramMappingDecl parseProgramMappingDecl(){
