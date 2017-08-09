@@ -52,5 +52,13 @@
 
 # monitor example
 # ../netppl monitor-large.netppl > monitor-large.psi
-./run.sh monitor-large-bad.psi
-./run.sh monitor-large-good.psi
+# ./run.sh monitor-large-bad.psi
+# ./run.sh monitor-large-good.psi
+
+# ../netppl monitor-small.netppl > monitor-small.psi
+# ./run.sh monitor-small-bad.psi
+# ./run.sh monitor-small-good.psi
+
+# ../netppl monitor-smaller.netppl > monitor-smaller.psi
+./run.sh monitor-smaller-bad.psi
+./run.sh monitor-smaller-good.psi
