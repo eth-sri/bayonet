@@ -66,3 +66,7 @@
 # ../netppl monitor-smallest.netppl > monitor-smallest.psi
 ./run.sh monitor-smallest-bad.psi
 ./run.sh monitor-smallest-good.psi
+
+# ../netppl monitor-small3.netppl > monitor-small3.psi
+./run.sh monitor-small3-bad.psi
+./run.sh monitor-small3-good.psi
