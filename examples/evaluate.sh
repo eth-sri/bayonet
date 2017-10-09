@@ -51,22 +51,22 @@
 ./run.sh reliability-observe-contracted-nofail-strategy23.psi
 
 # monitor example
-# ../netppl monitor-large.netppl > monitor-large.psi
+# ../bayonet monitor-large.bayonet > monitor-large.psi
 # ./run.sh monitor-large-bad.psi
 # ./run.sh monitor-large-good.psi
 
-# ../netppl monitor-small.netppl > monitor-small.psi
+# ../bayonet monitor-small.bayonet > monitor-small.psi
 # ./run.sh monitor-small-bad.psi
 # ./run.sh monitor-small-good.psi
 
-# ../netppl monitor-smaller.netppl > monitor-smaller.psi
+# ../bayonet monitor-smaller.bayonet > monitor-smaller.psi
 # ./run.sh monitor-smaller-bad.psi
 # ./run.sh monitor-smaller-good.psi
 
-# ../netppl monitor-smallest.netppl > monitor-smallest.psi
+# ../bayonet monitor-smallest.bayonet > monitor-smallest.psi
 ./run.sh monitor-smallest-bad.psi
 ./run.sh monitor-smallest-good.psi
 
-# ../netppl monitor-small3.netppl > monitor-small3.psi
+# ../bayonet monitor-small3.bayonet > monitor-small3.psi
 ./run.sh monitor-small3-bad.psi
 ./run.sh monitor-small3-good.psi

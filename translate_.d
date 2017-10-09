@@ -432,7 +432,6 @@ class Builder{
 			)~"}\n"
 		)~"}\n";
 		return "num_steps := "~num_steps.toString()~";\n"~queuedef~nodedef~paramdef~packetdef~programs.map!(a=>a.toPSI()~"\n").join~"RunSw:=0, FwdQ:=1;\n"~mainfun;
-;
 	}
 private:
 	Variable[] packetFields;

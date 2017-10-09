@@ -6,7 +6,7 @@ import scope_, semantic_;
 string getActualPath(string path){
 	// TODO: search path
 	auto ext = path.extension;
-	if(ext=="") path = path.setExtension("prb");
+	if(ext=="") path = path.setExtension("bayonet");
 	//return file.getcwd().canFind("/test")?path:"test/"~path;
 	return path;
 }
@@ -24,7 +24,7 @@ string readCode(string path){ return readCode(File(path)); }
 int run(string path){
 	path = getActualPath(path);
 	auto ext = path.extension;
-	if(ext != ".netppl"){
+	if(ext != ".bayonet"){
 		stderr.writeln(path~": unrecognized extension: "~ext);
 		return 1;
 	}
