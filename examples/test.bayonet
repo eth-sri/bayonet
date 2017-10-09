@@ -1,0 +1,30 @@
+num_steps 10;
+
+query 1;
+
+topology{
+	nodes{ H0,H1 }
+	links{
+		(H0,pt1) <-> (H1,pt1)
+	}
+}
+
+programs{ H0->h0, H1->h1 }
+
+packet_fields { }
+
+def h0(pkt,port){
+	dup;
+}
+
+def h1(pkt,port){
+}
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}
