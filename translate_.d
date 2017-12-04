@@ -426,9 +426,11 @@ class Builder{
 				"return data[0];\n"
 			)~"}\n"~
 			"def dupFront(){\n"~indent(
+				(capacity?"if size() == 0 { return; }\n":"")~
 				"pushFront(front());\n"
 			)~"}\n"~
 			"def popFront(){\n"~indent(
+				(capacity?"if size() == 0 { return; }\n":"")~
 				"data=data[1..size()];\n"
 			)~"}\n"
 		)~"}\n";
