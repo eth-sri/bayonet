@@ -402,6 +402,7 @@ class Builder{
 				"data = ([]:(Packet × ℝ)[]);\n"
 			)~"}\n"~
 			"def pushFront(x: Packet × ℝ){\n"~indent(
+				(capacity?"if size() >= "~capacity.toString()~" { return; }\n":"")~
 				"data=[x]~data;\n"
 			)~"}\n"~
 			"def pushBack(x: Packet × ℝ){\n"~indent(
