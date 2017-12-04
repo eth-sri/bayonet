@@ -193,7 +193,7 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),"));\n");
+					return text("if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),")); }\n");
 				}
 			}
 			return new FwdStm(port);
