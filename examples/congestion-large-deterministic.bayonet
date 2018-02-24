@@ -53,9 +53,9 @@ nshortest(0), which(0)
 		shortest3 = route3 <= route1 && route3 <= route2;
 		nshortest = shortest1 + shortest2 + shortest3;
 		which = uniformInt(1,nshortest);
-		if which == shortest1 { fwd(1); }
-		else if which == shortest1+shortest2 { fwd(2); }
-		else { fwd(3); }
+		if which == shortest1 { fwd(2); }
+		else if which == shortest1+shortest2 { fwd(3); }
+		else { fwd(4); }
 	}
 }
 

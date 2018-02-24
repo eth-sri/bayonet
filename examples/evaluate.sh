@@ -37,12 +37,6 @@
 ./run.sh gossip-deterministic-contracted.psi
 
 
-
-# moved to end because large:
-./run.sh congestion-large-contracted.psi
-# ./run.sh congestion-large-synthesis-contracted.psi
-
-
 # reliability with observations
 ./run.sh reliability-observe-contracted-fail-strategy1.psi
 ./run.sh reliability-observe-contracted-fail-strategy2.psi
@@ -70,3 +64,9 @@
 # ../bayonet monitor-small3.bayonet > monitor-small3.psi
 ./run.sh monitor-small3-bad.psi
 ./run.sh monitor-small3-good.psi
+
+
+# moved to end because large:
+./run.sh congestion-large-contracted.psi
+./run.sh congestion-largest-contracted.psi
+# ./run.sh congestion-large-synthesis-contracted.psi
