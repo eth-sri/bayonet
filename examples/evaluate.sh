@@ -70,3 +70,6 @@
 ./run.sh congestion-large-contracted.psi
 ./run.sh congestion-largest-contracted.psi
 # ./run.sh congestion-large-synthesis-contracted.psi
+
+./run.sh reliability-large-30nodes-contracted.psi
+./run.sh reliability-deterministic-large-30nodes-contracted.psi
