@@ -26,6 +26,9 @@ dat Queue{
     def front(){
         return data[0];
     }
+    def dupFront(){
+        pushFront(front());
+    }
     def popFront(){
         data=data[1..size()];
     }
@@ -42,7 +45,6 @@ dat __h0_ty{
         Q_out = Queue();
     }
     def __run(){
-		Q_in.pushFront(Packet(),0);
         Q_out.pushBack((Q_in.takeFront()[0],1));
     }
 }
@@ -66,10 +68,10 @@ dat __s0_ty{
         Q_out = Queue();
     }
     def __run(){
-        if flip(1/2){
-			Q_out.pushBack((Q_in.takeFront()[0],2));
-        }else{
-			Q_out.pushBack((Q_in.takeFront()[0],3));
+        if flip((1/2)){
+            Q_out.pushBack((Q_in.takeFront()[0],2));
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],3));
         }
     }
 }
@@ -92,13 +94,13 @@ dat __s2_ty{
         failing = 2;
     }
     def __run(){
-        if failing==2{
-			failing = flip(1/1000);
+        if (failing==2){
+            failing = flip((1/1000));
         }
-        if failing==1{
-			Q_in.popFront()
-        }else{
-			Q_out.pushBack((Q_in.takeFront()[0],2));
+        if (failing==1){
+            Q_in.popFront();
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],2));
         }
     }
 }
@@ -115,13 +117,13 @@ dat __s3_ty{
 RunSw:=0, FwdQ:=1;
 dat __D{
     __H0 : __h0_ty, __H1 : __h1_ty, __S0 : __s0_ty, __S1 : __s1_ty, __S2 : __s2_ty, __S3 : __s3_ty;
-	phase: ℝ, cur_node: ℝ;
+    phase: ℝ, cur_node: ℝ;
     def __D(){
         __H0 = __h0_ty(), __H1 = __h1_ty(), __S0 = __s0_ty(), __S1 = __s1_ty(), __S2 = __s2_ty(), __S3 = __s3_ty();
-		phase = 0;
+        phase = 0;
         cur_node = 0;
     }
-	def scheduler(){
+    def scheduler(){
         for p in [0..2){
             if phase == 0 {
                 for i in [0..k){
@@ -229,6 +231,7 @@ dat __D{
 }
 def main(){
     __d := __D();
+    __d.__H0.Q_in.pushBack((Packet(),0));
     __d.__H0.__run();
     repeat num_steps {
         __d.__step();

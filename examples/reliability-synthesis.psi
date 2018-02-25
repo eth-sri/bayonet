@@ -1,3 +1,6 @@
+
+parameters{ P_FAIL }
+
 num_steps 10;
 
 topology{
@@ -36,7 +39,7 @@ def s1(){
 	fwd(2);
 }
 def s2()state failing(2){
-	if failing == 2 { failing = flip(1/1000); }
+	if failing == 2 { failing = flip(P_FAIL); }
 	if failing == 1 { drop }
 	else{ fwd(2); }
 }

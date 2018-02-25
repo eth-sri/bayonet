@@ -26,6 +26,9 @@ dat Queue{
     def front(){
         return data[0];
     }
+    def dupFront(){
+        pushFront(front());
+    }
     def popFront(){
         data=data[1..size()];
     }
@@ -42,7 +45,6 @@ dat __h0_ty{
         Q_out = Queue();
     }
     def __run(){
-		Q_in.pushFront(Packet(),0);
         Q_out.pushBack((Q_in.takeFront()[0],1));
     }
 }
@@ -66,10 +68,10 @@ dat __s0_ty{
         Q_out = Queue();
     }
     def __run(){
-        if flip(1/2){
-			Q_out.pushBack((Q_in.takeFront()[0],2));
-        }else{
-			Q_out.pushBack((Q_in.takeFront()[0],3));
+        if flip((1/2)){
+            Q_out.pushBack((Q_in.takeFront()[0],2));
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],3));
         }
     }
 }
@@ -92,13 +94,13 @@ dat __s2_ty{
         failing = 2;
     }
     def __run(){
-        if failing==2{
-			failing = flip(1/1000);
+        if (failing==2){
+            failing = flip((1/1000));
         }
-        if failing==1{
-			Q_in.popFront()
-        }else{
-			Q_out.pushBack((Q_in.takeFront()[0],2));
+        if (failing==1){
+            Q_in.popFront();
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],2));
         }
     }
 }
@@ -216,6 +218,7 @@ dat __D{
 }
 def main(){
     __d := __D();
+    __d.__H0.Q_in.pushBack((Packet(),0));
     __d.__H0.__run();
     repeat num_steps {
         __d.__step();

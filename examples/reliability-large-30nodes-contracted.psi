@@ -45,7 +45,6 @@ dat __h0_ty{
         Q_out = Queue();
     }
     def __run(){
-        Q_in.pushFront((Packet(),0));
         Q_out.pushBack((Q_in.takeFront()[0],1));
     }
 }
