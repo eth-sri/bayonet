@@ -47,14 +47,14 @@ dat __first_ty{
         infected = 0;
     }
     def __run(){
-        if infected==0{
-			infected = 1;
-			Q_in.pushFront((Packet(),0));
-			Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,29)));
-		}else{
-			Q_in.popFront();
-		}
-	}
+        if (infected==0){
+            infected = 1;
+            Q_in.pushFront((Packet(),0));
+            Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,29)));
+        } else {
+            Q_in.popFront();
+        }
+    }
 }
 dat __node_ty{
     Q_in: Queue, Q_out: Queue;
@@ -65,14 +65,14 @@ dat __node_ty{
         infected = 0;
     }
     def __run(){
-        if infected==0{
+        if (infected==0){
             infected = 1;
             Q_in.dupFront();
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,29)));
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,29)));
-        }else{
-			Q_in.popFront();
-		}
+        } else {
+            Q_in.popFront();
+        }
     }
 }
 RunSw:=0, FwdQ:=1;
@@ -2894,6 +2894,7 @@ dat __D{
 }
 def main(){
     __d := __D();
+    __d.__S0.Q_in.pushBack((Packet(),0));
     __d.__S0.__run();
     repeat num_steps {
         __d.__step();
