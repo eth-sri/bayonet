@@ -1,6 +1,6 @@
 #!/bin/bash
 cp webppl_options.txt ../../psi-approximate/approximateBackends/webppl_options.txt
-PSI="./psi --noboundscheck --trace --webppl --mathematica"
+PSI="./psi --noboundscheck --trace --webppl --expectation --mathematica"
 
 cd ../../psi-approximate/
 if [ ! -f ../bayonet-implementation/examples/results-approx/${1%.psi}.txt ]; then
