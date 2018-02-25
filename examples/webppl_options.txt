@@ -1,0 +1,11 @@
+## the lines that are not commented out (#)
+## will be passed to the webppl Infer()-function exactly as they are
+
+## The supported methods are: 
+## enumerate, rejection, MCMC, incrementalMH, SMC, optimize, forward
+
+{method: 'SMC', particles: 1000}
+
+# examples: 
+#{method: 'MCMC', samples: 3000, burn: 2000}
+## example: {method: 'MCMC', samples: 1000, lag: 100, burn: 5}
