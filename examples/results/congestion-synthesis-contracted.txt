@@ -642,6 +642,12 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
@@ -1397,6 +1403,12 @@ particle-size: 2
 particle-size: 2
 particle-size: 2
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 particle-size: 4
 particle-size: 4
@@ -1802,6 +1814,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 2
 particle-size: 2
@@ -2322,6 +2340,12 @@ particle-size: 4
 particle-size: 4
 particle-size: 4
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -2846,6 +2870,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 2
 particle-size: 2
@@ -3370,6 +3400,12 @@ particle-size: 8
 particle-size: 8
 particle-size: 8
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 8
+particle-size: 8
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 20
+particle-size: 20
 particle-size: 20
 particle-size: 20
 particle-size: 20
@@ -3894,6 +3930,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 3
+particle-size: 3
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 6
+particle-size: 6
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 6
 particle-size: 6
@@ -4568,6 +4610,12 @@ particle-size: 15
 statement: actions ~= [(1,i)]
 particle-size: 1
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 15
+particle-size: 15
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 41
+particle-size: 41
 particle-size: 41
 particle-size: 41
 particle-size: 41
@@ -5223,6 +5271,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 6
+particle-size: 6
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 12
+particle-size: 12
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 11
 particle-size: 11
@@ -5899,6 +5953,12 @@ particle-size: 28
 statement: actions ~= [(1,i)]
 particle-size: 1
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 28
+particle-size: 28
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 76
+particle-size: 76
 particle-size: 76
 particle-size: 76
 particle-size: 76
@@ -6581,6 +6641,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 11
+particle-size: 11
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 22
+particle-size: 22
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 19
 particle-size: 19
@@ -7331,6 +7397,12 @@ particle-size: 47
 statement: actions ~= [(1,i)]
 particle-size: 3
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 47
+particle-size: 47
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 134
+particle-size: 134
 particle-size: 134
 particle-size: 134
 particle-size: 134
@@ -8013,6 +8085,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 19
+particle-size: 19
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 38
+particle-size: 38
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 31
 particle-size: 31
@@ -8763,6 +8841,12 @@ particle-size: 75
 statement: actions ~= [(1,i)]
 particle-size: 6
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 75
+particle-size: 75
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 215
+particle-size: 215
 particle-size: 215
 particle-size: 215
 particle-size: 215
@@ -9445,6 +9529,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 29
+particle-size: 29
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 58
+particle-size: 58
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 44
 particle-size: 44
@@ -10199,6 +10289,12 @@ particle-size: 107
 statement: actions ~= [(1,i)]
 particle-size: 12
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 107
+particle-size: 107
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 313
+particle-size: 313
 particle-size: 313
 particle-size: 313
 particle-size: 313
@@ -10879,6 +10975,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 39
+particle-size: 39
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 78
+particle-size: 78
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 57
 particle-size: 57
@@ -11633,6 +11735,12 @@ particle-size: 152
 statement: actions ~= [(1,i)]
 particle-size: 20
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 152
+particle-size: 152
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 443
+particle-size: 443
 particle-size: 443
 particle-size: 443
 particle-size: 443
@@ -12313,6 +12421,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 48
+particle-size: 48
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 96
+particle-size: 96
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 68
 particle-size: 68
@@ -13067,6 +13181,12 @@ particle-size: 196
 statement: actions ~= [(1,i)]
 particle-size: 32
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 196
+particle-size: 196
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 578
+particle-size: 578
 particle-size: 578
 particle-size: 578
 particle-size: 578
@@ -13751,6 +13871,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 54
+particle-size: 54
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 108
+particle-size: 108
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 74
 particle-size: 74
@@ -14505,6 +14631,12 @@ particle-size: 240
 statement: actions ~= [(1,i)]
 particle-size: 44
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 240
+particle-size: 240
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 705
+particle-size: 705
 particle-size: 705
 particle-size: 705
 particle-size: 705
@@ -15189,6 +15321,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 57
+particle-size: 57
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 114
+particle-size: 114
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 75
 particle-size: 75
@@ -15939,6 +16077,12 @@ particle-size: 279
 statement: actions ~= [(1,i)]
 particle-size: 54
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 279
+particle-size: 279
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 812
+particle-size: 812
 particle-size: 812
 particle-size: 812
 particle-size: 812
@@ -16625,6 +16769,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 57
+particle-size: 57
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 114
+particle-size: 114
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 72
 particle-size: 72
@@ -17375,6 +17525,12 @@ particle-size: 304
 statement: actions ~= [(1,i)]
 particle-size: 62
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 304
+particle-size: 304
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 866
+particle-size: 866
 particle-size: 866
 particle-size: 866
 particle-size: 866
@@ -18061,6 +18217,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 53
+particle-size: 53
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 106
+particle-size: 106
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 64
 particle-size: 64
@@ -18815,6 +18977,12 @@ particle-size: 310
 statement: actions ~= [(1,i)]
 particle-size: 65
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 310
+particle-size: 310
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 876
+particle-size: 876
 particle-size: 876
 particle-size: 876
 particle-size: 876
@@ -19499,6 +19667,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 46
+particle-size: 46
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 92
+particle-size: 92
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 54
 particle-size: 54
@@ -20253,6 +20427,12 @@ particle-size: 304
 statement: actions ~= [(1,i)]
 particle-size: 66
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 304
+particle-size: 304
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 836
+particle-size: 836
 particle-size: 836
 particle-size: 836
 particle-size: 836
@@ -20937,6 +21117,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 36
+particle-size: 36
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 72
+particle-size: 72
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 42
 particle-size: 42
@@ -21693,6 +21879,12 @@ particle-size: 281
 statement: actions ~= [(1,i)]
 particle-size: 63
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 281
+particle-size: 281
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 759
+particle-size: 759
 particle-size: 759
 particle-size: 759
 particle-size: 759
@@ -22379,6 +22571,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 27
+particle-size: 27
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 54
+particle-size: 54
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 31
 particle-size: 31
@@ -23135,6 +23333,12 @@ particle-size: 249
 statement: actions ~= [(1,i)]
 particle-size: 56
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 249
+particle-size: 249
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 653
+particle-size: 653
 particle-size: 653
 particle-size: 653
 particle-size: 653
@@ -23821,6 +24025,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 19
+particle-size: 19
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 38
+particle-size: 38
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 21
 particle-size: 21
@@ -24575,6 +24785,12 @@ particle-size: 212
 statement: actions ~= [(1,i)]
 particle-size: 45
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 212
+particle-size: 212
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 540
+particle-size: 540
 particle-size: 540
 particle-size: 540
 particle-size: 540
@@ -25183,6 +25399,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 13
+particle-size: 13
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 26
+particle-size: 26
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 14
 particle-size: 14
@@ -25937,6 +26159,12 @@ particle-size: 174
 statement: actions ~= [(1,i)]
 particle-size: 33
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 174
+particle-size: 174
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 421
+particle-size: 421
 particle-size: 421
 particle-size: 421
 particle-size: 421
@@ -26545,6 +26773,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 8
+particle-size: 8
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 16
+particle-size: 16
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 8
 particle-size: 8
@@ -27299,6 +27533,12 @@ particle-size: 136
 statement: actions ~= [(1,i)]
 particle-size: 22
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 136
+particle-size: 136
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 315
+particle-size: 315
 particle-size: 315
 particle-size: 315
 particle-size: 315
@@ -27905,6 +28145,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 5
+particle-size: 5
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 10
+particle-size: 10
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 5
 particle-size: 5
@@ -28659,6 +28905,12 @@ particle-size: 103
 statement: actions ~= [(1,i)]
 particle-size: 14
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 103
+particle-size: 103
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 221
+particle-size: 221
 particle-size: 221
 particle-size: 221
 particle-size: 221
@@ -29265,6 +29517,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 2
 particle-size: 2
@@ -30015,6 +30273,12 @@ particle-size: 74
 statement: actions ~= [(1,i)]
 particle-size: 8
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 74
+particle-size: 74
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 151
+particle-size: 151
 particle-size: 151
 particle-size: 151
 particle-size: 151
@@ -30561,6 +30825,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 1
 particle-size: 1
@@ -31309,6 +31579,12 @@ particle-size: 51
 statement: actions ~= [(1,i)]
 particle-size: 5
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 51
+particle-size: 51
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 96
+particle-size: 96
 particle-size: 96
 particle-size: 96
 particle-size: 96
@@ -32433,6 +32709,12 @@ particle-size: 35
 statement: actions ~= [(1,i)]
 particle-size: 2
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 35
+particle-size: 35
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 61
+particle-size: 61
 particle-size: 61
 particle-size: 61
 particle-size: 61
@@ -33468,6 +33750,12 @@ particle-size: 22
 statement: actions ~= [(1,i)]
 particle-size: 1
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 22
+particle-size: 22
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 34
+particle-size: 34
 particle-size: 34
 particle-size: 34
 particle-size: 34
@@ -34380,6 +34668,12 @@ particle-size: 13
 particle-size: 13
 particle-size: 13
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 13
+particle-size: 13
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 particle-size: 18
 particle-size: 18
@@ -35225,6 +35519,12 @@ particle-size: 6
 particle-size: 6
 particle-size: 6
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 7
+particle-size: 7
 particle-size: 7
 particle-size: 7
 particle-size: 7
@@ -35971,6 +36271,12 @@ particle-size: 2
 statement: return actions[uniformInt(0,actions.length - 1)]
 particle-size: 2
 particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
+particle-size: 2
+particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
@@ -36415,8 +36721,8 @@ statement: q₁ := Expectation(((if 1 == 0 {
 particle-size: 2
 statement: return (q₁)
 particle-size: 2
-p[r_] := (1/6*Boole[-COST01+COST02+COST21<=0]+1/6*Boole[-COST02+-COST21+COST01<=0]+2/3*Boole[-COST02+-COST21+COST01==0]+5/6*Boole[-COST02+-COST21+COST01!=0])*(Boole[-COST01+COST02+COST21<=0]*Boole[-COST02+-COST21+COST01!=0]*DiracDelta[-r+2025575442161/4231664861184]+Boole[-COST02+-COST21+COST01!=0]*Boole[-COST02+-COST21+COST01<=0]*DiracDelta[-r+491806403/1088391168]+Boole[-COST02+-COST21+COST01==0]*DiracDelta[-r+30378810105265/67706637778944])
+E[q1_] = (1/6*Boole[-COST01+COST02+COST21<=0]+1/6*Boole[-COST02+-COST21+COST01<=0]+2/3*Boole[-COST02+-COST21+COST01==0]+5/6*Boole[-COST02+-COST21+COST01!=0])*(2025575442161/4231664861184*Boole[-COST01+COST02+COST21<=0]*Boole[-COST02+-COST21+COST01!=0]+30378810105265/67706637778944*Boole[-COST02+-COST21+COST01==0]+491806403/1088391168*Boole[-COST02+-COST21+COST01!=0]*Boole[-COST02+-COST21+COST01<=0])
 
-real	2m0.914s
-user	1m6.208s
-sys	0m54.696s
+real	1m6.216s
+user	1m5.828s
+sys	0m0.332s

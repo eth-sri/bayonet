@@ -168,10 +168,7 @@ statement: return this
 particle-size: 1
 particle-size: 1
 particle-size: 1
-statement: __d.__H0.__run()
-particle-size: 1
-particle-size: 1
-statement: this'.Q_in.pushFront(Packet'(),0)
+statement: __d.__H0.Q_in.pushBack((Packet'(),0))
 particle-size: 1
 particle-size: 1
 statement: return this
@@ -180,11 +177,14 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 particle-size: 1
-statement: this'.data = [x] ~ this'.data
+statement: this'.data = this'.data ~ [x]
 particle-size: 1
 statement: return ()
 particle-size: 1
 particle-size: 1
+particle-size: 1
+particle-size: 1
+statement: __d.__H0.__run()
 particle-size: 1
 particle-size: 1
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
@@ -1627,11 +1627,17 @@ particle-size: 1
 statement: this'.__S0.__run()
 particle-size: 1
 particle-size: 1
-statement: if flip(1 / 2) {
+statement: if flip((1 / 2)) {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 1
 particle-size: 1
@@ -3331,12 +3337,18 @@ particle-size: 2
 statement: this'.__S2.__run()
 particle-size: 1
 particle-size: 1
-statement: if this'.failing == 2 {
-    this'.failing = flip(1 / 1000);
+statement: if (this'.failing == 2) {
+    this'.failing = flip((1 / 1000));
 }
-statement: this'.failing = flip(1 / 1000)
+statement: this'.failing = flip((1 / 1000))
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
 particle-size: 2
-statement: if this'.failing == 1 {
+particle-size: 2
+particle-size: 2
+statement: if (this'.failing == 1) {
     this'.Q_in.popFront();
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
@@ -7093,8 +7105,8 @@ statement: q₁ := Expectation(((if 1 == 1 {
 particle-size: 3
 statement: return (q₁)
 particle-size: 3
-p[r_] := DiracDelta[-r+1999/2000]
+E[q1_] = 1999/2000
 
-real	0m0.296s
-user	0m0.284s
-sys	0m0.008s
+real	0m0.246s
+user	0m0.232s
+sys	0m0.012s

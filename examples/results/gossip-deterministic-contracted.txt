@@ -182,6 +182,12 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 particle-size: 1
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 3
+particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
@@ -1367,6 +1373,12 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 particle-size: 1
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 3
+particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
@@ -1411,6 +1423,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -1509,6 +1527,12 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 particle-size: 1
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 3
+particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
@@ -1553,6 +1577,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -1651,6 +1681,12 @@ particle-size: 1
 particle-size: 1
 particle-size: 1
 particle-size: 1
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 3
+particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
@@ -1695,6 +1731,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -3764,6 +3806,12 @@ particle-size: 4
 particle-size: 4
 particle-size: 4
 particle-size: 4
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 12
+particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
@@ -3808,6 +3856,12 @@ particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
+particle-size: 12
+particle-size: 12
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 36
+particle-size: 36
 particle-size: 36
 particle-size: 36
 particle-size: 36
@@ -3906,6 +3960,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -3950,6 +4010,12 @@ particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
+particle-size: 9
+particle-size: 9
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 27
+particle-size: 27
 particle-size: 27
 particle-size: 27
 particle-size: 27
@@ -4048,6 +4114,12 @@ particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
@@ -4092,6 +4164,12 @@ particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 particle-size: 18
 particle-size: 18
@@ -4598,6 +4676,12 @@ particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
@@ -4642,6 +4726,12 @@ particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 particle-size: 18
 particle-size: 18
@@ -4757,6 +4847,12 @@ particle-size: 11
 particle-size: 11
 particle-size: 11
 particle-size: 11
+particle-size: 11
+particle-size: 11
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 33
+particle-size: 33
 particle-size: 33
 particle-size: 33
 particle-size: 33
@@ -4801,6 +4897,12 @@ particle-size: 33
 particle-size: 33
 particle-size: 33
 particle-size: 33
+particle-size: 33
+particle-size: 33
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 99
+particle-size: 99
 particle-size: 99
 particle-size: 99
 particle-size: 99
@@ -4916,6 +5018,12 @@ particle-size: 20
 particle-size: 20
 particle-size: 20
 particle-size: 20
+particle-size: 20
+particle-size: 20
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 60
+particle-size: 60
 particle-size: 60
 particle-size: 60
 particle-size: 60
@@ -4960,6 +5068,12 @@ particle-size: 60
 particle-size: 60
 particle-size: 60
 particle-size: 60
+particle-size: 60
+particle-size: 60
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 180
+particle-size: 180
 particle-size: 180
 particle-size: 180
 particle-size: 180
@@ -7282,6 +7396,12 @@ particle-size: 4
 particle-size: 4
 particle-size: 4
 particle-size: 4
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 12
+particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
@@ -7326,6 +7446,12 @@ particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
+particle-size: 12
+particle-size: 12
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 36
+particle-size: 36
 particle-size: 36
 particle-size: 36
 particle-size: 36
@@ -7441,6 +7567,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -7485,6 +7617,12 @@ particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
+particle-size: 9
+particle-size: 9
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 27
+particle-size: 27
 particle-size: 27
 particle-size: 27
 particle-size: 27
@@ -7600,6 +7738,12 @@ particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
@@ -7644,6 +7788,12 @@ particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 particle-size: 18
 particle-size: 18
@@ -8458,6 +8608,12 @@ particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
@@ -8502,6 +8658,12 @@ particle-size: 6
 particle-size: 6
 particle-size: 6
 particle-size: 6
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 particle-size: 18
 particle-size: 18
@@ -8617,6 +8779,12 @@ particle-size: 3
 particle-size: 3
 particle-size: 3
 particle-size: 3
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 9
+particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
@@ -8661,6 +8829,12 @@ particle-size: 9
 particle-size: 9
 particle-size: 9
 particle-size: 9
+particle-size: 9
+particle-size: 9
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 27
+particle-size: 27
 particle-size: 27
 particle-size: 27
 particle-size: 27
@@ -8776,6 +8950,12 @@ particle-size: 4
 particle-size: 4
 particle-size: 4
 particle-size: 4
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 12
+particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
@@ -8820,6 +9000,12 @@ particle-size: 12
 particle-size: 12
 particle-size: 12
 particle-size: 12
+particle-size: 12
+particle-size: 12
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 36
+particle-size: 36
 particle-size: 36
 particle-size: 36
 particle-size: 36
@@ -12572,8 +12758,8 @@ statement: q₅ := Expectation((if 0 == 0 {
 particle-size: 16
 statement: return (q₁,q₂,q₃,q₄,q₅)
 particle-size: 16
-p[r_] := δ_r[(0,1/9,8/27,16/27,94/27)]
+E[q1_,q2_,q3_,q4_,q5_] = (0,1/9,8/27,16/27,94/27)
 
-real	0m21.746s
-user	0m11.860s
-sys	0m9.880s
+real	0m12.007s
+user	0m11.912s
+sys	0m0.084s

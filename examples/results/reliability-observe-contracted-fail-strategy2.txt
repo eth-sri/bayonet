@@ -748,6 +748,12 @@ particle-size: 1
 statement: this'.num_actions += 1
 particle-size: 1
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 particle-size: 2
 particle-size: 2
@@ -1617,6 +1623,12 @@ particle-size: 2
 statement: this'.num_actions += 1
 particle-size: 2
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 particle-size: 4
 particle-size: 4
@@ -1985,11 +1997,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -2005,6 +2029,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 1
 particle-size: 1
@@ -2655,6 +2685,12 @@ particle-size: 6
 statement: this'.num_actions += 1
 particle-size: 6
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 6
+particle-size: 6
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 13
+particle-size: 13
 particle-size: 13
 particle-size: 13
 particle-size: 13
@@ -3124,11 +3160,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -3144,6 +3192,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 1
 particle-size: 1
@@ -3798,6 +3852,12 @@ particle-size: 12
 statement: this'.num_actions += 1
 particle-size: 12
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 12
+particle-size: 12
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 30
+particle-size: 30
 particle-size: 30
 particle-size: 30
 particle-size: 30
@@ -4267,11 +4327,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 3
+particle-size: 3
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -4287,6 +4359,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 3
+particle-size: 3
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 6
+particle-size: 6
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 3
 particle-size: 3
@@ -4503,6 +4581,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -5076,6 +5160,12 @@ particle-size: 26
 statement: this'.num_actions += 1
 particle-size: 26
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 26
+particle-size: 26
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 69
+particle-size: 69
 particle-size: 69
 particle-size: 69
 particle-size: 69
@@ -5651,11 +5741,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 3
+particle-size: 3
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 3
+particle-size: 3
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -5671,6 +5773,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 5
+particle-size: 5
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 10
+particle-size: 10
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 5
 particle-size: 5
@@ -5887,6 +5995,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -6462,6 +6576,12 @@ particle-size: 45
 statement: this'.num_actions += 1
 particle-size: 45
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 45
+particle-size: 45
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 124
+particle-size: 124
 particle-size: 124
 particle-size: 124
 particle-size: 124
@@ -7037,11 +7157,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 8
+particle-size: 8
 particle-size: 8
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 4
+particle-size: 4
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 8
+particle-size: 8
 particle-size: 8
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -7057,6 +7189,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 8
+particle-size: 8
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 16
+particle-size: 16
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 8
 particle-size: 8
@@ -7273,6 +7411,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 6
+particle-size: 6
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 12
+particle-size: 12
 particle-size: 12
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -7902,6 +8046,12 @@ particle-size: 4
 statement: this'.num_actions += 1
 particle-size: 74
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 74
+particle-size: 74
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 217
+particle-size: 217
 particle-size: 217
 particle-size: 217
 particle-size: 217
@@ -8533,11 +8683,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 4
+particle-size: 4
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 8
+particle-size: 8
 particle-size: 8
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 4
+particle-size: 4
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 8
+particle-size: 8
 particle-size: 8
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -8553,6 +8715,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 15
+particle-size: 15
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 30
+particle-size: 30
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 15
 particle-size: 15
@@ -8769,6 +8937,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 9
+particle-size: 9
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 18
+particle-size: 18
 particle-size: 18
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -9400,6 +9574,12 @@ particle-size: 4
 statement: this'.num_actions += 1
 particle-size: 113
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 113
+particle-size: 113
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 332
+particle-size: 332
 particle-size: 332
 particle-size: 332
 particle-size: 332
@@ -10066,11 +10246,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 2
+particle-size: 2
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 particle-size: 4
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -10086,6 +10278,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 23
+particle-size: 23
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 46
+particle-size: 46
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 23
 particle-size: 23
@@ -10302,6 +10500,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 17
+particle-size: 17
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 34
+particle-size: 34
 particle-size: 34
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -10933,6 +11137,12 @@ particle-size: 12
 statement: this'.num_actions += 1
 particle-size: 162
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 162
+particle-size: 162
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 478
+particle-size: 478
 particle-size: 478
 particle-size: 478
 particle-size: 478
@@ -11599,11 +11809,23 @@ statement: if this'.strategy == 4 {
     }
 }
 statement: this'.strategy = uniformInt(1,2)
+particle-size: 1
+particle-size: 1
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 2 {
     this'.strategy = this'.strategy + flip(1 / 2);
 }
 statement: this'.strategy = this'.strategy + flip(1 / 2)
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.strategy == 1 {
     if flip(1 / 2) {
@@ -11619,6 +11841,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 34
+particle-size: 34
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 68
+particle-size: 68
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 34
 particle-size: 34
@@ -11835,6 +12063,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 22
+particle-size: 22
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 44
+particle-size: 44
 particle-size: 44
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -12466,6 +12700,12 @@ particle-size: 18
 statement: this'.num_actions += 1
 particle-size: 224
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 224
+particle-size: 224
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 668
+particle-size: 668
 particle-size: 668
 particle-size: 668
 particle-size: 668
@@ -13145,6 +13385,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 47
+particle-size: 47
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 94
+particle-size: 94
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 47
 particle-size: 47
@@ -13361,6 +13607,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 34
+particle-size: 34
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 68
+particle-size: 68
 particle-size: 68
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -13992,6 +14244,12 @@ particle-size: 34
 statement: this'.num_actions += 1
 particle-size: 292
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 292
+particle-size: 292
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 894
+particle-size: 894
 particle-size: 894
 particle-size: 894
 particle-size: 894
@@ -14671,6 +14929,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 60
+particle-size: 60
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 120
+particle-size: 120
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 60
 particle-size: 60
@@ -14887,6 +15151,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 43
+particle-size: 43
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 86
+particle-size: 86
 particle-size: 86
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -15518,6 +15788,12 @@ particle-size: 49
 statement: this'.num_actions += 1
 particle-size: 372
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 372
+particle-size: 372
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1139
+particle-size: 1139
 particle-size: 1139
 particle-size: 1139
 particle-size: 1139
@@ -16197,6 +16473,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 70
+particle-size: 70
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 140
+particle-size: 140
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 70
 particle-size: 70
@@ -16413,6 +16695,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 52
+particle-size: 52
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 104
+particle-size: 104
 particle-size: 104
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -17044,6 +17332,12 @@ particle-size: 76
 statement: this'.num_actions += 1
 particle-size: 452
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 452
+particle-size: 452
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1408
+particle-size: 1408
 particle-size: 1408
 particle-size: 1408
 particle-size: 1408
@@ -17723,6 +18017,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 80
+particle-size: 80
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 160
+particle-size: 160
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 80
 particle-size: 80
@@ -17939,6 +18239,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 58
+particle-size: 58
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 116
+particle-size: 116
 particle-size: 116
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -18570,6 +18876,12 @@ particle-size: 100
 statement: this'.num_actions += 1
 particle-size: 527
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 527
+particle-size: 527
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1638
+particle-size: 1638
 particle-size: 1638
 particle-size: 1638
 particle-size: 1638
@@ -19249,6 +19561,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 87
+particle-size: 87
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 174
+particle-size: 174
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 87
 particle-size: 87
@@ -19465,6 +19783,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 57
+particle-size: 57
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 114
+particle-size: 114
 particle-size: 114
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -20096,6 +20420,12 @@ particle-size: 134
 statement: this'.num_actions += 1
 particle-size: 587
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 587
+particle-size: 587
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1838
+particle-size: 1838
 particle-size: 1838
 particle-size: 1838
 particle-size: 1838
@@ -20775,6 +21105,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 84
+particle-size: 84
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 168
+particle-size: 168
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 84
 particle-size: 84
@@ -20991,6 +21327,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 60
+particle-size: 60
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 120
+particle-size: 120
 particle-size: 120
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -21622,6 +21964,12 @@ particle-size: 166
 statement: this'.num_actions += 1
 particle-size: 634
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 634
+particle-size: 634
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1959
+particle-size: 1959
 particle-size: 1959
 particle-size: 1959
 particle-size: 1959
@@ -22301,6 +22649,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 73
+particle-size: 73
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 146
+particle-size: 146
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 73
 particle-size: 73
@@ -22517,6 +22871,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 58
+particle-size: 58
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 116
+particle-size: 116
 particle-size: 116
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -23148,6 +23508,12 @@ particle-size: 184
 statement: this'.num_actions += 1
 particle-size: 640
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 640
+particle-size: 640
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1972
+particle-size: 1972
 particle-size: 1972
 particle-size: 1972
 particle-size: 1972
@@ -23833,6 +24199,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 57
+particle-size: 57
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 114
+particle-size: 114
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 57
 particle-size: 57
@@ -24049,6 +24421,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 53
+particle-size: 53
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 106
+particle-size: 106
 particle-size: 106
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -24680,6 +25058,12 @@ particle-size: 201
 statement: this'.num_actions += 1
 particle-size: 628
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 628
+particle-size: 628
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1876
+particle-size: 1876
 particle-size: 1876
 particle-size: 1876
 particle-size: 1876
@@ -25365,6 +25749,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 39
+particle-size: 39
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 78
+particle-size: 78
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 39
 particle-size: 39
@@ -25581,6 +25971,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 45
+particle-size: 45
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 90
+particle-size: 90
 particle-size: 90
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -26212,6 +26608,12 @@ particle-size: 224
 statement: this'.num_actions += 1
 particle-size: 588
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 588
+particle-size: 588
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1741
+particle-size: 1741
 particle-size: 1741
 particle-size: 1741
 particle-size: 1741
@@ -26831,6 +27233,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 25
+particle-size: 25
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 50
+particle-size: 50
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 25
 particle-size: 25
@@ -27047,6 +27455,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 36
+particle-size: 36
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 72
+particle-size: 72
 particle-size: 72
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -27678,6 +28092,12 @@ particle-size: 215
 statement: this'.num_actions += 1
 particle-size: 537
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 537
+particle-size: 537
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1536
+particle-size: 1536
 particle-size: 1536
 particle-size: 1536
 particle-size: 1536
@@ -28297,6 +28717,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 15
+particle-size: 15
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 30
+particle-size: 30
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 15
 particle-size: 15
@@ -28513,6 +28939,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 27
+particle-size: 27
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 54
+particle-size: 54
 particle-size: 54
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -29144,6 +29576,12 @@ particle-size: 186
 statement: this'.num_actions += 1
 particle-size: 461
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 461
+particle-size: 461
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 1256
+particle-size: 1256
 particle-size: 1256
 particle-size: 1256
 particle-size: 1256
@@ -29763,6 +30201,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 9
+particle-size: 9
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 18
+particle-size: 18
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 9
 particle-size: 9
@@ -29979,6 +30423,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 20
+particle-size: 20
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 40
+particle-size: 40
 particle-size: 40
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -30610,6 +31060,12 @@ particle-size: 162
 statement: this'.num_actions += 1
 particle-size: 369
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 369
+particle-size: 369
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 965
+particle-size: 965
 particle-size: 965
 particle-size: 965
 particle-size: 965
@@ -31229,6 +31685,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 4
+particle-size: 4
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 8
+particle-size: 8
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 4
 particle-size: 4
@@ -31445,6 +31907,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 13
+particle-size: 13
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 26
+particle-size: 26
 particle-size: 26
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -32074,6 +32542,12 @@ particle-size: 109
 statement: this'.num_actions += 1
 particle-size: 269
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 269
+particle-size: 269
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 657
+particle-size: 657
 particle-size: 657
 particle-size: 657
 particle-size: 657
@@ -32643,6 +33117,12 @@ statement: if flip(1 / 2) {
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],3));
 }
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2))
 particle-size: 2
 particle-size: 2
@@ -32859,6 +33339,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 8
+particle-size: 8
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 16
+particle-size: 16
 particle-size: 16
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -33486,6 +33972,12 @@ particle-size: 76
 statement: this'.num_actions += 1
 particle-size: 179
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 179
+particle-size: 179
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 396
+particle-size: 396
 particle-size: 396
 particle-size: 396
 particle-size: 396
@@ -34111,6 +34603,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 3
+particle-size: 3
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 6
+particle-size: 6
 particle-size: 6
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -34736,6 +35234,12 @@ particle-size: 50
 statement: this'.num_actions += 1
 particle-size: 114
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 114
+particle-size: 114
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 239
+particle-size: 239
 particle-size: 239
 particle-size: 239
 particle-size: 239
@@ -35294,6 +35798,12 @@ statement: if this'.failing == 2 {
     this'.failing = flip(1 / 1000);
 }
 statement: this'.failing = flip(1 / 1000)
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 particle-size: 2
 statement: if this'.failing == 1 {
     this'.Q_in.popFront();
@@ -35915,6 +36425,12 @@ particle-size: 27
 statement: this'.num_actions += 1
 particle-size: 66
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 66
+particle-size: 66
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 122
+particle-size: 122
 particle-size: 122
 particle-size: 122
 particle-size: 122
@@ -36963,6 +37479,12 @@ particle-size: 9
 statement: this'.num_actions += 1
 particle-size: 40
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 40
+particle-size: 40
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 63
+particle-size: 63
 particle-size: 63
 particle-size: 63
 particle-size: 63
@@ -37903,6 +38425,12 @@ particle-size: 4
 statement: this'.num_actions += 1
 particle-size: 22
 statement: return actions[uniformInt(0,actions.length - 1)]
+particle-size: 22
+particle-size: 22
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 26
+particle-size: 26
 particle-size: 26
 particle-size: 26
 particle-size: 26
@@ -38790,6 +39318,12 @@ particle-size: 8
 statement: return actions[uniformInt(0,actions.length - 1)]
 particle-size: 8
 particle-size: 8
+statement: assert((sampleFrom("(r;a,b)=>δ(0)[-r+∑_i[a≤i]·[i≤b]]",a,b): ℝ) != 0)
+statement: return sampleFrom("(x;a,b)=>(∑_i[a≤i]·[i≤b]·δ(0)[i-x])·⅟(∑_i[a≤i]·[i≤b])",a,b): ℝ
+particle-size: 8
+particle-size: 8
+particle-size: 8
+particle-size: 8
 particle-size: 8
 particle-size: 8
 particle-size: 8
@@ -39424,8 +39958,8 @@ statement: q₁₀ := Expectation(((if 1 == 1 {
 particle-size: 8
 statement: return (q₁,q₂,q₃,q₄,q₅,q₆,q₇,q₈,q₉,q₁₀)
 particle-size: 8
-p[r_] := δ_r[(95643630613/107495424000,41922792469/107495424000,1/4,999/4000,35204328469/107495424000,0,0,0,0,0)]
+E[q1_,q2_,q3_,q4_,q5_,q6_,q7_,q8_,q9_,q10_] = (95643630613/95690659861,41922792469/95690659861,26873856000/95690659861,26846982144/95690659861,35204328469/95690659861,0,0,0,0,0)
 
-real	3m33.089s
-user	2m35.492s
-sys	0m57.580s
+real	3m40.346s
+user	3m33.440s
+sys	0m6.756s

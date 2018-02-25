@@ -4325,6 +4325,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 1
+particle-size: 1
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 2
+particle-size: 2
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 1
 particle-size: 1
@@ -4870,6 +4876,12 @@ statement: if this'.route1 < this'.route2 || this'.route1 == this'.route2 && fli
 } else {
     this'.Q_out.pushBack((this'.Q_in.takeFront()[0],2));
 }
+particle-size: 2
+particle-size: 2
+statement: assert(0 <= p & p <= 1)
+statement: return sampleFrom("(x;p)=>(1-p)·δ(0)[x]+p·δ(0)[1-x]",p): ℝ
+particle-size: 4
+particle-size: 4
 statement: this'.Q_out.pushBack((this'.Q_in.takeFront()[0],1))
 particle-size: 2
 particle-size: 2
@@ -14042,8 +14054,8 @@ statement: q₁ := Expectation(((if 1 == 0 {
 particle-size: 1
 statement: return (q₁)
 particle-size: 1
-p[r_] := DiracDelta[-r+1]
+E[q1_] = 1
 
-real	0m0.535s
-user	0m0.520s
-sys	0m0.012s
+real	0m0.471s
+user	0m0.464s
+sys	0m0.004s
