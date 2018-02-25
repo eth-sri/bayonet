@@ -18,7 +18,7 @@
 ./run.sh gossip-contracted.psi
 ./run.sh gossip-deterministic-contracted.psi
 ./run.sh gossip-20-contracted.psi
-./run.sh gossip-30-deterministic-contracted.psi
+./run.sh gossip-30-contracted.psi
 
 
 # bayesian reasoning using observations
