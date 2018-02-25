@@ -17,8 +17,8 @@
 ## gossip
 ./run.sh gossip-contracted.psi
 ./run.sh gossip-deterministic-contracted.psi
-./run.sh gossip-20-contracted.psi
-./run.sh gossip-30-contracted.psi
+# ./run.sh gossip-20-contracted.psi # times out with exact backend
+# ./run.sh gossip-30-contracted.psi # times out with exact backend
 
 
 # bayesian reasoning using observations
