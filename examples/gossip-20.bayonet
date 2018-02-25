@@ -1,0 +1,289 @@
+num_steps 95;
+topology{
+nodes {
+S0,
+S1,
+S2,
+S3,
+S4,
+S5,
+S6,
+S7,
+S8,
+S9,
+S10,
+S11,
+S12,
+S13,
+S14,
+S15,
+S16,
+S17,
+S18,
+S19
+}
+links {
+(S0,pt1) <-> (S1,pt1),
+(S0,pt2) <-> (S2,pt1),
+(S0,pt3) <-> (S3,pt1),
+(S0,pt4) <-> (S4,pt1),
+(S0,pt5) <-> (S5,pt1),
+(S0,pt6) <-> (S6,pt1),
+(S0,pt7) <-> (S7,pt1),
+(S0,pt8) <-> (S8,pt1),
+(S0,pt9) <-> (S9,pt1),
+(S0,pt10) <-> (S10,pt1),
+(S0,pt11) <-> (S11,pt1),
+(S0,pt12) <-> (S12,pt1),
+(S0,pt13) <-> (S13,pt1),
+(S0,pt14) <-> (S14,pt1),
+(S0,pt15) <-> (S15,pt1),
+(S0,pt16) <-> (S16,pt1),
+(S0,pt17) <-> (S17,pt1),
+(S0,pt18) <-> (S18,pt1),
+(S0,pt19) <-> (S19,pt1),
+(S1,pt2) <-> (S2,pt2),
+(S1,pt3) <-> (S3,pt2),
+(S1,pt4) <-> (S4,pt2),
+(S1,pt5) <-> (S5,pt2),
+(S1,pt6) <-> (S6,pt2),
+(S1,pt7) <-> (S7,pt2),
+(S1,pt8) <-> (S8,pt2),
+(S1,pt9) <-> (S9,pt2),
+(S1,pt10) <-> (S10,pt2),
+(S1,pt11) <-> (S11,pt2),
+(S1,pt12) <-> (S12,pt2),
+(S1,pt13) <-> (S13,pt2),
+(S1,pt14) <-> (S14,pt2),
+(S1,pt15) <-> (S15,pt2),
+(S1,pt16) <-> (S16,pt2),
+(S1,pt17) <-> (S17,pt2),
+(S1,pt18) <-> (S18,pt2),
+(S1,pt19) <-> (S19,pt2),
+(S2,pt3) <-> (S3,pt3),
+(S2,pt4) <-> (S4,pt3),
+(S2,pt5) <-> (S5,pt3),
+(S2,pt6) <-> (S6,pt3),
+(S2,pt7) <-> (S7,pt3),
+(S2,pt8) <-> (S8,pt3),
+(S2,pt9) <-> (S9,pt3),
+(S2,pt10) <-> (S10,pt3),
+(S2,pt11) <-> (S11,pt3),
+(S2,pt12) <-> (S12,pt3),
+(S2,pt13) <-> (S13,pt3),
+(S2,pt14) <-> (S14,pt3),
+(S2,pt15) <-> (S15,pt3),
+(S2,pt16) <-> (S16,pt3),
+(S2,pt17) <-> (S17,pt3),
+(S2,pt18) <-> (S18,pt3),
+(S2,pt19) <-> (S19,pt3),
+(S3,pt4) <-> (S4,pt4),
+(S3,pt5) <-> (S5,pt4),
+(S3,pt6) <-> (S6,pt4),
+(S3,pt7) <-> (S7,pt4),
+(S3,pt8) <-> (S8,pt4),
+(S3,pt9) <-> (S9,pt4),
+(S3,pt10) <-> (S10,pt4),
+(S3,pt11) <-> (S11,pt4),
+(S3,pt12) <-> (S12,pt4),
+(S3,pt13) <-> (S13,pt4),
+(S3,pt14) <-> (S14,pt4),
+(S3,pt15) <-> (S15,pt4),
+(S3,pt16) <-> (S16,pt4),
+(S3,pt17) <-> (S17,pt4),
+(S3,pt18) <-> (S18,pt4),
+(S3,pt19) <-> (S19,pt4),
+(S4,pt5) <-> (S5,pt5),
+(S4,pt6) <-> (S6,pt5),
+(S4,pt7) <-> (S7,pt5),
+(S4,pt8) <-> (S8,pt5),
+(S4,pt9) <-> (S9,pt5),
+(S4,pt10) <-> (S10,pt5),
+(S4,pt11) <-> (S11,pt5),
+(S4,pt12) <-> (S12,pt5),
+(S4,pt13) <-> (S13,pt5),
+(S4,pt14) <-> (S14,pt5),
+(S4,pt15) <-> (S15,pt5),
+(S4,pt16) <-> (S16,pt5),
+(S4,pt17) <-> (S17,pt5),
+(S4,pt18) <-> (S18,pt5),
+(S4,pt19) <-> (S19,pt5),
+(S5,pt6) <-> (S6,pt6),
+(S5,pt7) <-> (S7,pt6),
+(S5,pt8) <-> (S8,pt6),
+(S5,pt9) <-> (S9,pt6),
+(S5,pt10) <-> (S10,pt6),
+(S5,pt11) <-> (S11,pt6),
+(S5,pt12) <-> (S12,pt6),
+(S5,pt13) <-> (S13,pt6),
+(S5,pt14) <-> (S14,pt6),
+(S5,pt15) <-> (S15,pt6),
+(S5,pt16) <-> (S16,pt6),
+(S5,pt17) <-> (S17,pt6),
+(S5,pt18) <-> (S18,pt6),
+(S5,pt19) <-> (S19,pt6),
+(S6,pt7) <-> (S7,pt7),
+(S6,pt8) <-> (S8,pt7),
+(S6,pt9) <-> (S9,pt7),
+(S6,pt10) <-> (S10,pt7),
+(S6,pt11) <-> (S11,pt7),
+(S6,pt12) <-> (S12,pt7),
+(S6,pt13) <-> (S13,pt7),
+(S6,pt14) <-> (S14,pt7),
+(S6,pt15) <-> (S15,pt7),
+(S6,pt16) <-> (S16,pt7),
+(S6,pt17) <-> (S17,pt7),
+(S6,pt18) <-> (S18,pt7),
+(S6,pt19) <-> (S19,pt7),
+(S7,pt8) <-> (S8,pt8),
+(S7,pt9) <-> (S9,pt8),
+(S7,pt10) <-> (S10,pt8),
+(S7,pt11) <-> (S11,pt8),
+(S7,pt12) <-> (S12,pt8),
+(S7,pt13) <-> (S13,pt8),
+(S7,pt14) <-> (S14,pt8),
+(S7,pt15) <-> (S15,pt8),
+(S7,pt16) <-> (S16,pt8),
+(S7,pt17) <-> (S17,pt8),
+(S7,pt18) <-> (S18,pt8),
+(S7,pt19) <-> (S19,pt8),
+(S8,pt9) <-> (S9,pt9),
+(S8,pt10) <-> (S10,pt9),
+(S8,pt11) <-> (S11,pt9),
+(S8,pt12) <-> (S12,pt9),
+(S8,pt13) <-> (S13,pt9),
+(S8,pt14) <-> (S14,pt9),
+(S8,pt15) <-> (S15,pt9),
+(S8,pt16) <-> (S16,pt9),
+(S8,pt17) <-> (S17,pt9),
+(S8,pt18) <-> (S18,pt9),
+(S8,pt19) <-> (S19,pt9),
+(S9,pt10) <-> (S10,pt10),
+(S9,pt11) <-> (S11,pt10),
+(S9,pt12) <-> (S12,pt10),
+(S9,pt13) <-> (S13,pt10),
+(S9,pt14) <-> (S14,pt10),
+(S9,pt15) <-> (S15,pt10),
+(S9,pt16) <-> (S16,pt10),
+(S9,pt17) <-> (S17,pt10),
+(S9,pt18) <-> (S18,pt10),
+(S9,pt19) <-> (S19,pt10),
+(S10,pt11) <-> (S11,pt11),
+(S10,pt12) <-> (S12,pt11),
+(S10,pt13) <-> (S13,pt11),
+(S10,pt14) <-> (S14,pt11),
+(S10,pt15) <-> (S15,pt11),
+(S10,pt16) <-> (S16,pt11),
+(S10,pt17) <-> (S17,pt11),
+(S10,pt18) <-> (S18,pt11),
+(S10,pt19) <-> (S19,pt11),
+(S11,pt12) <-> (S12,pt12),
+(S11,pt13) <-> (S13,pt12),
+(S11,pt14) <-> (S14,pt12),
+(S11,pt15) <-> (S15,pt12),
+(S11,pt16) <-> (S16,pt12),
+(S11,pt17) <-> (S17,pt12),
+(S11,pt18) <-> (S18,pt12),
+(S11,pt19) <-> (S19,pt12),
+(S12,pt13) <-> (S13,pt13),
+(S12,pt14) <-> (S14,pt13),
+(S12,pt15) <-> (S15,pt13),
+(S12,pt16) <-> (S16,pt13),
+(S12,pt17) <-> (S17,pt13),
+(S12,pt18) <-> (S18,pt13),
+(S12,pt19) <-> (S19,pt13),
+(S13,pt14) <-> (S14,pt14),
+(S13,pt15) <-> (S15,pt14),
+(S13,pt16) <-> (S16,pt14),
+(S13,pt17) <-> (S17,pt14),
+(S13,pt18) <-> (S18,pt14),
+(S13,pt19) <-> (S19,pt14),
+(S14,pt15) <-> (S15,pt15),
+(S14,pt16) <-> (S16,pt15),
+(S14,pt17) <-> (S17,pt15),
+(S14,pt18) <-> (S18,pt15),
+(S14,pt19) <-> (S19,pt15),
+(S15,pt16) <-> (S16,pt16),
+(S15,pt17) <-> (S17,pt16),
+(S15,pt18) <-> (S18,pt16),
+(S15,pt19) <-> (S19,pt16),
+(S16,pt17) <-> (S17,pt17),
+(S16,pt18) <-> (S18,pt17),
+(S16,pt19) <-> (S19,pt17),
+(S17,pt18) <-> (S18,pt18),
+(S17,pt19) <-> (S19,pt18),
+(S18,pt19) <-> (S19,pt19),
+}
+}
+packet_fields{ }
+programs {
+S0 -> first,
+S1 -> node,
+S2 -> node,
+S3 -> node,
+S4 -> node,
+S5 -> node,
+S6 -> node,
+S7 -> node,
+S8 -> node,
+S9 -> node,
+S10 -> node,
+S11 -> node,
+S12 -> node,
+S13 -> node,
+S14 -> node,
+S15 -> node,
+S16 -> node,
+S17 -> node,
+S18 -> node,
+S19 -> node,
+}
+query expectation(0
++ infected@S0
++ infected@S1
++ infected@S2
++ infected@S3
++ infected@S4
++ infected@S5
++ infected@S6
++ infected@S7
++ infected@S8
++ infected@S9
++ infected@S10
++ infected@S11
++ infected@S12
++ infected@S13
++ infected@S14
++ infected@S15
++ infected@S16
++ infected@S17
++ infected@S18
++ infected@S19
+);
+
+def first(pkt,port) state infected(0){
+	if infected == 0 {
+		infected = 1;
+		new;
+		fwd(uniformInt(1,19));
+	}else{ drop; }
+}
+
+def node(pkt,port) state infected(0){
+	if infected == 0{
+		infected = 1;
+		dup;
+		fwd(uniformInt(1,19));
+		fwd(uniformInt(1,19));
+	}else{ drop; }
+}
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}
+
