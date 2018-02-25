@@ -73,3 +73,7 @@
 
 ./run.sh reliability-large-30nodes-contracted.psi
 ./run.sh reliability-deterministic-large-30nodes-contracted.psi
+
+# large gossip examples
+./run.sh gossip-20-contracted.psi
+./run.sh gossip-30-contracted.psi
