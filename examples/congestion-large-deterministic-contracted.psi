@@ -35,7 +35,7 @@ dat Queue{
     }
 }
 k := 6, H0 := 0, H1 := 1, S0 := 2, S1 := 3, S2 := 4, S3 := 5;
-NUM_PACKETS := 3, COST_01 := ?COST_01, COST_02 := ?COST_02, COST_03 := ?COST_03, COST_12 := ?COST_12, COST_23 := ?COST_23;
+NUM_PACKETS := 3, COST_01 := 1, COST_02 := 2, COST_03 := 3, COST_12 := 1, COST_23 := 1;
 dat Packet{
     def Packet(){
     }
