@@ -62,8 +62,8 @@
 ./run.sh monitor-smallest-good.psi
 
 # ../bayonet monitor-small3.bayonet > monitor-small3.psi
-./run.sh monitor-small3-bad.psi
-./run.sh monitor-small3-good.psi
+#./run.sh monitor-small3-bad.psi
+#./run.sh monitor-small3-good.psi
 
 
 # moved to end because large:
