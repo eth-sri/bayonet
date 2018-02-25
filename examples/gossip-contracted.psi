@@ -47,14 +47,14 @@ dat __first_ty{
         infected = 0;
     }
     def __run(){
-        if infected==0{
-			infected = 1;
-			Q_in.pushFront((Packet(),0));
-			Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
-		}else{
-			Q_in.popFront();
-		}
-	}
+        if (infected==0){
+            infected = 1;
+            Q_in.pushFront((Packet(),0));
+            Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
+        } else {
+            Q_in.popFront();
+        }
+    }
 }
 dat __node_ty{
     Q_in: Queue, Q_out: Queue;
@@ -65,14 +65,14 @@ dat __node_ty{
         infected = 0;
     }
     def __run(){
-        if infected==0{
+        if (infected==0){
             infected = 1;
             Q_in.dupFront();
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
             Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,3)));
-        }else{
-			Q_in.popFront();
-		}
+        } else {
+            Q_in.popFront();
+        }
     }
 }
 RunSw:=0, FwdQ:=1;
@@ -164,16 +164,13 @@ dat __D{
 }
 def main(){
     __d := __D();
+    __d.__S0.Q_in.pushBack((Packet(),0));
     __d.__S0.__run();
     repeat num_steps {
         __d.__step();
     }
     assert(!(__d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size()));
-    q₁ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }) == 1) !=0);
-    q₂ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }) == 2) !=0);
-    q₃ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }) == 3) !=0);
-    q₄ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }) == 4) !=0);
-    q₅ := Expectation((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }));
-    return (q₁, q₂, q₃, q₄, q₅);
+    q₁ := Expectation((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else { assert(0) }));
+    return (q₁);
 }
 
