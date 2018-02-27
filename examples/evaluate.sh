@@ -21,7 +21,7 @@
 # ./run.sh gossip-30.psi # times out with exact backend
 
 
-# bayesian reasoning using observations
+# Bayesian reasoning using observations
 
 ## probability of correct load-balancing
 ./run.sh monitor-smallest-bad.psi
