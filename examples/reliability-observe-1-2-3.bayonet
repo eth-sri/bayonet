@@ -51,11 +51,11 @@ def h0(pkt,port) state pkt_count(0){
 def h1(pkt,port) state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	if num_arrived == 1{
-		// observe first packet
+		observe(pkt.id == 1);
 	}else if num_arrived == 2{
-		// observe second packet
+		observe(pkt.id == 2);
 	}else if num_arrived == 3{
-		// observe third packet
+		observe(pkt.id == 3);
 	}
 	drop;
 }

@@ -34,7 +34,7 @@ dat Queue{
     }
 }
 k := 6, H0 := 0, H1 := 1, S0 := 2, S1 := 3, S2 := 4, S3 := 5;
-NUM_PACKETS := 3, NUM_ARRIVED := 3;
+NUM_PACKETS := 3, NUM_ARRIVED := 0, P_FAIL := 1 / 1000;
 dat Packet{
     id: ℝ;
     def Packet(){
@@ -49,16 +49,20 @@ dat __h0_ty{
         Q_out = Queue();
         pkt_count = 0;
     }
-	def __run(){
+    def __run(){
         Q_in.pushFront((Packet(),0));
-        if pkt_count<NUM_PACKETS{
-			Q_in.pushFront((Packet(),0));
-			pkt_count = pkt_count+1;
-			Q_in.data[0][0].id = pkt_count;
-			Q_out.pushBack((Q_in.takeFront()[0],1));
-        }else{
-			Q_in.popFront();
-			Q_in.popFront();
+        if (pkt_count<(NUM_PACKETS+1)){
+            Q_in.pushFront((Packet(),0));
+            pkt_count = (pkt_count+1);
+            Q_in.data[0][0].id = pkt_count;
+            if (pkt_count==4){
+                Q_out.pushBack((Q_in.takeFront()[0],10));
+            } else {
+                Q_out.pushBack((Q_in.takeFront()[0],1));
+            }
+        } else {
+            Q_in.popFront();
+            Q_in.popFront();
         }
     }
 }
@@ -70,18 +74,11 @@ dat __h1_ty{
         Q_out = Queue();
         num_arrived = 0;
     }
-	def __run(){
-		num_arrived = num_arrived + 1;
-		// both links are used, packets are reordered
-		if num_arrived == 1{
-			observe(Q_in.data[0][0].id == 2);
-		}else if num_arrived == 2{
-			observe(Q_in.data[0][0].id == 1);
-		}else if num_arrived == 3{
-			observe(Q_in.data[0][0].id == 3);
-		}
-		Q_in.popFront();
-	}
+    def __run(){
+        num_arrived = (num_arrived+1);
+        observe(0);
+        Q_in.popFront();
+    }
 }
 dat __s0_ty{
     Q_in: Queue, Q_out: Queue;
@@ -92,21 +89,21 @@ dat __s0_ty{
         strategy = 4;
     }
     def __run(){
-        if strategy==4{
-			strategy = uniformInt(1,2);
-			if strategy==2{
-				strategy = strategy+flip(1/2);
-			}
+        if (strategy==4){
+            strategy = uniformInt(1,2);
+            if (strategy==2){
+                strategy = (strategy+flip((1/2)));
+            }
         }
-		if strategy==1{
-			if flip(1/2){
-				Q_out.pushBack((Q_in.takeFront()[0],2));
-			}else{
-				Q_out.pushBack((Q_in.takeFront()[0],3));
-			}
-		}else{
-			Q_out.pushBack((Q_in.takeFront()[0],strategy));
-		}
+        if (strategy==1){
+            if flip((1/2)){
+                Q_out.pushBack((Q_in.takeFront()[0],2));
+            } else {
+                Q_out.pushBack((Q_in.takeFront()[0],3));
+            }
+        } else {
+            Q_out.pushBack((Q_in.takeFront()[0],strategy));
+        }
     }
 }
 dat __s1_ty{
@@ -125,15 +122,15 @@ dat __s2_ty{
     def __s2_ty(){
         Q_in = Queue();
         Q_out = Queue();
-		failing = 2;
+        failing = 2;
     }
     def __run(){
-        if failing==2{
-			failing = flip(1/1000);
+        if (failing==2){
+            failing = flip(P_FAIL);
         }
-        if failing==1{
+        if (failing==1){
             Q_in.popFront();
-        }else{
+        } else {
             Q_out.pushBack((Q_in.takeFront()[0],2));
         }
     }
@@ -252,21 +249,16 @@ dat __D{
 }
 def main(){
     __d := __D();
+    __d.__H0.Q_in.pushBack((Packet(),0));
     __d.__H0.__run();
     repeat num_steps {
         __d.__step();
     }
+    observe(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED));
     assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__H1.Q_in.size() || __d.__H1.Q_out.size() || __d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size()));
-    q₁ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED) !=0);
-    q₂ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 1) !=0);
-    q₃ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2) !=0);
-    q₄ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 3) !=0);
-    q₅ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 1 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 0) !=0);
-    q₆ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 1 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 1) !=0);
-    q₇ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 0) !=0);
-    q₈ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 1) !=0);
-    q₉ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 0) !=0);
-    q₁₀ := Expectation(((if H1 == 1 { __d.__H1.num_arrived } else { assert(0) }) == NUM_ARRIVED && (if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2 && (if S2 == 4 { __d.__S2.failing } else { assert(0) }) == 1) !=0);
-    return (q₁, q₂, q₃, q₄, q₅, q₆, q₇, q₈, q₉, q₁₀);
+    q₁ := Expectation(((if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 1) !=0);
+    q₂ := Expectation(((if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 2) !=0);
+    q₃ := Expectation(((if S0 == 2 { __d.__S0.strategy } else { assert(0) }) == 3) !=0);
+    return (q₁, q₂, q₃);
 }
 

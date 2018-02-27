@@ -27,10 +27,10 @@
 ./run.sh monitor-small3-good.psi
 
 ## reliability with observations
-./run.sh reliability-observe-fail-strategy1.psi
-./run.sh reliability-observe-fail-strategy2.psi
-./run.sh reliability-observe-fail-strategy3.psi
-./run.sh reliability-observe-nofail-strategy1.psi
-./run.sh reliability-observe-nofail-strategy23.psi
+./run.sh reliability-observe-1-3.psi
+./run.sh reliability-observe-1-2-3.psi
+./run.sh reliability-observe-empty.psi
+./run.sh reliability-observe-2-1-3.psi
+
 
 
