@@ -51,15 +51,11 @@ dat __h0_ty{
     }
     def __run(){
         Q_in.pushFront((Packet(),0));
-        if (pkt_count<(NUM_PACKETS+1)){
+        if (pkt_count<NUM_PACKETS){
             Q_in.pushFront((Packet(),0));
             pkt_count = (pkt_count+1);
             Q_in.data[0][0].id = pkt_count;
-            if (pkt_count==4){
-                Q_out.pushBack((Q_in.takeFront()[0],10));
-            } else {
-                Q_out.pushBack((Q_in.takeFront()[0],1));
-            }
+            Q_out.pushBack((Q_in.takeFront()[0],1));
         } else {
             Q_in.popFront();
             Q_in.popFront();

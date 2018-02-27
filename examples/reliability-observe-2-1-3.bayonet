@@ -37,15 +37,11 @@ packet_fields{ id }
 
 def h0(pkt,port) state pkt_count(0){
 	new;
-	if pkt_count < NUM_PACKETS+1 {
+	if pkt_count < NUM_PACKETS {
 		new;
 		pkt_count = pkt_count + 1;
 		pkt.id = pkt_count;
-		if pkt_count == 4{
-			fwd(10); // terminal marker
-		} else{
-			fwd(1);
-		}
+		fwd(1);
 	} else { drop; drop; }
 }
 def h1(pkt,port) state num_arrived(0){
