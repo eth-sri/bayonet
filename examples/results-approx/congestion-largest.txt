@@ -84,7 +84,7 @@ Expression of type CallExp:
 __d.__H0.__run()
  
 Expression of type LiteralExp:
-60
+100
  
 Expression of type Identifier:
 __d
@@ -102,7 +102,7 @@ Expression of type CallExp:
 __d.__step()
  
 Expression of type RepeatExp:
-repeat 60 {
+repeat 100 {
     __d.__step();
 }
  
@@ -2038,7 +2038,7 @@ def main(){
     __d := __D'();
     __d.__H0.Q_in.pushBack((Packet'(),0));
     __d.__H0.__run();
-    repeat 60 {
+    repeat 100 {
         __d.__step();
     }
     assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__H1.Q_in.size() || __d.__H1.Q_out.size() || __d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size() || __d.__S4.Q_in.size() || __d.__S4.Q_out.size() || __d.__S5.Q_in.size() || __d.__S5.Q_out.size() || __d.__S6.Q_in.size() || __d.__S6.Q_out.size() || __d.__S7.Q_in.size() || __d.__S7.Q_out.size() || __d.__S8.Q_in.size() || __d.__S8.Q_out.size() || __d.__S9.Q_in.size() || __d.__S9.Q_out.size() || __d.__S10.Q_in.size() || __d.__S10.Q_out.size() || __d.__S11.Q_in.size() || __d.__S11.Q_out.size() || __d.__S12.Q_in.size() || __d.__S12.Q_out.size() || __d.__S13.Q_in.size() || __d.__S13.Q_out.size() || __d.__S14.Q_in.size() || __d.__S14.Q_out.size() || __d.__S15.Q_in.size() || __d.__S15.Q_out.size() || __d.__S16.Q_in.size() || __d.__S16.Q_out.size() || __d.__S17.Q_in.size() || __d.__S17.Q_out.size() || __d.__S18.Q_in.size() || __d.__S18.Q_out.size() || __d.__S19.Q_in.size() || __d.__S19.Q_out.size() || __d.__S20.Q_in.size() || __d.__S20.Q_out.size() || __d.__S21.Q_in.size() || __d.__S21.Q_out.size() || __d.__S22.Q_in.size() || __d.__S22.Q_out.size() || __d.__S23.Q_in.size() || __d.__S23.Q_out.size() || __d.__S24.Q_in.size() || __d.__S24.Q_out.size() || __d.__S25.Q_in.size() || __d.__S25.Q_out.size() || __d.__S26.Q_in.size() || __d.__S26.Q_out.size() || __d.__S27.Q_in.size() || __d.__S27.Q_out.size()));
@@ -61507,26 +61507,8 @@ override Expression visit(VarDecl e){
 
 
 translating meaning of __S24
-normalizundefined
-std.conv.ConvException@./dmd2/linux/bin64/../../src/phobos/std/conv.d(2865): no digits seen
-----------------
-./dmd2/linux/bin64/../../src/phobos/std/exception.d:525 pure @safe bool std.exception.enforce!(bool).enforce(bool, lazy object.Throwable) [0xa0b020]
-./dmd2/linux/bin64/../../src/phobos/std/conv.d:2865 pure @safe real std.conv.parse!(real, immutable(char)[]).parse(ref immutable(char)[]) [0x90e140]
-./dmd2/linux/bin64/../../src/phobos/std/conv.d:1740 pure @safe real std.conv.toImpl!(real, immutable(char)[]).toImpl(immutable(char)[]) [0x90ea4c]
-./dmd2/linux/bin64/../../src/phobos/std/conv.d:183 pure @safe real std.conv.to!(real).to!(immutable(char)[]).to(immutable(char)[]) [0x90d75f]
-approximateBackends/webppl.d:209 _D19approximateBackends6webppl6Webppl7analyzeMFC11declaration11FunctionDefC5error12ErrorHandlerZ10parseValueMFNaNfAyaZe [0xabd8b3]
-approximateBackends/webppl.d:212 distrib.Distribution approximateBackends.webppl.Webppl.analyze(declaration.FunctionDef, error.ErrorHandler) [0xabd56f]
-backend.d:60 void backend.printResult(backend.Backend, immutable(char)[], declaration.FunctionDef, error.ErrorHandler, bool) [0x891201]
-psi.d:80 int psi.run(immutable(char)[]) [0x9a666d]
-psi.d:168 _Dmain [0x9a7109]
-??:? _D2rt6dmain211_d_run_mainUiPPaPUAAaZiZ6runAllMFZ9__lambda1MFZv [0xacc1af]
-??:? void rt.dmain2._d_run_main(int, char**, extern (C) int function(char[][])*).tryExec(scope void delegate()) [0xacc0db]
-??:? void rt.dmain2._d_run_main(int, char**, extern (C) int function(char[][])*).runAll() [0xacc154]
-??:? void rt.dmain2._d_run_main(int, char**, extern (C) int function(char[][])*).tryExec(scope void delegate()) [0xacc0db]
-??:? _d_run_main [0xacc03f]
-??:? main [0x9c98f1]
-??:? __libc_start_main [0xf330b82f]
-ing SyntacticSugar...
+normaundefined
+lizing SyntacticSugar...
 normalizing SyntacticSugar DONE
 normalizing characters
 removing Comma operator
@@ -61666,7 +61648,8 @@ override Expression visit(VarDecl e){
 
 
 running webppl
+E[r] = (1.0000000000000000*10^+00)
 
-real	3m45.331s
-user	3m41.504s
-sys	0m5.200s
+real	5m20.476s
+user	5m17.008s
+sys	0m5.156s

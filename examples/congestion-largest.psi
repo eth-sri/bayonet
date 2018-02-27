@@ -1,4 +1,4 @@
-num_steps := 60;
+num_steps := 100;
 dat Queue{
     data: (Packet × ℝ)[];
     def Queue(){
