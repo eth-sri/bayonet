@@ -1,7 +1,7 @@
 
 parameters{ NUM_PACKETS(3), COST_01(1), COST_02(2), COST_03(3), COST_12(1), COST_23(1) }
 
-num_steps 60;
+num_steps 100;
 
 queue_capacity 2;
 
