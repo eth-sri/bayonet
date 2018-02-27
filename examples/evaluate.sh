@@ -22,15 +22,14 @@
 
 
 # bayesian reasoning using observations
+
 ## probability of correct load-balancing
-./run.sh monitor-small3-bad.psi
-./run.sh monitor-small3-good.psi
+./run.sh monitor-smallest-bad.psi
+./run.sh monitor-smallest-good.psi
 
 ## reliability with observations
 ./run.sh reliability-observe-1-3.psi
 ./run.sh reliability-observe-1-2-3.psi
 ./run.sh reliability-observe-empty.psi
 ./run.sh reliability-observe-2-1-3.psi
-
-
 
