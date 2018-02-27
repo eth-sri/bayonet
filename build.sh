@@ -12,4 +12,6 @@ else
 fi
 
 # debug build
-$DMD -g -debug *.d -ofbayonet
+$DMD -g -debug bayonet.d declaration.d error.d expression.d lexer.d parser.d scope_.d semantic_.d terminal.d translate_.d util.d -ofbayonet
+
+$DMD -g -debug maketable.d -ofmaketable
