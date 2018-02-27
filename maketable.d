@@ -45,7 +45,7 @@ void makeRow(string name, string sched, size_t nodes, string fname){
 	auto exactResult = exactResultTime[0], exactTime = exactResultTime[1];
 	auto approxResultTime = parseIt("examples/results-approx/"~fname~".txt",true);
 	auto approxResult = approxResultTime[0], approxTime = approxResultTime[1];
-	string row=format(`%14s & %s & %2d & $%6s$ & %4s & $%6s$ & %4s\\`,name,sched,nodes,exactResult,exactTime,approxResult,approxTime);
+	string row=format(`%11s & %s & %2d & $%6s$ & %4s & $%6s$ & %4s\\`,name,sched,nodes,exactResult,exactTime,approxResult,approxTime);
 	if(table.length) table~="\n";
 	table~=row;
 }
