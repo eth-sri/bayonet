@@ -11,7 +11,9 @@ DMD (https://dlang.org/download.html#dmd)
 Build
 -----
 
-Run `./r`.
+1. Run `./dependendcies.sh` (this downloads all dependencies into a local folder).
+
+2. Run `./build.sh`.
 
 Usage
 -----
