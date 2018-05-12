@@ -60,9 +60,9 @@ void main(){
 	makeRow("Congestion", "det.", 30, "congestion-largest");
 	makeSep();
 	makeRow("Reliability", "uni.", 6, "reliability");
-	makeRow("Reliability", "uni.", 6, "reliability-deterministic");
+	makeRow("Reliability", "det.", 6, "reliability-deterministic");
 	makeRow("Reliability", "uni.", 30, "reliability-large-30nodes");
-	makeRow("Reliability", "uni.", 30, "reliability-deterministic-large-30nodes");
+	makeRow("Reliability", "det.", 30, "reliability-deterministic-large-30nodes");
 	makeSep();
 	makeRow("Gossip", "uni.", 4, "gossip");
 	makeRow("Gossip", "det.", 4, "gossip-deterministic");
