@@ -1,0 +1,163 @@
+
+parameters{ NUM_PACKETS(3), COST_01(1), COST_02(2), COST_03(3), COST_12(1), COST_23(1) }
+
+num_steps 100;
+
+queue_capacity 2;
+
+query probability(pkt_count@H1 < NUM_PACKETS);
+
+
+topology{
+	nodes{ H0, H1, S0, S1, S2, S3, S4, S5, S6, S7,
+	               S8, S9, S10, S11, S12, S13, S14, S15,
+		       S16, S17, S18, S19, S20, S21, S22, S23,
+		       S24, S25, S26, S27 }
+		       
+	links{
+		(H0,pt1) <-> (S0,pt1),
+		
+		(S0,pt2) <-> (S1,pt1),
+		(S0,pt3) <-> (S2,pt1),
+		(S1,pt2) <-> (S3,pt1),
+		(S2,pt2) <-> (S3,pt2),
+
+		(S3,pt3) <-> (S4,pt1),
+
+		(S4,pt2) <-> (S5,pt1),
+		(S4,pt3) <-> (S6,pt1),
+		(S5,pt2) <-> (S7,pt1),
+		(S6,pt2) <-> (S7,pt2),
+
+		(S7,pt3) <-> (S8,pt1),
+
+		(S8,pt2) <-> (S9,pt1),
+		(S8,pt3) <-> (S10,pt1),
+		(S9,pt2) <-> (S11,pt1),
+		(S10,pt2) <-> (S11,pt2),
+
+		(S11,pt3) <-> (S12,pt1),
+
+		(S12,pt2) <-> (S13,pt1),
+		(S12,pt3) <-> (S14,pt1),
+		(S13,pt2) <-> (S15,pt1),
+		(S14,pt2) <-> (S15,pt2),
+
+
+		(S15,pt3) <-> (S16,pt1),
+
+		(S16,pt2) <-> (S17,pt1),
+		(S16,pt3) <-> (S18,pt1),
+		(S17,pt2) <-> (S19,pt1),
+		(S18,pt2) <-> (S19,pt2),
+
+		(S19,pt3) <-> (S20,pt1),
+
+		(S20,pt2) <-> (S21,pt1),
+		(S20,pt3) <-> (S22,pt1),
+		(S21,pt2) <-> (S23,pt1),
+		(S22,pt2) <-> (S23,pt2),
+
+		(S23,pt3) <-> (S24,pt1),
+
+		(S24,pt2) <-> (S25,pt1),
+		(S24,pt3) <-> (S26,pt1),
+		(S25,pt2) <-> (S27,pt1),
+		(S26,pt2) <-> (S27,pt2),
+
+		(S27,pt3) <-> (H1,pt1)
+	}
+}
+
+programs{ H0 -> h0, H1 -> h1,
+	  S0 -> s0, S1 -> s1, S2 -> s2, S3 -> s3,
+	  S4 -> s0, S5 -> s1, S6 -> s2, S7 -> s3,
+	  S8 -> s0, S9 -> s1, S10 -> s2, S11 -> s3,
+	  S12 -> s0, S13 -> s1, S14 -> s2, S15 -> s3,
+	  S16 -> s0, S17 -> s1, S18 -> s2, S19 -> s3,
+	  S20 -> s0, S21 -> s1, S22 -> s2, S23 -> s3,
+	  S24 -> s0, S25 -> s1, S26 -> s2, S27 -> s3	  
+}
+
+
+
+packet_fields{}
+
+def h0(pkt, port) state pkt_count(0){
+	new;
+	if pkt_count < NUM_PACKETS{
+		new;
+		pkt_count = pkt_count + 1;
+		fwd(1);
+	}else { drop; drop; }
+}
+
+def h1(pkt, port) state pkt_count(0){
+	pkt_count = pkt_count + 1;
+	drop;
+}
+
+def s0(pkt, port)
+state
+route1(0), route2(0), route3(0),
+shortest1(0), shortest2(0), shortest3(0),
+nshortest(0), which(0)
+{
+	if port == 1{
+		route1 = COST_01 + COST_12 + COST_23;
+		route2 = COST_03;
+		route3 = COST_02 + COST_23;
+		shortest1 = route1 <= route2 && route2 <= route3;
+		shortest2 = route2 <= route1 && route2 <= route3;
+		shortest3 = route3 <= route1 && route3 <= route2;
+		nshortest = shortest1 + shortest2 + shortest3;
+		which = uniformInt(1,nshortest);
+		if which == shortest1 { fwd(2); }
+		else if which == shortest1+shortest2 { fwd(3); }
+		else { fwd(4); }
+	}
+}
+
+def s1(pkt,port){
+	if port == 1{
+		fwd(2);
+	}
+}
+def s2(pkt,port){
+	if port ==  1 || port == 2{
+		fwd(3);
+	}
+}
+def s3(pkt,port){
+	if port == 1 || port == 2{
+		fwd(3);
+	}
+}
+
+
+def scheduler() state phase(0), cur_node(0){ // Phase 0: Execute RunSw, Phase 1: Exectue FwdQ
+	for p in [0..2){
+		if phase == 0{
+			for i in [0..k){
+				if (Q_in@cur_node).size() > 0{
+					return (RunSw,cur_node);
+				}
+				cur_node = (cur_node + 1) % k;
+			}
+			phase = 1;
+			cur_node = 0;
+		}
+		if phase == 1{
+			for i in [0..k){
+				if (Q_out@cur_node).size() > 0{
+					return (FwdQ,cur_node);
+				}
+				cur_node = (cur_node + 1) % k;
+			}
+			phase = 0;
+			cur_node = 0;
+		}
+	}
+	assert(0);
+}
+

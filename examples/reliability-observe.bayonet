@@ -16,38 +16,35 @@ topology{
 
 programs{ H0 -> h0, H1 -> h1, S0 -> s0, S1 -> s1, S2 -> s2, S3 -> s3 }
 
-query probability(num_arrived@H1 == NUM_ARRIVED); // q₁
+post_observe(num_arrived@H1 == NUM_ARRIVED);
 
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 1); // q₂
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2); // q₃
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 3); // q₄
+query probability(strategy@S0 == 1);
+query probability(strategy@S0 == 2);
+query probability(strategy@S0 == 3);
 
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 1 and failing@S2==0); // q₅
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 1 and failing@S2==1); // q₆
+/+
+query probability(strategy@S0 == 1 and failing@S2==0);
+query probability(strategy@S0 == 1 and failing@S2==1);
 
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2 and failing@S2==0); // q₇
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2 and failing@S2==1); // q₈
+query probability(strategy@S0 == 2 and failing@S2==0);
+query probability(strategy@S0 == 2 and failing@S2==1);
 
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2 and failing@S2==0); // q₉
-query probability(num_arrived@H1 == NUM_ARRIVED and strategy@S0 == 2 and failing@S2==1); // q₁₀
-
+query probability(strategy@S0 == 2 and failing@S2==0);
+query probability(strategy@S0 == 2 and failing@S2==1);
++/
 
 packet_fields{ id }
 
 def h0(pkt,port) state pkt_count(0){
 	new;
-	if pkt_count < NUM_PACKETS+1 {
+	if pkt_count < NUM_PACKETS {
 		new;
 		pkt_count = pkt_count + 1;
 		pkt.id = pkt_count;
-		if pkt_count == 4{
-			fwd(10); // terminal marker
-		} else{
-			fwd(1);
-		}
+		fwd(1);
 	} else { drop; drop; }
 }
-def h1() state num_arrived(0){
+def h1(pkt,port) state num_arrived(0){
 	num_arrived = num_arrived + 1;
 	if num_arrived == 1{
 		// observe first packet
@@ -58,7 +55,7 @@ def h1() state num_arrived(0){
 	}
 	drop;
 }
-def s0() state strategy(4){
+def s0(pkt,port) state strategy(4){
 	if strategy == 4{
 		strategy = uniformInt(1,2);
 		if strategy == 2{
@@ -75,15 +72,15 @@ def s0() state strategy(4){
 		fwd(strategy);
 	}
 }
-def s1(){
+def s1(pkt,port){
 	fwd(2);
 }
-def s2()state failing(2){
+def s2(pkt,port)state failing(2){
 	if failing == 2 { failing = flip(P_FAIL); }
 	if failing == 1 { drop }
 	else{ fwd(2); }
 }
-def s3(){
+def s3(pkt,port){
 	fwd(3);
 }
 

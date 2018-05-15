@@ -1,0 +1,95 @@
+parameters{ NUM_PACKETS(3), NUM_ARRIVED(3), P_FAIL(1/1000) }
+
+num_steps 30;
+
+topology{
+	nodes{ H0, H1, S0, S1, S2, S3 }
+	links{
+		(H0,pt1) <-> (S0,pt1),
+		(S0,pt2) <-> (S1,pt1),
+		(S0,pt3) <-> (S2,pt1),
+		(S1,pt2) <-> (S3,pt1),
+		(S2,pt2) <-> (S3,pt2),
+		(S3,pt3) <-> (H1,pt1)
+	}
+}
+
+programs{ H0 -> h0, H1 -> h1, S0 -> s0, S1 -> s1, S2 -> s2, S3 -> s3 }
+
+post_observe(num_arrived@H1 == NUM_ARRIVED);
+
+query probability(strategy@S0 == 1);
+query probability(strategy@S0 == 2);
+query probability(strategy@S0 == 3);
+
+/+
+query probability(strategy@S0 == 1 and failing@S2==0);
+query probability(strategy@S0 == 1 and failing@S2==1);
+
+query probability(strategy@S0 == 2 and failing@S2==0);
+query probability(strategy@S0 == 2 and failing@S2==1);
+
+query probability(strategy@S0 == 2 and failing@S2==0);
+query probability(strategy@S0 == 2 and failing@S2==1);
++/
+
+packet_fields{ id }
+
+def h0(pkt,port) state pkt_count(0){
+	new;
+	if pkt_count < NUM_PACKETS {
+		new;
+		pkt_count = pkt_count + 1;
+		pkt.id = pkt_count;
+		fwd(1);
+	} else { drop; drop; }
+}
+def h1(pkt,port) state num_arrived(0){
+	num_arrived = num_arrived + 1;
+	if num_arrived == 1{
+		observe(pkt.id == 1);
+	}else if num_arrived == 2{
+		observe(pkt.id == 2);
+	}else if num_arrived == 3{
+		observe(pkt.id == 3);
+	}
+	drop;
+}
+def s0(pkt,port) state strategy(4){
+	if strategy == 4{
+		strategy = uniformInt(1,2);
+		if strategy == 2{
+			strategy = strategy + flip(1/2);
+		}
+	}
+	if strategy == 1{
+		if flip(1/2){
+			fwd(2);
+		}else{
+			fwd(3);
+		}
+	}else{
+		fwd(strategy);
+	}
+}
+def s1(pkt,port){
+	fwd(2);
+}
+def s2(pkt,port)state failing(2){
+	if failing == 2 { failing = flip(P_FAIL); }
+	if failing == 1 { drop }
+	else{ fwd(2); }
+}
+def s3(pkt,port){
+	fwd(3);
+}
+
+def scheduler() state num_actions(0){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	num_actions += 1;
+	return actions[uniformInt(0,actions.length-1)];
+}

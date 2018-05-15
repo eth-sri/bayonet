@@ -19,7 +19,6 @@ query probability(arrived@H1);
 packet_fields{ }
 
 def h0(){
-	new;
 	fwd(1);
 }
 def h1() state arrived(0){

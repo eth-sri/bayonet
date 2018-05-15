@@ -1,0 +1,43 @@
+
+parameters{ NUM_PACKETS(4) }
+
+num_steps 30;
+
+query probability(pkt_count@H1 < NUM_PACKETS);
+
+topology{
+	nodes{ H0, H1, S1, S2 }
+	links{
+		(H0,pt1) <-> (S1,pt1),
+		(S1,pt2) <-> (S2,pt1),
+		(S2,pt2) <-> (H1,pt1)
+	}
+}
+
+packet_fields{ }
+
+programs{ H0 -> h0, S1 -> s1, S2 -> s2, H1 -> h1 }
+
+def h0(pkt,port) state pkt_count(0){
+	new;
+	if pkt_count < NUM_PACKETS {
+		new;
+		pkt_count = pkt_count + 1;
+		fwd(1);
+	} else { drop; drop; }	
+}
+
+def s1(pkt,port){ fwd(2); }
+def s2(pkt,port){ fwd(2); }
+
+def h1(pkt, port) state pkt_count(0){ pkt_count = pkt_count + 1; drop; }
+
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}
