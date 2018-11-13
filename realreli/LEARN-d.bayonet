@@ -1,0 +1,74 @@
+parameters{ NUM_PACKETS(3) }
+
+num_steps 20;
+
+query probability(arrived@H1 == 1);
+
+topology{
+  nodes{ H0, H1, S0, S1, S2, S3, S4, S5, S6, S7, S8, S9 }
+  links{
+    (H0,pt1) <-> (S8,pt3),
+    (S8,pt1) <-> (S0,pt1),
+    (S8,pt2) <-> (S5,pt1),
+    (S0,pt2) <-> (S1,pt1),
+    (S0,pt3) <-> (S2,pt1),
+    (S1,pt2) <-> (S9,pt1),
+    (S2,pt2) <-> (S3,pt1),
+    (S3,pt2) <-> (S4,pt1),
+    (S4,pt2) <-> (S9,pt4),
+    (S5,pt2) <-> (S6,pt1),
+    (S6,pt2) <-> (S7,pt1),
+    (S7,pt2) <-> (S9,pt3),
+    (S9,pt2) <-> (H1,pt1)
+  }
+}
+queue_capacity 2;
+
+packet_fields{ }
+
+programs{ H0 -> relsrc, H1 -> reldst, S0 -> swch2, S1 -> badfwdr, S2 -> fwdr, S3 -> fwdr, S4 -> fwdr, S5 -> fwdr, S6 -> fwdr, S7 -> fwdr, S8 -> swch1, S9 -> fwdr }
+
+def relsrc(pkt, port) {
+  fwd(1);
+}
+
+def reldst(pkt, port) state arrived(0) {
+  arrived=1;
+  drop;
+}
+
+def fwdr(pkt, port) {
+  fwd(2);
+}
+
+def badfwdr(pkt, port) state failing(2) {
+  if failing == 2 {
+    failing = flip(1/1000);
+  }
+  if failing == 1 {
+    drop;
+  } else {
+    fwd(2);
+  }
+}
+
+def swch1(pkt, port) {
+  fwd(flip(11/23)+1);
+}
+
+def swch2(pkt, port) {
+  fwd(flip(1/3)+2);
+}
+
+def scheduler() state next(0){
+	for i in [0..2*k){
+		current := next;
+		next = (next + 1) % (2 * k);
+		if current < k && (Q_in@current).size() > 0 {
+			return (RunSw,current);
+		} else if current >= k && (Q_out@(current-k)).size() > 0 {
+			return (FwdQ,current-k);
+		}
+	}
+	assert(0);
+}

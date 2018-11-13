@@ -1,0 +1,216 @@
+num_steps := 15;
+dat Queue{
+    data: (Packet × ℝ)[];
+    def Queue(){
+        data = ([]:(Packet × ℝ)[]);
+    }
+    def pushFront(x: Packet × ℝ){
+        if size() >= 2 { return; }
+        data=[x]~data;
+    }
+    def pushBack(x: Packet × ℝ){
+        if size() >= 2 { return; }
+        data=data~[x];
+    }
+    def takeFront(){
+        r:=front();
+        popFront();
+        return r;
+    }
+    def takeBack(){
+        r:=data[size()-1];
+        data=data[0..size()-1];
+        return r;
+    }
+    def size(){
+        return data.length;
+    }
+    def front(){
+        return data[0];
+    }
+    def dupFront(){
+        if size() == 0 { return; }
+        pushFront(front());
+    }
+    def popFront(){
+        if size() == 0 { return; }
+        data=data[1..size()];
+    }
+}
+k := 5, S0 := 0, S1 := 1, S2 := 2, S3 := 3, S4 := 4;
+dat Packet{
+    def Packet(){
+    }
+}
+dat __first_ty{
+    Q_in: Queue, Q_out: Queue;
+    infected: ℝ;
+    def __first_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        infected = 0;
+    }
+    def __run(){
+        if (infected==0){
+            infected = 1;
+            Q_in.pushFront((Packet(),0));
+            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,4))); }
+        } else {
+            Q_in.popFront();
+        }
+    }
+}
+dat __node_ty{
+    Q_in: Queue, Q_out: Queue;
+    infected: ℝ;
+    def __node_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        infected = 0;
+    }
+    def __run(){
+        if (infected==0){
+            infected = 1;
+            Q_in.dupFront();
+            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,4))); }
+            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],uniformInt(1,4))); }
+        } else {
+            Q_in.popFront();
+        }
+    }
+}
+RunSw:=0, FwdQ:=1;
+dat __D{
+    __S0 : __first_ty, __S1 : __node_ty, __S2 : __node_ty, __S3 : __node_ty, __S4 : __node_ty;
+    next: ℝ;
+    def __D(){
+        __S0 = __first_ty(), __S1 = __node_ty(), __S2 = __node_ty(), __S3 = __node_ty(), __S4 = __node_ty();
+        next = 0;
+    }
+    def scheduler(){
+        for i in [0..2 * k){
+            current := next;
+            next = (next + 1) % (2 * k);
+            if current < k && (if current == 0 { __S0.Q_in } else if current == 1 { __S1.Q_in } else if current == 2 { __S2.Q_in } else if current == 3 { __S3.Q_in } else  { __S4.Q_in }).size() > 0 {
+                return (RunSw,current);
+            } else if current >= k && (if (current - k) == 0 { __S0.Q_out } else if (current - k) == 1 { __S1.Q_out } else if (current - k) == 2 { __S2.Q_out } else if (current - k) == 3 { __S3.Q_out } else  { __S4.Q_out }).size() > 0 {
+                return (FwdQ,current - k);
+            }
+        }
+        assert(0);
+    }
+    def __step(){
+        if __S0.Q_in.size() || __S0.Q_out.size() || __S1.Q_in.size() || __S1.Q_out.size() || __S2.Q_in.size() || __S2.Q_out.size() || __S3.Q_in.size() || __S3.Q_out.size() || __S4.Q_in.size() || __S4.Q_out.size() {
+            (action,node) := scheduler();
+            if action {
+                if node == 0 && __S0.Q_out.size() {
+                    (pkt,port) := __S0.Q_out.takeFront();
+                    if port == 1 {
+                        __S1.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 2 {
+                        __S2.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __S3.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 1 && __S1.Q_out.size() {
+                    (pkt,port) := __S1.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 2 {
+                        __S2.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __S3.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 2));
+                    }
+                }
+                if node == 2 && __S2.Q_out.size() {
+                    (pkt,port) := __S2.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S1.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 3 {
+                        __S3.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 3));
+                    }
+                }
+                if node == 3 && __S3.Q_out.size() {
+                    (pkt,port) := __S3.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __S1.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 3 {
+                        __S2.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 4));
+                    }
+                }
+                if node == 4 && __S4.Q_out.size() {
+                    (pkt,port) := __S4.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 4));
+                    }
+                    if port == 2 {
+                        __S1.Q_in.pushBack((pkt, 4));
+                    }
+                    if port == 3 {
+                        __S2.Q_in.pushBack((pkt, 4));
+                    }
+                    if port == 4 {
+                        __S3.Q_in.pushBack((pkt, 4));
+                    }
+                }
+            } else {
+                if node == 0 && __S0.Q_in.size() {
+                    __S0.__run();
+                }
+                if node == 1 && __S1.Q_in.size() {
+                    __S1.__run();
+                }
+                if node == 2 && __S2.Q_in.size() {
+                    __S2.__run();
+                }
+                if node == 3 && __S3.Q_in.size() {
+                    __S3.__run();
+                }
+                if node == 4 && __S4.Q_in.size() {
+                    __S4.__run();
+                }
+            }
+        }
+    }
+}
+def main(){
+    __d := __D();
+    __d.__S0.Q_in.pushBack((Packet(),0));
+    __d.__S0.__run();
+    repeat num_steps {
+        __d.__step();
+    }
+    assert(!(__d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size() || __d.__S4.Q_in.size() || __d.__S4.Q_out.size()));
+    q₁ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else if S0 == 4 { __d.__S4.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else if S1 == 4 { __d.__S4.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else if S2 == 4 { __d.__S4.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else if S3 == 4 { __d.__S4.infected } else { assert(0) }) + (if S4 == 0 { __d.__S0.infected } else if S4 == 1 { __d.__S1.infected } else if S4 == 2 { __d.__S2.infected } else if S4 == 3 { __d.__S3.infected } else if S4 == 4 { __d.__S4.infected } else { assert(0) }) == 1) !=0);
+    q₂ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else if S0 == 4 { __d.__S4.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else if S1 == 4 { __d.__S4.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else if S2 == 4 { __d.__S4.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else if S3 == 4 { __d.__S4.infected } else { assert(0) }) + (if S4 == 0 { __d.__S0.infected } else if S4 == 1 { __d.__S1.infected } else if S4 == 2 { __d.__S2.infected } else if S4 == 3 { __d.__S3.infected } else if S4 == 4 { __d.__S4.infected } else { assert(0) }) == 2) !=0);
+    q₃ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else if S0 == 4 { __d.__S4.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else if S1 == 4 { __d.__S4.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else if S2 == 4 { __d.__S4.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else if S3 == 4 { __d.__S4.infected } else { assert(0) }) + (if S4 == 0 { __d.__S0.infected } else if S4 == 1 { __d.__S1.infected } else if S4 == 2 { __d.__S2.infected } else if S4 == 3 { __d.__S3.infected } else if S4 == 4 { __d.__S4.infected } else { assert(0) }) == 3) !=0);
+    q₄ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else if S0 == 4 { __d.__S4.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else if S1 == 4 { __d.__S4.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else if S2 == 4 { __d.__S4.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else if S3 == 4 { __d.__S4.infected } else { assert(0) }) + (if S4 == 0 { __d.__S0.infected } else if S4 == 1 { __d.__S1.infected } else if S4 == 2 { __d.__S2.infected } else if S4 == 3 { __d.__S3.infected } else if S4 == 4 { __d.__S4.infected } else { assert(0) }) == 4) !=0);
+    q₅ := Expectation(((if S0 == 0 { __d.__S0.infected } else if S0 == 1 { __d.__S1.infected } else if S0 == 2 { __d.__S2.infected } else if S0 == 3 { __d.__S3.infected } else if S0 == 4 { __d.__S4.infected } else { assert(0) }) + (if S1 == 0 { __d.__S0.infected } else if S1 == 1 { __d.__S1.infected } else if S1 == 2 { __d.__S2.infected } else if S1 == 3 { __d.__S3.infected } else if S1 == 4 { __d.__S4.infected } else { assert(0) }) + (if S2 == 0 { __d.__S0.infected } else if S2 == 1 { __d.__S1.infected } else if S2 == 2 { __d.__S2.infected } else if S2 == 3 { __d.__S3.infected } else if S2 == 4 { __d.__S4.infected } else { assert(0) }) + (if S3 == 0 { __d.__S0.infected } else if S3 == 1 { __d.__S1.infected } else if S3 == 2 { __d.__S2.infected } else if S3 == 3 { __d.__S3.infected } else if S3 == 4 { __d.__S4.infected } else { assert(0) }) + (if S4 == 0 { __d.__S0.infected } else if S4 == 1 { __d.__S1.infected } else if S4 == 2 { __d.__S2.infected } else if S4 == 3 { __d.__S3.infected } else if S4 == 4 { __d.__S4.infected } else { assert(0) }) == 5) !=0);
+    return (q₁, q₂, q₃, q₄, q₅);
+}
+

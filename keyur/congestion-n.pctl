@@ -1,0 +1,2 @@
+Pmin=? [ F finished & assrtOK & obsrvOK & (n2H1v9pkt_count<v11NUM_PACKETS) ] / Pmax=? [ F finished & obsrvOK ]
+Pmax=? [ F finished & assrtOK & obsrvOK & (n2H1v9pkt_count<v11NUM_PACKETS) ] / Pmin=? [ F finished & obsrvOK ]

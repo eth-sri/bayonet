@@ -1,0 +1,63 @@
+
+num_steps 50;
+
+topology{
+	nodes { S0, S1, S2, S3, S4 }
+	links{
+		(S0,pt1) <-> (S1,pt1),
+		(S0,pt2) <-> (S2,pt1),
+		(S0,pt3) <-> (S3,pt1),
+		(S0,pt4) <-> (S4,pt1),
+		(S1,pt2) <-> (S2,pt2),
+		(S1,pt3) <-> (S3,pt2),
+		(S1,pt4) <-> (S4,pt2),
+		(S2,pt3) <-> (S3,pt3),
+		(S2,pt4) <-> (S4,pt3),
+		(S3,pt4) <-> (S4,pt4),
+	}
+}
+queue_capacity 2;
+
+packet_fields{ }
+
+programs{ S0 -> first, S1 -> node, S2 -> node, S3 -> node, S4 -> node }
+
+//query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4 == 1);
+//query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4 == 2);
+//query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4 == 3);
+//query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4 == 4);
+//query probability(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4 == 5);
+
+query expectation(infected@S0 + infected@S1 + infected@S2 + infected@S3 + infected@S4);
+
+
+def first(pkt,port) state infected(0){
+	if infected == 0 {
+		infected = 1;
+		new;
+		fwd(uniformInt(1,4));
+	}else{ drop; }
+}
+
+
+def node(pkt,port) state infected(0){
+	if infected == 0{
+		infected = 1;
+		dup;
+		fwd(uniformInt(1,4));
+		fwd(uniformInt(1,4));
+	}else{ drop; }
+}
+
+def scheduler() state next(0){
+	for i in [0..2*k){
+		current := next;
+		next = (next + 1) % (2 * k);
+		if current < k && (Q_in@current).size() > 0 {
+			return (RunSw,current);
+		} else if current >= k && (Q_out@(current-k)).size() > 0 {
+			return (FwdQ,current-k);
+		}
+	}
+	assert(0);
+}
