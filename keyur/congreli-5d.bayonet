@@ -1,0 +1,68 @@
+parameters{ NUM_PACKETS(3) }
+
+num_steps 30;
+
+query probability(pkt_count@H1 < NUM_PACKETS);
+
+topology{
+  nodes{ H0, H1, S0, S1, S2 }
+  links{
+    (H0,pt1) <-> (S0,pt3),
+    (S0,pt1) <-> (S1,pt1),
+    (S0,pt2) <-> (S2,pt1),
+    (S1,pt2) <-> (S2,pt2),
+    (S1,pt3) <-> (H1,pt1)
+  }
+}
+queue_capacity 2;
+
+packet_fields{ }
+
+programs{ H0 -> h0, H1 -> h1, S0 -> s0, S1 -> s1, S2 -> s2 }
+
+
+def h0(pkt, port) state pkt_count(0){
+  if pkt_count < NUM_PACKETS {
+    pkt_count = pkt_count + 1;
+    fwd(1);
+    new;
+  } else {
+    drop;
+  }
+}
+
+def h1(pkt, port) state pkt_count(0){ pkt_count = pkt_count + 1; drop; }
+
+
+def s0(pkt, port){
+  if flip(1/2) == 1 {
+    fwd(1);
+  } else {
+    fwd(2);
+  }
+}
+
+def s1(pkt, port){
+  fwd(3);
+}
+
+def s2(pkt, port){
+  if flip(1/100) == 1 {
+    drop;
+  } else {
+    fwd(2);
+  }
+}
+
+def scheduler() state next(0){
+	for i in [0..2*k){
+		current := next;
+		next = (next + 1) % (2 * k);
+		if current < k && (Q_in@current).size() > 0 {
+			return (RunSw,current);
+		} else if current >= k && (Q_out@(current-k)).size() > 0 {
+			return (FwdQ,current-k);
+		}
+	}
+	assert(0);
+}
