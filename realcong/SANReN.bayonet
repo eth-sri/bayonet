@@ -1,0 +1,57 @@
+parameters{ NUM_PACKETS(3) }
+
+num_steps 50;
+
+query probability(pkt_count@H1 < NUM_PACKETS);
+
+topology{
+  nodes{ H0, H1, S0, S1, S2, S3, S4, S5, S6 }
+  links{
+    (H0,pt1) <-> (S5,pt3),
+    (S5,pt1) <-> (S0,pt1),
+    (S5,pt2) <-> (S2,pt1),
+    (S0,pt2) <-> (S1,pt1),
+    (S1,pt2) <-> (S6,pt1),
+    (S2,pt2) <-> (S3,pt1),
+    (S3,pt2) <-> (S4,pt1),
+    (S4,pt2) <-> (S6,pt3),
+    (S6,pt2) <-> (H1,pt1)
+  }
+}
+queue_capacity 2;
+
+packet_fields{ }
+
+programs{ H0 -> cngsrc, H1 -> cngdst, S0 -> fwdr, S1 -> fwdr, S2 -> fwdr, S3 -> fwdr, S4 -> fwdr, S5 -> swch, S6 -> fwdr }
+
+def cngsrc(pkt, port) state pkt_count(0) {
+  if pkt_count < NUM_PACKETS {
+    pkt_count = pkt_count + 1;
+    fwd(1);
+    new;
+  } else {
+    drop;
+  }
+}
+
+def cngdst(pkt, port) state pkt_count(0) {
+  pkt_count = pkt_count + 1;
+  drop;
+}
+
+def swch(pkt, port) {
+  fwd(flip(3/7)+1);
+}
+
+def fwdr(pkt, port) {
+  fwd(2);
+}
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}

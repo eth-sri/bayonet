@@ -1,0 +1,3 @@
+./xprism -javamaxmem 24g
+
+./psi --dp --noboundscheck

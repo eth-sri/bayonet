@@ -1,0 +1,71 @@
+num_steps 20;
+
+parameters{ SUBSIZE(4) }
+
+query probability(recvd@R0+recvd@R1+recvd@R2+recvd@R3+recvd@R4+recvd@R5+recvd@R6+recvd@R7 == 2);
+
+topology{
+  nodes{ Sender, S0, S1, S2, R0, R1, R2, R3, R4, R5, R6, R7 }
+  links{
+    (Sender,pt1) <-> (S0,pt1),
+    (S0,pt2) <-> (S1,pt1),
+    (S0,pt3) <-> (S2,pt1),
+    (S1,pt2) <-> (R0,pt1),
+    (S1,pt3) <-> (R1,pt1),
+    (S1,pt4) <-> (R2,pt1),
+    (S1,pt5) <-> (R3,pt1),
+    (S2,pt2) <-> (R4,pt1),
+    (S2,pt3) <-> (R5,pt1),
+    (S2,pt4) <-> (R6,pt1),
+    (S2,pt5) <-> (R7,pt1)
+  }
+}
+queue_capacity 2;
+
+packet_fields{ dst }
+
+programs{ Sender -> send, S0 -> s0, S1 -> s1, S2 -> s2, R0 -> recv, R1 -> recv, R2 -> recv, R3 -> recv, R4 -> recv, R5 -> recv, R6 -> recv, R7 -> recv }
+
+def send(pkt, port) state sent(0) {
+  if sent < 2 {
+    pkt.dst = uniformInt(0,7);
+    fwd(1);
+    new;
+  } else {
+    drop;
+  }
+}
+
+def recv(pkt, port) state recvd(0) {
+  recvd = recvd + 1;
+  drop;
+}
+
+def s0(pkt, port) {
+  if pkt.dst < SUBSIZE {
+    fwd(2);
+  } else {
+    fwd(3);
+  }
+}
+
+def s1(pkt, port) {
+  fwd(pkt.dst+2);
+}
+
+def s2(pkt, port) {
+  fwd(pkt.dst+2-SUBSIZE);
+}
+
+def scheduler() state next(0){
+	for i in [0..2*k){
+		current := next;
+		next = (next + 1) % (2 * k);
+		if current < k && (Q_in@current).size() > 0 {
+			return (RunSw,current);
+		} else if current >= k && (Q_out@(current-k)).size() > 0 {
+			return (FwdQ,current-k);
+		}
+	}
+	assert(0);
+}

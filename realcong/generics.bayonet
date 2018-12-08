@@ -1,0 +1,68 @@
+#creates NUM_PACKETS packets and pushes them via port 1
+
+def cngsrc(pkt, port) state pkt_count(0) {
+  if pkt_count < NUM_PACKETS {
+    pkt_count = pkt_count + 1;
+    fwd(1);
+    new;
+  } else {
+    drop;
+  }
+}
+
+#counts packets received
+
+def cngdst(pkt, port) state pkt_count(0) {
+  pkt_count = pkt_count + 1;
+  drop;
+}
+
+#pushes 1 packet and stops
+
+def relsrc(pkt, port) {
+  fwd(1);
+}
+
+#checks if packet was received
+
+def reldst(pkt, port) state arrived(0) {
+  arrived=1;
+  drop;
+}
+
+#forwards packet via port 1
+#give it packets via all other ports
+
+def fwdr(pkt, port) {
+  fwd(1);
+}
+
+#forwards packet via port 1 or 2 with 50% probability
+#give it packets via all other ports
+#can be extended to switch between more ports
+
+def switch(pkt, port) {
+  fwd(uniformInt(1,2));
+}
+
+def switch(pkt, port) {
+  if flip(1/2) == 0 {
+    fwd(1);
+  } else {
+    fwd(2);
+  }
+}
+
+#forwards packet via port 1, but can fail with 1/1000 probability
+#give it packets via all other ports
+
+def badfwdr(pkt, port) state failing(2) {
+  if failing == 2 {
+    failing = flip(1/1000);
+  }
+  if failing == 1 {
+    drop;
+  } else {
+    fwd(1);
+  }
+}

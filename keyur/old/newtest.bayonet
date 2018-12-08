@@ -1,0 +1,46 @@
+
+parameters{ NUM_PACKETS(2) }
+
+num_steps 10;
+
+query probability(sum@H1 < 7); //for a queue capacity 2, should be 1
+
+topology{
+	nodes{ H0, H1 }
+	links{
+		(H0,pt1) <-> (H1,pt1)
+	}
+}
+queue_capacity 2;
+
+packet_fields{ num }
+
+programs{ H0 -> h0, H1 -> h1 }
+
+
+def h0(pkt, port) state init(0){
+  if init == 0 {
+    pkt.num = 1;
+	  new;
+	  pkt.num = 2;
+	  new;
+	  pkt.num = 4;
+	  init = 1;
+	} else {
+	  fwd(1);
+	}
+}
+
+def h1(pkt, port) state sum(0){
+  sum = sum + pkt.num;
+  drop;
+}
+
+def scheduler(){
+	actions := ([]: (R x R)[]);
+	for i in [0..k){
+		if (Q_in@i).size() > 0 { actions ~= [(RunSw,i)]; }
+		if (Q_out@i).size() > 0 { actions ~= [(FwdQ,i)]; }
+	}
+	return actions[uniformInt(0,actions.length-1)];
+}

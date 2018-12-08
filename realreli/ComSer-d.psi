@@ -1,0 +1,342 @@
+num_steps := 20;
+dat Queue{
+    data: (Packet × ℝ)[];
+    def Queue(){
+        data = ([]:(Packet × ℝ)[]);
+    }
+    def pushFront(x: Packet × ℝ){
+        if size() >= 2 { return; }
+        data=[x]~data;
+    }
+    def pushBack(x: Packet × ℝ){
+        if size() >= 2 { return; }
+        data=data~[x];
+    }
+    def takeFront(){
+        r:=front();
+        popFront();
+        return r;
+    }
+    def takeBack(){
+        r:=data[size()-1];
+        data=data[0..size()-1];
+        return r;
+    }
+    def size(){
+        return data.length;
+    }
+    def front(){
+        return data[0];
+    }
+    def dupFront(){
+        if size() == 0 { return; }
+        pushFront(front());
+    }
+    def popFront(){
+        if size() == 0 { return; }
+        data=data[1..size()];
+    }
+}
+k := 13, H0 := 0, H1 := 1, S0 := 2, S1 := 3, S2 := 4, S3 := 5, S4 := 6, S5 := 7, S6 := 8, S7 := 9, S8 := 10, S9 := 11, S10 := 12;
+NUM_PACKETS := 3;
+dat Packet{
+    def Packet(){
+    }
+}
+dat __relsrc_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __relsrc_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],1)); }
+    }
+}
+dat __reldst_ty{
+    Q_in: Queue, Q_out: Queue;
+    arrived: ℝ;
+    def __reldst_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        arrived = 0;
+    }
+    def __run(){
+        arrived = 1;
+        Q_in.popFront();
+    }
+}
+dat __fwdr_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __fwdr_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],2)); }
+    }
+}
+dat __badfwdr_ty{
+    Q_in: Queue, Q_out: Queue;
+    failing: ℝ;
+    def __badfwdr_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+        failing = 2;
+    }
+    def __run(){
+        if (failing==2){
+            failing = flip((1/1000));
+        }
+        if (failing==1){
+            Q_in.popFront();
+        } else {
+            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],2)); }
+        }
+    }
+}
+dat __swch1_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __swch1_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],(flip((1/2))+2))); }
+    }
+}
+dat __swch2_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __swch2_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],(flip((3/7))+2))); }
+    }
+}
+dat __swch3_ty{
+    Q_in: Queue, Q_out: Queue;
+    def __swch3_ty(){
+        Q_in = Queue();
+        Q_out = Queue();
+    }
+    def __run(){
+        if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],(flip((4/9))+1))); }
+    }
+}
+RunSw:=0, FwdQ:=1;
+dat __D{
+    __H0 : __relsrc_ty, __H1 : __reldst_ty, __S0 : __swch1_ty, __S1 : __swch1_ty, __S2 : __swch2_ty, __S3 : __fwdr_ty, __S4 : __fwdr_ty, __S5 : __fwdr_ty, __S6 : __badfwdr_ty, __S7 : __fwdr_ty, __S8 : __fwdr_ty, __S9 : __swch3_ty, __S10 : __fwdr_ty;
+    next: ℝ;
+    def __D(){
+        __H0 = __relsrc_ty(), __H1 = __reldst_ty(), __S0 = __swch1_ty(), __S1 = __swch1_ty(), __S2 = __swch2_ty(), __S3 = __fwdr_ty(), __S4 = __fwdr_ty(), __S5 = __fwdr_ty(), __S6 = __badfwdr_ty(), __S7 = __fwdr_ty(), __S8 = __fwdr_ty(), __S9 = __swch3_ty(), __S10 = __fwdr_ty();
+        next = 0;
+    }
+    def scheduler(){
+        for i in [0..2 * k){
+            current := next;
+            next = (next + 1) % (2 * k);
+            if current < k && (if current == 0 { __H0.Q_in } else if current == 1 { __H1.Q_in } else if current == 2 { __S0.Q_in } else if current == 3 { __S1.Q_in } else if current == 4 { __S2.Q_in } else if current == 5 { __S3.Q_in } else if current == 6 { __S4.Q_in } else if current == 7 { __S5.Q_in } else if current == 8 { __S6.Q_in } else if current == 9 { __S7.Q_in } else if current == 10 { __S8.Q_in } else if current == 11 { __S9.Q_in } else  { __S10.Q_in }).size() > 0 {
+                return (RunSw,current);
+            } else if current >= k && (if (current - k) == 0 { __H0.Q_out } else if (current - k) == 1 { __H1.Q_out } else if (current - k) == 2 { __S0.Q_out } else if (current - k) == 3 { __S1.Q_out } else if (current - k) == 4 { __S2.Q_out } else if (current - k) == 5 { __S3.Q_out } else if (current - k) == 6 { __S4.Q_out } else if (current - k) == 7 { __S5.Q_out } else if (current - k) == 8 { __S6.Q_out } else if (current - k) == 9 { __S7.Q_out } else if (current - k) == 10 { __S8.Q_out } else if (current - k) == 11 { __S9.Q_out } else  { __S10.Q_out }).size() > 0 {
+                return (FwdQ,current - k);
+            }
+        }
+        assert(0);
+    }
+    def __step(){
+        if __H0.Q_in.size() || __H0.Q_out.size() || __H1.Q_in.size() || __H1.Q_out.size() || __S0.Q_in.size() || __S0.Q_out.size() || __S1.Q_in.size() || __S1.Q_out.size() || __S2.Q_in.size() || __S2.Q_out.size() || __S3.Q_in.size() || __S3.Q_out.size() || __S4.Q_in.size() || __S4.Q_out.size() || __S5.Q_in.size() || __S5.Q_out.size() || __S6.Q_in.size() || __S6.Q_out.size() || __S7.Q_in.size() || __S7.Q_out.size() || __S8.Q_in.size() || __S8.Q_out.size() || __S9.Q_in.size() || __S9.Q_out.size() || __S10.Q_in.size() || __S10.Q_out.size() {
+            (action,node) := scheduler();
+            if action {
+                if node == 0 && __H0.Q_out.size() {
+                    (pkt,port) := __H0.Q_out.takeFront();
+                    if port == 1 {
+                        __S9.Q_in.pushBack((pkt, 3));
+                    }
+                }
+                if node == 1 && __H1.Q_out.size() {
+                    (pkt,port) := __H1.Q_out.takeFront();
+                    if port == 1 {
+                        __S10.Q_in.pushBack((pkt, 2));
+                    }
+                }
+                if node == 2 && __S0.Q_out.size() {
+                    (pkt,port) := __S0.Q_out.takeFront();
+                    if port == 1 {
+                        __S9.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 2 {
+                        __S7.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __S1.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 3 && __S1.Q_out.size() {
+                    (pkt,port) := __S1.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __S6.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 3 {
+                        __S8.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 4 {
+                        __S2.Q_in.pushBack((pkt, 2));
+                    }
+                }
+                if node == 4 && __S2.Q_out.size() {
+                    (pkt,port) := __S2.Q_out.takeFront();
+                    if port == 1 {
+                        __S3.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S1.Q_in.pushBack((pkt, 4));
+                    }
+                    if port == 3 {
+                        __S4.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 5 && __S3.Q_out.size() {
+                    (pkt,port) := __S3.Q_out.takeFront();
+                    if port == 1 {
+                        __S9.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S2.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 6 && __S4.Q_out.size() {
+                    (pkt,port) := __S4.Q_out.takeFront();
+                    if port == 1 {
+                        __S2.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 2 {
+                        __S5.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 7 && __S5.Q_out.size() {
+                    (pkt,port) := __S5.Q_out.takeFront();
+                    if port == 1 {
+                        __S4.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S6.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 8 && __S6.Q_out.size() {
+                    (pkt,port) := __S6.Q_out.takeFront();
+                    if port == 1 {
+                        __S5.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S10.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __S1.Q_in.pushBack((pkt, 2));
+                    }
+                }
+                if node == 9 && __S7.Q_out.size() {
+                    (pkt,port) := __S7.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S8.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 10 && __S8.Q_out.size() {
+                    (pkt,port) := __S8.Q_out.takeFront();
+                    if port == 1 {
+                        __S7.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __S10.Q_in.pushBack((pkt, 3));
+                    }
+                    if port == 3 {
+                        __S1.Q_in.pushBack((pkt, 3));
+                    }
+                }
+                if node == 11 && __S9.Q_out.size() {
+                    (pkt,port) := __S9.Q_out.takeFront();
+                    if port == 1 {
+                        __S0.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 2 {
+                        __S3.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __H0.Q_in.pushBack((pkt, 1));
+                    }
+                }
+                if node == 12 && __S10.Q_out.size() {
+                    (pkt,port) := __S10.Q_out.takeFront();
+                    if port == 1 {
+                        __S6.Q_in.pushBack((pkt, 2));
+                    }
+                    if port == 2 {
+                        __H1.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 3 {
+                        __S8.Q_in.pushBack((pkt, 2));
+                    }
+                }
+            } else {
+                if node == 0 && __H0.Q_in.size() {
+                    __H0.__run();
+                }
+                if node == 1 && __H1.Q_in.size() {
+                    __H1.__run();
+                }
+                if node == 2 && __S0.Q_in.size() {
+                    __S0.__run();
+                }
+                if node == 3 && __S1.Q_in.size() {
+                    __S1.__run();
+                }
+                if node == 4 && __S2.Q_in.size() {
+                    __S2.__run();
+                }
+                if node == 5 && __S3.Q_in.size() {
+                    __S3.__run();
+                }
+                if node == 6 && __S4.Q_in.size() {
+                    __S4.__run();
+                }
+                if node == 7 && __S5.Q_in.size() {
+                    __S5.__run();
+                }
+                if node == 8 && __S6.Q_in.size() {
+                    __S6.__run();
+                }
+                if node == 9 && __S7.Q_in.size() {
+                    __S7.__run();
+                }
+                if node == 10 && __S8.Q_in.size() {
+                    __S8.__run();
+                }
+                if node == 11 && __S9.Q_in.size() {
+                    __S9.__run();
+                }
+                if node == 12 && __S10.Q_in.size() {
+                    __S10.__run();
+                }
+            }
+        }
+    }
+}
+def main(){
+    __d := __D();
+    __d.__H0.Q_in.pushBack((Packet(),0));
+    __d.__H0.__run();
+    repeat num_steps {
+        __d.__step();
+    }
+    assert(!(__d.__H0.Q_in.size() || __d.__H0.Q_out.size() || __d.__H1.Q_in.size() || __d.__H1.Q_out.size() || __d.__S0.Q_in.size() || __d.__S0.Q_out.size() || __d.__S1.Q_in.size() || __d.__S1.Q_out.size() || __d.__S2.Q_in.size() || __d.__S2.Q_out.size() || __d.__S3.Q_in.size() || __d.__S3.Q_out.size() || __d.__S4.Q_in.size() || __d.__S4.Q_out.size() || __d.__S5.Q_in.size() || __d.__S5.Q_out.size() || __d.__S6.Q_in.size() || __d.__S6.Q_out.size() || __d.__S7.Q_in.size() || __d.__S7.Q_out.size() || __d.__S8.Q_in.size() || __d.__S8.Q_out.size() || __d.__S9.Q_in.size() || __d.__S9.Q_out.size() || __d.__S10.Q_in.size() || __d.__S10.Q_out.size()));
+    q₁ := Expectation(((if H1 == 1 { __d.__H1.arrived } else { assert(0) }) == 1) !=0);
+    return (q₁);
+}
+

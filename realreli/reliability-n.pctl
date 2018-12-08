@@ -1,0 +1,2 @@
+Pmin=? [ F finished & assrtOK & obsrvOK & (n2H1v7arrived=1) ] / Pmax=? [ F finished & obsrvOK ]
+Pmax=? [ F finished & assrtOK & obsrvOK & (n2H1v7arrived=1) ] / Pmin=? [ F finished & obsrvOK ]

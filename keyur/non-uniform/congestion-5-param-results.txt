@@ -1,0 +1,41 @@
+PRISM
+=====
+
+Version: 4.4.beta
+Date: Wed Feb 14 12:19:42 CST 2018
+Hostname: dell
+Memory limits: cudd=18g, java(heap)=24g
+Command line: prism -cuddmaxmem 18g -javamaxmem 24g congestion.prism congestion.pctl -param 'fp=0:1'
+
+Parsing model file "congestion.prism"...
+
+Parsing properties file "congestion.pctl"...
+
+1 property:
+(1) P=? [ F "deadlock"&assrtOK&obsrvOK&(n2H1v9pkt_count<v11NUM_PACKETS) ]/P=? [ F "deadlock"&obsrvOK ]
+
+Type:        DTMC
+Modules:     n2H0 n2S2 n2S1 n2S0 n2H1 
+Variables:   unlk assrtOK obsrvOK numSteps n2H0v9pkt_count n2H0ip0 n2H0iv3dst0 n2H0ip1 n2H0iv3dst1 n2H0is n2H0op0 n2H0ov3dst0 n2H0op1 n2H0ov3dst1 n2H0os n2H0opt n2H0pc n2H0ra n2S2ip0 n2S2iv3dst0 n2S2ip1 n2S2iv3dst1 n2S2is n2S2op0 n2S2ov3dst0 n2S2op1 n2S2ov3dst1 n2S2os n2S2opt n2S2pc n2S2ra n2S1v6route1 n2S1v6route2 n2S1t0 n2S1ip0 n2S1iv3dst0 n2S1ip1 n2S1iv3dst1 n2S1is n2S1op0 n2S1ov3dst0 n2S1op1 n2S1ov3dst1 n2S1os n2S1opt n2S1pc n2S1ra n2S0v6route1 n2S0v6route2 n2S0t0 n2S0ip0 n2S0iv3dst0 n2S0ip1 n2S0iv3dst1 n2S0is n2S0op0 n2S0ov3dst0 n2S0op1 n2S0ov3dst1 n2S0os n2S0opt n2S0pc n2S0ra n2H1v9pkt_count n2H1ip0 n2H1iv3dst0 n2H1ip1 n2H1iv3dst1 n2H1is n2H1op0 n2H1ov3dst0 n2H1op1 n2H1ov3dst1 n2H1os n2H1opt n2H1pc n2H1ra 
+
+---------------------------------------------------------------------
+
+Parametric model checking: P=? [ F "deadlock"&assrtOK&obsrvOK&(n2H1v9pkt_count<v11NUM_PACKETS) ]/P=? [ F "deadlock"&obsrvOK ]
+
+Building model...
+
+Computing reachable states...
+Reachable states exploration and model construction done in 54.562 secs.
+
+States:      1423207 (1 initial)
+Transitions: 1581554
+
+Time for model construction: 54.562 seconds.
+
+Time for model checking: 14175.765 seconds.
+
+Result: ([0.0,1.0]): { ( -394371085123 ) fp^3 + 1153026523152 fp^2 - 985519732623 fp + 4051150884322  | 8463329722368  }
+
+real	237m11.397s
+user	239m52.080s
+sys	0m24.700s

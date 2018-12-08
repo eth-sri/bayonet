@@ -1,0 +1,59 @@
+num_steps 10;
+
+topology{
+	nodes{ H0, H1, S0, S1, S2, S3 }
+	links{
+		(H0,pt1) <-> (S0,pt1),
+		(S0,pt2) <-> (S1,pt1),
+		(S0,pt3) <-> (S2,pt1),
+		(S1,pt2) <-> (S3,pt1),
+		(S2,pt2) <-> (S3,pt2),
+		(S3,pt3) <-> (H1,pt1)
+	}
+}
+queue_capacity 2;
+
+programs{ H0 -> h0, H1 -> h1, S0 -> s0, S1 -> s1, S2 -> s2, S3 -> s3 }
+
+query probability(arrived@H1==1);
+
+packet_fields{ }
+
+def h0(){
+	fwd(1);
+}
+def h1() state arrived(0){
+	arrived=1;
+	drop;
+}
+def s0(){
+	if flip(1/2) == 1{
+		fwd(2);
+	}else{
+		fwd(3);
+	}
+}
+def s1(){
+	fwd(2);
+}
+def s2()state failing(2){
+	if failing == 2 { if(flip(1/1000) == 1) { failing = 1; } else { failing = 0; } }
+	if failing == 1 { drop }
+	else{ fwd(2); }
+}
+def s3(){
+	fwd(3);
+}
+
+def scheduler() state next(0){
+	for i in [0..2*k){
+		current := next;
+		next = (next + 1) % (2 * k);
+		if current < k && (Q_in@current).size() > 0 {
+			return (RunSw,current);
+		} else if current >= k && (Q_out@(current-k)).size() > 0 {
+			return (FwdQ,current-k);
+		}
+	}
+	assert(0);
+}

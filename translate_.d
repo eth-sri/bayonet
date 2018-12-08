@@ -193,7 +193,7 @@ class Builder{
 				Expression port;
 				this(Expression port){ this.port=port; }
 				override string toPSI(){
-					return text("Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),"));\n");
+					return text("if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],",port.toPSI(),")); }\n");
 				}
 			}
 			return new FwdStm(port);
@@ -402,6 +402,7 @@ class Builder{
 				"data = ([]:(Packet × ℝ)[]);\n"
 			)~"}\n"~
 			"def pushFront(x: Packet × ℝ){\n"~indent(
+				(capacity?"if size() >= "~capacity.toString()~" { return; }\n":"")~
 				"data=[x]~data;\n"
 			)~"}\n"~
 			"def pushBack(x: Packet × ℝ){\n"~indent(
@@ -425,9 +426,11 @@ class Builder{
 				"return data[0];\n"
 			)~"}\n"~
 			"def dupFront(){\n"~indent(
+				(capacity?"if size() == 0 { return; }\n":"")~
 				"pushFront(front());\n"
 			)~"}\n"~
 			"def popFront(){\n"~indent(
+				(capacity?"if size() == 0 { return; }\n":"")~
 				"data=data[1..size()];\n"
 			)~"}\n"
 		)~"}\n";
