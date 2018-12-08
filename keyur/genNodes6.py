@@ -21,6 +21,7 @@ for i in range(n):
     print()
   printLink("S"+str(4*i+0),2,"S"+str(4*i+1),1)
   printLink("S"+str(4*i+0),3,"S"+str(4*i+2),1)
+  printLink("S"+str(4*i+0),4,"S"+str(4*i+3),4)
   printLink("S"+str(4*i+1),2,"S"+str(4*i+3),1)
   printLink("S"+str(4*i+2),2,"S"+str(4*i+3),2)
   print()

@@ -1,4 +1,4 @@
-num_steps := 40;
+num_steps := 54;
 dat Queue{
     data: (Packet × ℝ)[];
     def Queue(){
@@ -54,7 +54,6 @@ dat __h0_ty{
     def __run(){
         Q_in.pushFront((Packet(),0));
         if (pkt_count<NUM_PACKETS){
-            Q_in.pushFront((Packet(),0));
             pkt_count = (pkt_count+1);
             if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],1)); }
         } else {
@@ -149,8 +148,8 @@ dat __s2_ty{
         Q_out = Queue();
     }
     def __run(){
-        if ((Q_in.data[0][1]==1)||(Q_in.data[0][1]==2)){
-            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],3)); }
+        if (Q_in.data[0][1]==1){
+            if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],2)); }
         }
     }
 }
@@ -161,7 +160,7 @@ dat __s3_ty{
         Q_out = Queue();
     }
     def __run(){
-        if ((Q_in.data[0][1]==1)||(Q_in.data[0][1]==2)){
+        if (((Q_in.data[0][1]==1)||(Q_in.data[0][1]==2))||(Q_in.data[0][1]==4)){
             if(Q_in.size()>0){ Q_out.pushBack((Q_in.takeFront()[0],3)); }
         }
     }
@@ -169,8 +168,10 @@ dat __s3_ty{
 RunSw:=0, FwdQ:=1;
 dat __D{
     __H0 : __h0_ty, __H1 : __h1_ty, __S0 : __s0_ty, __S1 : __s1_ty, __S2 : __s2_ty, __S3 : __s3_ty, __S4 : __s0_ty, __S5 : __s1_ty, __S6 : __s2_ty, __S7 : __s3_ty;
+    num_actions: ℝ;
     def __D(){
         __H0 = __h0_ty(), __H1 = __h1_ty(), __S0 = __s0_ty(), __S1 = __s1_ty(), __S2 = __s2_ty(), __S3 = __s3_ty(), __S4 = __s0_ty(), __S5 = __s1_ty(), __S6 = __s2_ty(), __S7 = __s3_ty();
+        num_actions = 0;
     }
     def scheduler(){
         actions := ([]: (R x R)[]);
@@ -182,6 +183,7 @@ dat __D{
                 actions ~= [(FwdQ,i)];
             }
         }
+        num_actions += 1;
         return actions[uniformInt(0,actions.length - 1)];
     }
     def __step(){
@@ -209,10 +211,10 @@ dat __D{
                         __S1.Q_in.pushBack((pkt, 1));
                     }
                     if port == 3 {
-                        __S3.Q_in.pushBack((pkt, 1));
+                        __S2.Q_in.pushBack((pkt, 1));
                     }
                     if port == 4 {
-                        __S2.Q_in.pushBack((pkt, 1));
+                        __S3.Q_in.pushBack((pkt, 4));
                     }
                 }
                 if node == 3 && __S1.Q_out.size() {
@@ -221,31 +223,31 @@ dat __D{
                         __S0.Q_in.pushBack((pkt, 2));
                     }
                     if port == 2 {
-                        __S2.Q_in.pushBack((pkt, 2));
+                        __S3.Q_in.pushBack((pkt, 1));
                     }
                 }
                 if node == 4 && __S2.Q_out.size() {
                     (pkt,port) := __S2.Q_out.takeFront();
                     if port == 1 {
-                        __S0.Q_in.pushBack((pkt, 4));
+                        __S0.Q_in.pushBack((pkt, 3));
                     }
                     if port == 2 {
-                        __S1.Q_in.pushBack((pkt, 2));
-                    }
-                    if port == 3 {
                         __S3.Q_in.pushBack((pkt, 2));
                     }
                 }
                 if node == 5 && __S3.Q_out.size() {
                     (pkt,port) := __S3.Q_out.takeFront();
                     if port == 1 {
-                        __S0.Q_in.pushBack((pkt, 3));
+                        __S1.Q_in.pushBack((pkt, 2));
                     }
                     if port == 2 {
-                        __S2.Q_in.pushBack((pkt, 3));
+                        __S2.Q_in.pushBack((pkt, 2));
                     }
                     if port == 3 {
                         __S4.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 4 {
+                        __S0.Q_in.pushBack((pkt, 4));
                     }
                 }
                 if node == 6 && __S4.Q_out.size() {
@@ -257,10 +259,10 @@ dat __D{
                         __S5.Q_in.pushBack((pkt, 1));
                     }
                     if port == 3 {
-                        __S7.Q_in.pushBack((pkt, 1));
+                        __S6.Q_in.pushBack((pkt, 1));
                     }
                     if port == 4 {
-                        __S6.Q_in.pushBack((pkt, 1));
+                        __S7.Q_in.pushBack((pkt, 4));
                     }
                 }
                 if node == 7 && __S5.Q_out.size() {
@@ -269,31 +271,31 @@ dat __D{
                         __S4.Q_in.pushBack((pkt, 2));
                     }
                     if port == 2 {
-                        __S6.Q_in.pushBack((pkt, 2));
+                        __S7.Q_in.pushBack((pkt, 1));
                     }
                 }
                 if node == 8 && __S6.Q_out.size() {
                     (pkt,port) := __S6.Q_out.takeFront();
                     if port == 1 {
-                        __S4.Q_in.pushBack((pkt, 4));
+                        __S4.Q_in.pushBack((pkt, 3));
                     }
                     if port == 2 {
-                        __S5.Q_in.pushBack((pkt, 2));
-                    }
-                    if port == 3 {
                         __S7.Q_in.pushBack((pkt, 2));
                     }
                 }
                 if node == 9 && __S7.Q_out.size() {
                     (pkt,port) := __S7.Q_out.takeFront();
                     if port == 1 {
-                        __S4.Q_in.pushBack((pkt, 3));
+                        __S5.Q_in.pushBack((pkt, 2));
                     }
                     if port == 2 {
-                        __S6.Q_in.pushBack((pkt, 3));
+                        __S6.Q_in.pushBack((pkt, 2));
                     }
                     if port == 3 {
                         __H1.Q_in.pushBack((pkt, 1));
+                    }
+                    if port == 4 {
+                        __S4.Q_in.pushBack((pkt, 4));
                     }
                 }
             } else {
